@@ -87,14 +87,13 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
 <header class="hero">
   <div class="hero-in">
     <h1>KetoanAI</h1>
-    <p>Phần mềm kế toán chạy ngay trên trình duyệt cho doanh nghiệp nhỏ, kế toán dịch vụ và hộ kinh doanh: ghi sổ Nợ / Có, quản lý hóa đơn &amp; tờ khai GTGT, công nợ, lương – BHXH – TNCN, TSCĐ &amp; khấu hao, dòng tiền 13 tuần. Mọi tính năng AI đi qua một đầu mối chung — trên bản publish dùng key phía server nên người dùng không cần token riêng.</p>
+    <p>Phần mềm kế toán chạy ngay trên trình duyệt cho doanh nghiệp nhỏ, kế toán dịch vụ và hộ kinh doanh: ghi sổ Nợ / Có, quản lý hóa đơn &amp; tờ khai GTGT, công nợ, lương – BHXH – TNCN, TSCĐ &amp; khấu hao, dòng tiền 13 tuần. Mọi tính năng AI đi qua một đầu mối chung — POST /api/ai với key đặt phía server.</p>
     <div class="hero-actions">
       <button class="btn gold" onclick="go('chungtu')">＋ Ghi chứng từ ngay</button>
       <button class="btn ghostw" onclick="go('thue')">🧾 Thuế</button>
       <button class="btn ghostw" onclick="go('vanban')">📚 Thư viện Luật</button>
       <button class="btn ghostw" onclick="go('luat')">⚖️ Review Luật &amp; Update</button>
       <button class="btn ghostw" onclick="go('api')">🧠 Đầu mối AI chung</button>
-      <button class="btn ghostw" onclick="go('publish')">▲ Publish lên Vercel</button>
       <button class="btn ghostw" onclick="loadDemo()">Nạp dữ liệu mẫu để thử</button>
       <button class="btn ghostw" onclick="go('dulieu')">🗑 Xóa dữ liệu</button>
     </div>
@@ -119,7 +118,6 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
   <button class="tab" data-t="luat">⚖️ Review Luật</button>
   <button class="tab" data-t="pro">Tính năng PRO</button>
   <button class="tab" data-t="api">🧠 Đầu mối AI</button>
-  <button class="tab" data-t="publish">Publish Vercel</button>
   <button class="tab" data-t="dulieu">🗑 Dữ liệu &amp; Sao lưu</button>
 </div></nav>
 
@@ -174,7 +172,7 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
 <!-- HÓA ĐƠN -->
 <section class="panel" id="p-hoadon">
   <div class="card" style="margin-bottom:14px"><h2>📤 Upload hóa đơn — AI đọc &amp; tự điền form</h2>
-    <p class="muted small">Tải <strong>ảnh (JPG / PNG) hoặc PDF</strong> của một hóa đơn lên, AI sẽ trích xuất: số hóa đơn, ngày, bên bán, MST, tiền hàng, thuế suất, tiền thuế, tổng thanh toán — rồi <strong>điền sẵn vào form “Thêm hóa đơn” bên dưới</strong>. Lượt đọc này đi qua <strong>đầu mối AI chung</strong> của app: ưu tiên <span class="mono">POST /api/ai</span> bằng key phía server (người dùng không cần token), không có đầu mối server thì mới dùng token phiên cá nhân ở mục Đầu mối AI. Mỗi lần đọc 1 hóa đơn. <strong>Luôn kiểm tra lại từng trường trước khi bấm Lưu</strong>: AI đọc sai một con số mà ghi thẳng vào sổ là lệch cả kỳ.</p>
+    <p class="muted small">Tải <strong>ảnh (JPG / PNG) hoặc PDF</strong> của một hóa đơn lên, AI sẽ trích xuất: số hóa đơn, ngày, bên bán, MST, tiền hàng, thuế suất, tiền thuế, tổng thanh toán — rồi <strong>điền sẵn vào form “Thêm hóa đơn” bên dưới</strong>. Lượt đọc này đi qua <strong>đầu mối AI chung</strong> của app: <span class="mono">POST /api/ai</span> bằng key phía server. Khi đầu mối chung chưa nối, tính năng đọc bằng AI chưa chạy được. Mỗi lần đọc 1 hóa đơn. <strong>Luôn kiểm tra lại từng trường trước khi bấm Lưu</strong>: AI đọc sai một con số mà ghi thẳng vào sổ là lệch cả kỳ.</p>
     <p class="small">Trạng thái AI: <span class="statusdot" id="aiInvDot"></span> <span id="aiInvStatus">Đang kiểm tra đầu mối AI chung…</span></p>
     <div class="toolbar">
       <label class="btn" style="cursor:pointer">📎 Chọn ảnh / PDF hóa đơn<input type="file" id="aiInvFile" accept="image/*,.pdf" style="display:none" onchange="aiInvPicked(event)"></label>
@@ -184,7 +182,7 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
     </div>
     <div id="aiInvMsg" class="small" role="status"></div>
     <div id="aiInvReview"></div>
-    <p class="note">Khi đi qua /api/ai, ảnh hóa đơn được gửi tới hàm serverless của chủ app rồi mới tới nhà cung cấp AI — key không lộ ở trình duyệt. Khi dùng token phiên dự phòng, ảnh được gửi thẳng từ trình duyệt này tới nhà cung cấp bằng token của bạn — hãy cân nhắc với hóa đơn chứa thông tin nhạy cảm. Riêng đường OpenAI trực tiếp không nhận PDF: hóa đơn PDF hãy dùng Claude hoặc Gemini, hoặc chụp / xuất trang hóa đơn thành ảnh rồi tải lên.</p>
+    <p class="note">Ảnh hóa đơn được gửi tới hàm serverless của chủ app (đầu mối chung /api/ai) rồi mới tới nhà cung cấp AI — key không lộ ở trình duyệt.</p>
   </div>
   <div class="grid grid2">
     <div class="card"><h2>Thêm hóa đơn</h2>
@@ -323,7 +321,7 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
 <section class="panel" id="p-dinhkhoan">
   <div class="grid grid2">
     <div class="card"><h2>Trợ lý gợi ý định khoản</h2>
-      <p class="muted small">Mô tả nghiệp vụ bằng tiếng Việt tự nhiên. Trợ lý tra trong bộ quy tắc hệ thống tài khoản (Thông tư 200 / 133) và gợi ý Nợ / Có kèm giải thích. Phân tích sâu đi qua <strong>đầu mối AI chung</strong> (mục Đầu mối AI): có /api/ai phía server hoặc token phiên thì có thêm phân tích của AI; chưa nối đầu mối, bộ quy tắc nội bộ vẫn chạy đầy đủ offline.</p>
+      <p class="muted small">Mô tả nghiệp vụ bằng tiếng Việt tự nhiên. Trợ lý tra trong bộ quy tắc hệ thống tài khoản (Thông tư 200 / 133) và gợi ý Nợ / Có kèm giải thích. Phân tích sâu đi qua <strong>đầu mối AI chung</strong> (mục Đầu mối AI): có /api/ai phía server thì có thêm phân tích của AI; chưa nối đầu mối chung, bộ quy tắc nội bộ vẫn chạy đầy đủ offline.</p>
       <label>Mô tả nghiệp vụ</label><textarea id="ai-q" placeholder="VD: Mua hàng hóa nhập kho chưa trả tiền nhà cung cấp, thuế GTGT 10%&#10;Hoặc: Thu tiền khách hàng trả nợ bằng chuyển khoản"></textarea>
       <div class="toolbar"><button class="btn primary" onclick="askAI()">Gợi ý định khoản</button><span class="small muted">Trạng thái AI: <span class="statusdot" id="aiDot"></span> <span id="aiStatus">Đang kiểm tra đầu mối AI…</span></span></div>
       <div id="aiResult" class="result">Ví dụ thử: “Chi tiền mặt tạm ứng cho nhân viên đi công tác”, “Trích khấu hao máy văn phòng”, “Bán hàng chưa thu tiền khách”.</div>
@@ -342,7 +340,7 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
     </div>
     <label>Nội dung cần AI xử lý</label><textarea id="hub-q" style="min-height:110px" placeholder="VD: Giải thích điều kiện khấu trừ thuế GTGT đầu vào cho hóa đơn 8 triệu thanh toán tiền mặt.&#10;Hoặc dán nội dung văn bản / chứng từ cần tóm tắt, soát ở đây…"></textarea>
     <div class="toolbar"><button class="btn primary" id="hubBtn" onclick="hubAsk()">🤖 Gọi AI qua đầu mối chung</button><button class="btn" onclick="go('api')">🧠 Xem đầu mối &amp; cách nối serverless</button></div>
-    <div id="hubResult" class="result">Chưa có câu hỏi nào. Khi đầu mối đã nối — qua /api/ai phía server trên bản publish, hoặc bằng token phiên ở bản tĩnh này — bấm “Gọi AI” để nhận trả lời kèm căn cứ văn bản. Chưa nối, nút này sẽ cho biết đầu mối đang ở trạng thái nào và cách nối khi publish lên Vercel.</div>
+    <div id="hubResult" class="result">Chưa có câu hỏi nào. Khi đầu mối chung đã nối — qua /api/ai phía server — bấm “Gọi AI” để nhận trả lời kèm căn cứ văn bản. Chưa nối đầu mối chung, nút này sẽ báo “AI chưa được nối” và cho biết trạng thái đầu mối.</div>
   </div>
 </section>
 
@@ -443,35 +441,17 @@ footer{margin-top:28px;color:var(--muted);font-size:13px}
 <section class="panel" id="p-api">
   <div class="card" style="margin-bottom:14px"><h2>🧠 Trạng thái đầu mối AI chung</h2>
     <p class="small">Đầu mối: <span class="statusdot" id="hubDotTop"></span> <span id="hubStatusTop">Đang kiểm tra /api/ai…</span></p>
-    <p class="muted small" style="margin-top:8px">Thứ tự ưu tiên mỗi lượt gọi AI — dùng chung cho định khoản, đọc hóa đơn, hỏi tự do, soạn công văn, tóm tắt và soát chứng từ:</p>
+    <p class="muted small" style="margin-top:8px">Mọi lượt gọi AI đều đi qua một đường duy nhất — dùng chung cho định khoản, đọc hóa đơn, hỏi tự do, soạn công văn, tóm tắt và soát chứng từ:</p>
     <ol class="small" style="margin:6px 0 0;padding-left:20px">
-      <li><strong>Đầu mối server <span class="mono">POST /api/ai</span></strong> — key của chủ app nằm ở Environment Variables phía server. Có đầu mối này là mọi người dùng dùng chung, không ai phải nhập token và không ai thấy key. Đây là cách chạy chính trên bản publish.</li>
-      <li><strong>Token phiên cá nhân</strong> (form bên dưới) — chỉ dùng khi chưa có /api/ai, ví dụ đang xem bản tĩnh này. App tự chuyển xuống đường này nếu /api/ai chưa được triển khai hoặc chưa cấu hình key.</li>
-      <li><strong>Bộ quy tắc nội bộ offline</strong> — khi cả hai đường trên đều chưa nối: ghi sổ, tính thuế / lương / khấu hao và gợi ý định khoản cơ bản vẫn chạy, chỉ thiếu phân tích sâu của AI.</li>
+      <li><strong>Đầu mối server <span class="mono">POST /api/ai</span></strong> — key của chủ app nằm ở Environment Variables phía server. Có đầu mối này là mọi người dùng dùng chung, không ai phải nhập gì thêm và không ai thấy key.</li>
+      <li><strong>Bộ quy tắc nội bộ offline</strong> — khi đầu mối chung chưa nối: ghi sổ, tính thuế / lương / khấu hao và gợi ý định khoản cơ bản vẫn chạy, chỉ thiếu phân tích sâu của AI; các nút gọi AI sẽ báo “AI chưa được nối”.</li>
     </ol>
     <div class="toolbar no-print"><button class="btn small" onclick="probeSharedHub(true)">↻ Kiểm tra lại /api/ai</button><span class="small muted" id="hubProbeMsg" role="status"></span></div>
   </div>
 
-  <div class="grid grid2">
-    <div class="card"><h2>🔑 Token cá nhân — phương án dự phòng</h2>
-      <p class="muted small">Chỉ cần điền khi bản đang xem <strong>chưa có đầu mối server</strong>. Trên bản publish đã có /api/ai thì bỏ qua mục này — mọi tính năng AI đã chạy bằng key phía server.</p>
-      <label>Nhà cung cấp AI</label><select id="api-provider"><option value="anthropic">Anthropic — Claude</option><option value="openai">OpenAI — ChatGPT</option><option value="google">Google — Gemini</option><option value="custom">Tùy chỉnh (endpoint tương thích OpenAI)</option></select>
-      <label>API Token / API Key</label><input type="password" id="api-token" placeholder="Dán token vào đây — VD: sk-ant-…, sk-…" autocomplete="off">
-      <div class="formgrid"><div><label>Model</label><input id="api-model" placeholder="Để trống = model mặc định"></div><div><label>Endpoint (chỉ khi tùy chỉnh)</label><input id="api-endpoint" placeholder="https://…/v1"></div></div>
-      <div class="toolbar"><button class="btn primary" onclick="saveToken()">Kích hoạt token dự phòng</button><button class="btn danger" onclick="clearToken()">Xóa token</button></div>
-      <p id="apiMsg" class="small"></p>
-      <div class="warnbox"><strong>Bảo mật:</strong> Token dự phòng chỉ giữ trong bộ nhớ của phiên làm việc này, <strong>không lưu xuống máy, không gửi đi nơi khác</strong>. Đóng tab là token mất và phải dán lại. Tuyệt đối không dán token của chủ app vào bản HTML khi publish công khai — key dùng chung phải đặt ở biến môi trường phía server (xem phần serverless bên dưới).</div>
-    </div>
-    <div class="card"><h2>Đầu mối chung mở những gì?</h2><ul class="checklist">
-      <li>✅ <strong>Không cần AI:</strong> ghi sổ, hóa đơn &amp; GTGT, công nợ, lương, TSCĐ, dòng tiền, gợi ý định khoản bằng bộ quy tắc nội bộ — chạy ngay, offline.</li>
-      <li>🧠 <strong>Có đầu mối (server hoặc token phiên):</strong> trợ lý AI nâng cao dùng chung một đường gọi — <strong>đọc hóa đơn từ ảnh / PDF và tự điền form ở mục Hóa đơn</strong>, phân tích diễn giải tự do, soạn công văn giải trình thuế, nháp thuyết minh BCTC, tóm tắt văn bản thuế, soát chứng từ bằng ngôn ngữ tự nhiên.</li>
-      <li>📤 <strong>Đọc hóa đơn bằng AI:</strong> mở mục Hóa đơn &amp; GTGT, chọn file rồi bấm “Đọc bằng AI &amp; điền vào form”. Kết quả chỉ điền sẵn để bạn kiểm tra — bấm Lưu mới ghi vào bảng kê.</li>
-      <li>⚠️ Gọi AI trực tiếp từ trình duyệt bằng token cá nhân có thể bị nhà cung cấp chặn CORS — đó là lý do đường chính khi publish là hàm serverless /api/ai giữ key phía server.</li>
-    </ul></div>
-  </div>
 
   <div class="card" style="margin-top:14px"><h2>🧠 Đầu mối AI chung cho toàn app — một chỗ, mọi tính năng</h2>
-    <p>Thay vì mỗi tính năng tự gọi AI một kiểu, KetoanAI gom mọi lượt gọi AI về <strong>một đầu mối duy nhất</strong> trong mã của trang (<span class="mono">callAIHubText</span> cho văn bản, <span class="mono">callInvoiceAI</span> cho hóa đơn — cả hai cùng thử /api/ai trước, cùng fallback): gợi ý định khoản, đọc hóa đơn từ ảnh / PDF, hỏi đáp tự do, soạn công văn, tóm tắt văn bản và soát chứng từ đều đi qua cùng một <strong>system prompt kế toán</strong> và cùng một <strong>kho ngữ cảnh</strong> do <span class="mono">buildAIContext()</span> tổng hợp. Sửa prompt hoặc kho ở một chỗ là mọi tính năng cùng giỏi lên — và khi đầu mối chạy phía server, sửa ở server là mọi người dùng được hưởng ngay, không ai thấy prompt / kho đó.</p>
+    <p>Thay vì mỗi tính năng tự gọi AI một kiểu, KetoanAI gom mọi lượt gọi AI về <strong>một đầu mối duy nhất</strong> trong mã của trang (<span class="mono">callAIHubText</span> cho văn bản, <span class="mono">callInvoiceAI</span> cho hóa đơn — cả hai đều chỉ gọi qua /api/ai): gợi ý định khoản, đọc hóa đơn từ ảnh / PDF, hỏi đáp tự do, soạn công văn, tóm tắt văn bản và soát chứng từ đều đi qua cùng một <strong>system prompt kế toán</strong> và cùng một <strong>kho ngữ cảnh</strong> do <span class="mono">buildAIContext()</span> tổng hợp. Sửa prompt hoặc kho ở một chỗ là mọi tính năng cùng giỏi lên — và khi đầu mối chạy phía server, sửa ở server là mọi người dùng được hưởng ngay, không ai thấy prompt / kho đó.</p>
     <p class="small">Trạng thái đầu mối: <span class="statusdot" id="hubDot"></span> <span id="hubStatus">Đang kiểm tra /api/ai…</span></p>
     <div class="grid grid2" style="margin-top:10px">
       <div><strong>1 · System prompt chung</strong><p class="muted small">Vai trò kế toán Việt Nam, chế độ TT 200 / 133, bắt trích dẫn số hiệu văn bản, không bịa số liệu, và nguyên tắc bất biến: <em>AI chỉ chuẩn bị — người có thẩm quyền mới ký và nộp</em>. Mọi điểm gọi AI trong trang này đều tự động kèm prompt này; bản serverless giữ một bản giống hệt ở phía server.</p></div>
@@ -558,34 +538,7 @@ export default async function handler(req, res) {
   if (!r.ok) return res.status(r.status).json({ error: (j.error &amp;&amp; j.error.message) || "AI provider error" });
   return res.status(200).json({ text: (j.choices &amp;&amp; j.choices[0] &amp;&amp; j.choices[0].message &amp;&amp; j.choices[0].message.content) || "" });
 }</pre>
-    <p class="note">Trong bản tĩnh đang xem này chưa có file <span class="mono">api/ai.js</span> chạy kèm, nên app tự dò đầu mối lúc mở trang: không thấy /api/ai thì đầu mối chạy ở chế độ <strong>token phiên dự phòng</strong> (nếu đã gắn token ở phía trên) kèm đúng system prompt + ngữ cảnh như bản server; chưa gắn token thì các tính năng không cần AI vẫn chạy offline bằng bộ quy tắc nội bộ, và các nút gọi AI báo rõ “đầu mối chưa nối” kèm hướng dẫn này thay vì giả vờ đã trả lời. Khi file api/ai.js + key được thêm trên Vercel và deploy lại, cùng trang này tự chuyển sang đường server cho mọi người dùng — không phải sửa thêm gì trong HTML.</p>
-  </div>
-</section>
-
-<!-- PUBLISH -->
-<section class="panel" id="p-publish">
-  <div class="card"><h2>▲ Publish lên Vercel để kế toán dùng chung</h2>
-    <p>Trang này là <strong>1 file HTML duy nhất</strong> — đưa lên Vercel miễn phí trong khoảng 2 phút, có link công khai dạng <span class="mono">ketoanai.vercel.app</span> để gửi cho kế toán vào dùng.</p>
-    <h3>Cách 1 — Kéo thả (nhanh nhất, không cần code)</h3>
-    <ol><li>Bấm nút <strong>Tải file HTML của trang này</strong> bên dưới (hoặc lưu trang này thành file <span class="mono">index.html</span>).</li><li>Vào <a href="https://vercel.com/new" target="_blank" rel="noopener">vercel.com/new</a> → đăng nhập bằng GitHub / Google.</li><li>Kéo thả file <span class="mono">index.html</span> vào Vercel (hoặc dùng <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">Netlify Drop</a> tương tự) → bấm Deploy.</li><li>Nhận link công khai và gửi cho kế toán. Mỗi lần sửa, deploy lại file mới là xong.</li></ol>
-    <h3>Cách 2 — Qua GitHub (tự cập nhật mỗi lần sửa) — cần cách này để có đầu mối AI</h3>
-    <ol><li>Tạo repo mới, đưa file <span class="mono">index.html</span> này lên.</li><li>Trong Vercel: <em>Add New → Project → Import repo</em> → Deploy (không cần cấu hình build).</li><li>Muốn bật đầu mối AI chung: thêm file <span class="mono">api/ai.js</span> vào cùng repo (mã mẫu ở bước dưới) rồi deploy lại — cách kéo thả file HTML đơn thuần không chạy được hàm serverless.</li></ol>
-    <h3>Bật đầu mối AI chung trên Vercel (key phía server)</h3>
-    <p class="muted small">Không nhúng key vào HTML và không gửi key qua chat — chủ app tự thêm trên Vercel. Vào Project → Settings → Environment Variables, thêm một trong các biến:</p>
-    <pre>ANTHROPIC_API_KEY = sk-ant-...   (hoặc OPENAI_API_KEY = sk-... / GEMINI_API_KEY = ...)</pre>
-    <p class="muted small">Rồi thêm hàm serverless <span class="mono">api/ai.js</span> (nút <strong>Copy mã api/ai.js mẫu</strong> ở mục Đầu mối AI, phần “Đầu mối AI chung cho toàn app”) vào repo và deploy lại. Từ đó app gọi <span class="mono">POST /api/ai</span> cho mọi tính năng AI — key không bao giờ lộ ra trình duyệt, người dùng không cần token riêng; nhớ rằng mọi lượt dùng chung tính vào key của chủ app nên hãy để ý hạn mức và giới hạn lượt trong hàm.</p>
-    <div class="toolbar no-print"><button class="btn primary" onclick="downloadHTML()">⬇ Tải file HTML để deploy</button><button class="btn" onclick="copyVercel()">Copy cấu hình vercel.json</button></div>
-    <pre id="vercelJson">{
-  "cleanUrls": true,
-  "headers": [{ "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] }]
-}</pre>
-    <div class="warnbox">Lưu ý dữ liệu khi publish: bản tĩnh này tự động lưu sổ sách trong trình duyệt (localStorage) của từng người dùng — đóng tab mở lại vẫn còn trên đúng trình duyệt / máy đó, kèm file sao lưu JSON để chuyển máy. Nếu nhiều kế toán cần dùng chung một sổ và đồng bộ nhiều máy, cần thêm backend / cơ sở dữ liệu — hãy xuất JSON thường xuyên để sao lưu trong lúc chưa có backend.</div>
-  </div>
-  <div class="card" style="margin-top:14px"><h2>Sao lưu &amp; chuyển dữ liệu</h2>
-    <div class="toolbar"><button class="btn primary" onclick="exportJSON()">⬇ Xuất toàn bộ dữ liệu (JSON)</button>
-    <label class="btn" style="cursor:pointer">⬆ Nhập dữ liệu từ file JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
-    <button class="btn danger btn-clear-all" onclick="clearAll(this)">Xóa toàn bộ dữ liệu đã lưu</button></div>
-    <p class="muted small">File JSON chứa chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ và dòng tiền — không chứa token API. Dữ liệu thường ngày đã tự động lưu trong trình duyệt, file JSON chỉ cần khi chuyển máy hoặc sao lưu thêm.</p>
+    <p class="note">Trong bản tĩnh đang xem này chưa có file <span class="mono">api/ai.js</span> chạy kèm, nên app tự dò đầu mối lúc mở trang: không thấy /api/ai thì các tính năng không cần AI vẫn chạy offline bằng bộ quy tắc nội bộ, và các nút gọi AI báo rõ “AI chưa được nối” kèm hướng dẫn này thay vì giả vờ đã trả lời. Khi file api/ai.js + key được thêm phía server và triển khai, cùng trang này tự chuyển sang đầu mối chung cho mọi người dùng — không phải sửa thêm gì trong HTML.</p>
   </div>
 </section>
 
@@ -597,7 +550,7 @@ export default async function handler(req, res) {
     <div class="grid grid3" id="dataStats" style="margin-top:12px"></div>
     <div class="toolbar" style="margin-top:14px"><button class="btn primary" onclick="exportJSON()">⬇ Xuất toàn bộ dữ liệu (JSON)</button>
     <label class="btn" style="cursor:pointer">⬆ Nhập dữ liệu từ file JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label></div>
-    <p class="muted small">File JSON chứa chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ và dòng tiền — không chứa token API. Hãy xuất JSON trước khi xóa nếu còn cần giữ lại số liệu.</p>
+    <p class="muted small">File JSON chứa chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ và dòng tiền. Hãy xuất JSON trước khi xóa nếu còn cần giữ lại số liệu.</p>
   </div>
 
   <div class="card" style="margin-top:14px"><h2>Xóa từng phần</h2>
@@ -606,7 +559,7 @@ export default async function handler(req, res) {
   </div>
 
   <div class="card" style="margin-top:14px"><h2>Xóa toàn bộ dữ liệu</h2>
-    <div class="warnbox"><strong>Không hoàn tác được:</strong> xóa toàn bộ sẽ làm sạch chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ, dòng tiền 13 tuần và danh sách văn bản chờ review — <strong>kể cả bản đã tự động lưu trong trình duyệt</strong>, mở lại trang cũng không còn. Token AI dự phòng không bị ảnh hưởng (token vốn không được lưu). Nếu chưa xuất JSON sao lưu, hãy xuất trước ở phía trên.</div>
+    <div class="warnbox"><strong>Không hoàn tác được:</strong> xóa toàn bộ sẽ làm sạch chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ, dòng tiền 13 tuần và danh sách văn bản chờ review — <strong>kể cả bản đã tự động lưu trong trình duyệt</strong>, mở lại trang cũng không còn. Nếu chưa xuất JSON sao lưu, hãy xuất trước ở phía trên.</div>
     <div class="toolbar" style="margin-top:12px"><button class="btn danger btn-clear-all" onclick="clearAll(this)">🗑 Xóa toàn bộ dữ liệu đã lưu</button><span class="small" id="clearMsg" role="status"></span></div>
   </div>
 </section>
@@ -632,7 +585,7 @@ var PRO=[
 ["Dây chuyền quyết toán năm","Gom số liệu cả năm → hồ sơ TNDN/TNCN → gác cổng → bàn giao.","pro"],
 ["Dây chuyền giải trình thuế","Đọc thông báo thuế → soạn công văn & hồ sơ đính kèm → gác cổng căn cứ.","dinhkhoan"]
 ];
-var state={entries:[],invoices:[],ars:[],salaries:[],fas:[],cfIn:Array(13).fill(0),cfOut:Array(13).fill(0),token:null,provider:"",customLaws:[],lawUpdated:false,lawReviewed:false,hubProbed:false,hubAvailable:false,hubProvider:""};
+var state={entries:[],invoices:[],ars:[],salaries:[],fas:[],cfIn:Array(13).fill(0),cfOut:Array(13).fill(0),customLaws:[],lawUpdated:false,lawReviewed:false,hubProbed:false,hubAvailable:false,hubProvider:""};
 // ===== REVIEW LUẬT: cấu hình luật app đang dùng + snapshot luật hiện hành (đóng gói 04/11/2026) =====
 var PIT_OLD=[[5000000,0.05],[10000000,0.10],[18000000,0.15],[32000000,0.20],[52000000,0.25],[80000000,0.30],[Infinity,0.35]];
 var PIT_NEW=[[10000000,0.05],[30000000,0.10],[60000000,0.20],[100000000,0.30],[Infinity,0.35]];
@@ -651,7 +604,6 @@ var LAW_RULES=[
  {key:"deadline",name:"Hạn nộp tờ khai & quyết toán",app:function(){return "Tháng: ngày 20 · Quý: cuối tháng đầu quý sau · Năm: 31/3"},cur:function(){return "Không đổi trong snapshot"},basis:"Luật Quản lý thuế 2019 + NĐ 126/2020/NĐ-CP.",impact:"Không cần sửa — vẫn phải đối chiếu thông báo riêng của cơ quan thuế quản lý."}
 ];
 // ===== LƯU TRONG TRÌNH DUYỆT (localStorage) — đóng tab không mất dữ liệu =====
-// Token API cố ý KHÔNG lưu: vẫn chỉ ở bộ nhớ phiên như trước.
 var STORAGE_KEY="ketoanai_data_v1";
 function updateSaveStatus(iso,err){
  var txt;
@@ -977,12 +929,11 @@ function askAI(){
 }
 // ===== ĐẦU MỐI AI CHUNG — system prompt + kho ngữ cảnh dùng cho MỌI điểm gọi AI =====
 // Mọi tính năng AI (định khoản, đọc hóa đơn, hỏi tự do, công văn, tóm tắt, soát chứng từ) đều đi qua đầu mối này:
-// cùng system prompt, cùng ngữ cảnh do buildAIContext() tổng hợp, cùng thứ tự đường gọi:
-//   1) POST /api/ai — hàm serverless trên Vercel, key của chủ app ở Environment Variables (đường chính khi publish);
-//   2) gọi thẳng nhà cung cấp bằng token phiên cá nhân (dự phòng, chỉ khi chưa có /api/ai) — kèm đúng prompt + ngữ cảnh như đường 1;
-//   3) chưa nối cả hai: báo rõ chưa nối, tính năng offline vẫn chạy.
-// App tự dò đường 1 bằng {ping:true} lúc mở trang (probeSharedHub) — bản tĩnh không có /api/ai thì ping trả 404 và app
-// tự chuyển xuống đường 2/3, không lỗi. Mã mẫu api/ai.js đầy đủ nằm ở mục Đầu mối AI.
+// cùng system prompt, cùng ngữ cảnh do buildAIContext() tổng hợp, và chỉ một đường gọi duy nhất:
+//   POST /api/ai — hàm serverless, key của chủ app ở Environment Variables phía server.
+//   Chưa nối đầu mối chung: báo rõ “AI chưa được nối”, tính năng offline vẫn chạy.
+// App tự dò /api/ai bằng {ping:true} lúc mở trang (probeSharedHub) — bản tĩnh không có /api/ai thì ping trả 404
+// và app ghi nhận chưa nối, không lỗi. Mã mẫu api/ai.js đầy đủ nằm ở mục Đầu mối AI.
 var AI_SYSTEM_PROMPT="Bạn là trợ lý kế toán — thuế Việt Nam của KetoanAI, hỗ trợ doanh nghiệp nhỏ, kế toán dịch vụ và hộ kinh doanh.\n"
 +"QUY TẮC BẮT BUỘC:\n"
 +"1. Trả lời theo chế độ kế toán Thông tư 200/2014/TT-BTC (doanh nghiệp) và Thông tư 133/2016/TT-BTC (SME); nêu rõ khi hai chế độ khác nhau.\n"
@@ -1012,35 +963,33 @@ function buildAIContext(){
  return lines.join("\n");
 }
 function hubRouteLabel(){
- if(state.hubAvailable)return "/api/ai phía server"+(state.hubProvider?" ("+state.hubProvider+")":"");
- if(state.token)return "token phiên ("+state.provider+")";
- return "chưa nối";
+ if(state.hubAvailable)return "đầu mối chung /api/ai"+(state.hubProvider?" ("+state.hubProvider+")":"");
+ return "chưa nối đầu mối chung";
 }
 function syncHubStatus(){
- var shared=!!state.hubAvailable, on=shared||!!state.token;
+ var shared=!!state.hubAvailable, on=shared;
  var txt;
- if(shared)txt="Đã nối qua đầu mối server /api/ai"+(state.hubProvider?" — nhà cung cấp: "+state.hubProvider:"")+" — mọi tính năng AI dùng chung key phía server, người dùng không cần token. System prompt + ngữ cảnh app được tự động đính kèm mọi lượt gọi.";
- else if(state.token)txt="Chưa có /api/ai — đang nối bằng token phiên dự phòng ("+state.provider+"). System prompt + ngữ cảnh app vẫn được đính kèm mọi lượt gọi; khi publish, thêm api/ai.js + key ở Environment Variables để mọi người dùng chung đầu mối server.";
- else if(!state.hubProbed)txt="Đang kiểm tra đầu mối server /api/ai…";
- else txt="Chưa nối — /api/ai chưa được triển khai trên bản này và chưa có token phiên. Đang chạy bộ quy tắc nội bộ offline. Để nối: triển khai api/ai.js + key phía server khi publish lên Vercel (đường chính), hoặc gắn token dự phòng ở mục Đầu mối AI để dùng trong phiên này.";
+ if(shared)txt="Đã nối đầu mối chung — qua /api/ai phía server"+(state.hubProvider?" (nhà cung cấp: "+state.hubProvider+")":"")+". Mọi tính năng AI dùng chung key phía server; system prompt + ngữ cảnh app được tự động đính kèm mọi lượt gọi.";
+ else if(!state.hubProbed)txt="Đang kiểm tra đầu mối chung /api/ai…";
+ else txt="Chưa nối đầu mối chung — /api/ai chưa được triển khai trên bản này (hoặc server chưa cấu hình key). Đang chạy bộ quy tắc nội bộ offline; các tính năng AI sẽ báo “AI chưa được nối” cho tới khi đầu mối chung được triển khai kèm key phía server.";
  [["hubDot","hubStatus"],["hubDot2","hubStatus2"],["hubDotTop","hubStatusTop"]].forEach(function(pair){
   var d=document.getElementById(pair[0]),s=document.getElementById(pair[1]);if(!d||!s)return;
   d.classList.toggle("on",on);s.textContent=txt;
  });
  var hero=document.getElementById("heroHubStatus");
- if(hero)hero.textContent=shared?("🧠 Đầu mối AI: đã nối qua /api/ai phía server — mọi tính năng AI dùng chung, không cần token riêng."):state.token?("🧠 Đầu mối AI: đang dùng token phiên dự phòng ("+state.provider+") — bản publish có /api/ai sẽ tự chuyển sang key phía server."):(!state.hubProbed?"🧠 Đầu mối AI: đang kiểm tra kết nối chung (/api/ai)…":"🧠 Đầu mối AI: chưa nối — tính năng offline vẫn chạy; xem mục Đầu mối AI để nối qua server hoặc token phiên.");
+ if(hero)hero.textContent=shared?("🧠 Đầu mối AI: đã nối đầu mối chung qua /api/ai phía server — mọi tính năng AI dùng chung key phía server."):(!state.hubProbed?"🧠 Đầu mối AI: đang kiểm tra kết nối chung (/api/ai)…":"🧠 Đầu mối AI: chưa nối đầu mối chung — tính năng offline vẫn chạy; xem mục Đầu mối AI để biết trạng thái.");
  var ad=document.getElementById("aiDot"),as=document.getElementById("aiStatus");
- if(ad&&as){ad.classList.toggle("on",on);as.textContent=shared?"Đã nối qua đầu mối chung /api/ai":state.token?("Đã nối qua đầu mối chung — token phiên ("+state.provider+")"):"Đang dùng bộ quy tắc nội bộ — đầu mối AI chưa nối"}
+ if(ad&&as){ad.classList.toggle("on",on);as.textContent=shared?"Đã nối đầu mối chung /api/ai":"Đang dùng bộ quy tắc nội bộ — chưa nối đầu mối chung"}
  syncInvAIStatus();
 }
-// Dò đầu mối server: POST /api/ai {ping:true} — hàm mẫu trả lời mà không gọi AI nên không tốn token.
-// Bản tĩnh / bản chưa thêm api/ai.js sẽ nhận 404 (hoặc HTML) -> ghi nhận “chưa có” và dùng đường dự phòng.
+// Dò đầu mối chung: POST /api/ai {ping:true} — hàm mẫu trả lời mà không gọi AI.
+// Bản tĩnh / bản chưa thêm api/ai.js sẽ nhận 404 (hoặc HTML) -> ghi nhận “chưa nối đầu mối chung”.
 function probeSharedHub(manual){
  var msg=document.getElementById("hubProbeMsg");
  if(manual&&msg)msg.textContent="Đang kiểm tra /api/ai…";
  var done=function(ok,provider){
   state.hubProbed=true;state.hubAvailable=!!ok;if(provider)state.hubProvider=provider;
-  if(manual&&msg)msg.textContent=ok?("✅ Thấy /api/ai và server đã có key ("+(provider||"đã cấu hình")+") — đầu mối server đang là đường chính."):"ℹ️ Chưa thấy /api/ai khả dụng trên bản này (chưa thêm file api/ai.js hoặc server chưa cấu hình key) — app dùng token phiên / offline.";
+  if(manual&&msg)msg.textContent=ok?("✅ Đã nối đầu mối chung: thấy /api/ai và server đã có key ("+(provider||"đã cấu hình")+")."):"ℹ️ Chưa thấy /api/ai khả dụng trên bản này (chưa thêm file api/ai.js hoặc server chưa cấu hình key) — app chạy offline bằng bộ quy tắc nội bộ.";
   syncHubStatus();
  };
  return fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ping:true})}).then(function(r){
@@ -1053,10 +1002,10 @@ function copyAIHubCode(){
  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){if(m)m.textContent="✅ Đã copy — dán vào file api/ai.js trong repo rồi deploy lại trên Vercel."},function(){if(m)m.textContent="⚠️ Không copy tự động được — hãy bôi đen đoạn mã bên dưới và copy thủ công."})}
  else if(m)m.textContent="⚠️ Trình duyệt không hỗ trợ copy tự động — hãy bôi đen đoạn mã bên dưới và copy thủ công.";
 }
-function aiHubNoTokenError(){
- return new Error("Đầu mối AI chưa nối: bản này chưa có /api/ai đang chạy (hoặc server chưa cấu hình key) và cũng chưa có token phiên dự phòng. Cách nối: (1) đường chính khi publish — chủ app đặt key ở Vercel Environment Variables và thêm file api/ai.js theo mã mẫu ở mục Đầu mối AI, app tự gọi qua /api/ai mà không cần token của từng người dùng; hoặc (2) dùng ngay trong phiên — vào mục Đầu mối AI, dán token cá nhân rồi bấm “Kích hoạt token dự phòng”.");
+function aiHubNotConnectedError(){
+ return new Error("AI chưa được nối: đầu mối AI chung (/api/ai) chưa chạy trên bản này hoặc server chưa cấu hình key. Khi chủ app triển khai file api/ai.js kèm key phía server theo mã mẫu ở mục Đầu mối AI, các tính năng AI sẽ tự chạy qua đầu mối chung.");
 }
-// Đường 1 của đầu mối: gọi hàm serverless chung. payload có thể kèm image {mime, data} cho đọc hóa đơn.
+// Gọi hàm serverless của đầu mối chung. payload có thể kèm image {mime, data} cho đọc hóa đơn.
 function callSharedHub(payload){
  return fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).then(function(r){
   return r.json().then(function(j){
@@ -1072,43 +1021,16 @@ function ensureHubProbed(){
  return probeSharedHub(false);
 }
 // Hàm gọi AI văn bản DUY NHẤT của đầu mối: nhận prompt người dùng, tự đính kèm system prompt + ngữ cảnh app.
-// Thử /api/ai trước; đầu mối server lỗi / chưa có thì rơi xuống token phiên; không có cả hai thì báo chưa nối.
+// Chỉ gọi qua đầu mối chung POST /api/ai; chưa nối thì báo “AI chưa được nối”.
 function callAIHubText(userPrompt){
  return ensureHubProbed().then(function(){
-  var ctx=buildAIContext();
-  if(state.hubAvailable){
-   return callSharedHub({prompt:userPrompt,context:ctx}).catch(function(err){
-    if(state.token)return callDirectAIText(userPrompt,ctx);
-    throw err;
-   });
-  }
-  if(state.token)return callDirectAIText(userPrompt,ctx);
-  throw aiHubNoTokenError();
+  if(!state.hubAvailable)throw aiHubNotConnectedError();
+  return callSharedHub({prompt:userPrompt,context:buildAIContext()});
  });
-}
-// Đường 2 (dự phòng): gọi thẳng nhà cung cấp bằng token phiên — chỉ dùng khi /api/ai chưa khả dụng.
-function callDirectAIText(userPrompt,ctx){
- var model=(document.getElementById("api-model").value||"").trim();
- var p=state.provider,tok=state.token;
- var fullPrompt="NGỮ CẢNH TỪ APP:\n"+ctx+"\n\nYÊU CẦU:\n"+userPrompt;
- if(p==="anthropic"){
-  return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":tok,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-4-5",max_tokens:1500,system:AI_SYSTEM_PROMPT,messages:[{role:"user",content:fullPrompt}]})})
-   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Claude",r.status));return (j.content||[]).map(function(c){return c.text||""}).join("")},{})});
- }
- if(p==="google"){
-  var gm=model||"gemini-2.0-flash";
-  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+gm+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":tok},body:JSON.stringify({systemInstruction:{parts:[{text:AI_SYSTEM_PROMPT}]},contents:[{parts:[{text:fullPrompt}]}],generationConfig:{maxOutputTokens:1500}})})
-   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Gemini",r.status));var parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];return parts.map(function(x){return x.text||""}).join("")},{})});
- }
- var base=(document.getElementById("api-endpoint").value||"").trim().replace(/\/+$/,"");
- var url=p==="custom"?(base?base+"/chat/completions":""):"https://api.openai.com/v1/chat/completions";
- if(!url)return Promise.reject(new Error("Chưa nhập Endpoint cho nhà cung cấp tùy chỉnh — điền ở mục Đầu mối AI rồi thử lại."));
- return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({model:model||"gpt-4o",max_tokens:1500,messages:[{role:"system",content:AI_SYSTEM_PROMPT},{role:"user",content:fullPrompt}]})})
-  .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("OpenAI",r.status));return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||""},{})});
 }
 function hubErrText(err){
  var m=err&&err.message?err.message:String(err);
- if(err instanceof TypeError)m="Không gọi được AI (mất mạng, hoặc đường gọi thẳng bằng token phiên bị nhà cung cấp chặn CORS). Đường ổn định là đầu mối serverless /api/ai khi publish lên Vercel — xem mã mẫu ở mục Đầu mối AI.";
+ if(err instanceof TypeError)m="Không gọi được AI (mất mạng, hoặc đầu mối chung /api/ai chưa phản hồi). AI chỉ chạy qua đầu mối serverless /api/ai — xem mã mẫu ở mục Đầu mối AI.";
  return m;
 }
 var HUB_PRESETS={
@@ -1129,25 +1051,15 @@ function hubAsk(){
  callAIHubText(q).then(function(txt){
   out.textContent=((txt&&txt.trim())?txt:"AI không trả về nội dung — thử diễn đạt lại yêu cầu ngắn gọn hơn.")+"\n\n— Qua đầu mối: "+hubRouteLabel();
  }).catch(function(err){
-  out.textContent="🧠 Đầu mối AI chung — chưa trả lời được.\n\n⚠️ "+hubErrText(err)+(state.hubAvailable||state.token?"":"\n\nNgữ cảnh mà đầu mối sẽ tự động đính kèm khi nối (xem trước):\n"+buildAIContext());
+  out.textContent="🧠 Đầu mối AI chung — chưa trả lời được.\n\n⚠️ "+hubErrText(err)+(state.hubAvailable?"":"\n\nNgữ cảnh mà đầu mối sẽ tự động đính kèm khi nối (xem trước):\n"+buildAIContext());
  }).then(function(){btn.disabled=false;btn.textContent=old});
 }
-// TOKEN
-function saveToken(){
- var tok=document.getElementById("api-token").value.trim();var msg=document.getElementById("apiMsg");
- if(tok.length<12){msg.textContent="⚠️ Token quá ngắn — hãy dán đúng API key của nhà cung cấp.";return}
- state.token=tok;state.provider=document.getElementById("api-provider").value;
- syncHubStatus();
- msg.textContent=state.hubAvailable?("✅ Đã kích hoạt token dự phòng trong phiên này — nhưng đầu mối server /api/ai đang khả dụng nên app vẫn ưu tiên đường server. Token không được lưu xuống máy và không xuất ra file sao lưu."):("✅ Đã kích hoạt token dự phòng trong phiên này — đầu mối chung sẽ dùng token này cho mọi tính năng AI. Token không được lưu xuống máy và không xuất ra file sao lưu.");
-}
-function clearToken(){state.token=null;state.provider="";document.getElementById("api-token").value="";document.getElementById("apiMsg").textContent="Đã xóa token dự phòng khỏi phiên làm việc.";syncHubStatus()}
 function syncInvAIStatus(){
  var d=document.getElementById("aiInvDot"),s=document.getElementById("aiInvStatus");if(!d||!s)return;
- if(state.hubAvailable){d.classList.add("on");s.textContent="Đã nối đầu mối server /api/ai — sẵn sàng đọc hóa đơn bằng AI, không cần token cá nhân."}
- else if(state.token){d.classList.add("on");s.textContent="Đang dùng token phiên dự phòng ("+state.provider+") — sẵn sàng đọc hóa đơn bằng AI."}
- else{d.classList.remove("on");s.textContent="Đầu mối AI chưa nối — bản publish có /api/ai sẽ tự đọc được; ở bản tĩnh này hãy gắn token dự phòng ở mục Đầu mối AI trước khi đọc hóa đơn."}
+ if(state.hubAvailable){d.classList.add("on");s.textContent="Đã nối đầu mối chung /api/ai — sẵn sàng đọc hóa đơn bằng AI."}
+ else{d.classList.remove("on");s.textContent="Chưa nối đầu mối chung — AI chưa được nối; tính năng đọc hóa đơn bằng AI sẽ chạy khi đầu mối chung /api/ai được triển khai kèm key phía server."}
 }
-// ĐỌC HÓA ĐƠN BẰNG AI (qua đầu mối chung: /api/ai trước, token phiên dự phòng sau)
+// ĐỌC HÓA ĐƠN BẰNG AI (qua đầu mối chung POST /api/ai)
 var aiInvData=null; // {b64, mime, name}
 function aiInvPicked(ev){
  var f=ev.target.files&&ev.target.files[0];var msg=document.getElementById("aiInvMsg");
@@ -1167,47 +1079,13 @@ function aiInvPicked(ev){
  rd.readAsDataURL(f);
 }
 var INV_PROMPT="Bạn là trợ lý kế toán Việt Nam. Hãy đọc hóa đơn trong file đính kèm và trích xuất thông tin. Chỉ trả về DUY NHẤT một đối tượng JSON hợp lệ, không thêm giải thích, không bọc markdown. Các trường: soHoaDon (chuỗi, giữ nguyên số 0 ở đầu), ngay (chuỗi định dạng DD/MM/YYYY), benBan_ten, benBan_mst, benMua_ten, benMua_mst, tienHang (số nguyên VND, tiền hàng chưa thuế), thueSuat (số: 0, 5, 8, 10; hoặc -1 nếu hàng không chịu thuế), tienThue (số nguyên VND), tongTien (số nguyên VND, tổng tiền thanh toán). Số tiền chỉ gồm chữ số, không dấu chấm / phẩy phân cách. Trường nào không đọc được thì để null. Nếu hóa đơn có nhiều dòng hàng với nhiều thuế suất khác nhau, lấy thuế suất của dòng có tiền hàng lớn nhất và ghi tổng tiền hàng, tổng tiền thuế của toàn hóa đơn.";
-function aiHttpErr(provider,st){
- if(st===401||st===403)return "Token bị từ chối (HTTP "+st+") — kiểm tra lại API key ở mục Đầu mối AI.";
- if(st===429)return "Nhà cung cấp báo quá tải / hết hạn mức (HTTP 429) — thử lại sau.";
- if(st===400)return "Nhà cung cấp không nhận file này (HTTP 400) — thử ảnh rõ nét hơn, hoặc PDF thay cho ảnh và ngược lại.";
- return "Nhà cung cấp trả lỗi HTTP "+st+" ("+provider+").";
-}
-// Đọc hóa đơn qua ĐẦU MỐI CHUNG: thử /api/ai (kèm ảnh base64 + ngữ cảnh app) trước,
-// lỗi / chưa có thì rơi xuống đường gọi thẳng bằng token phiên như các tính năng khác.
+// Đọc hóa đơn qua ĐẦU MỐI CHUNG: chỉ gọi /api/ai (kèm ảnh base64 + ngữ cảnh app);
+// chưa nối đầu mối chung thì báo “AI chưa được nối”.
 function callInvoiceAI(){
  return ensureHubProbed().then(function(){
-  if(state.hubAvailable){
-   return callSharedHub({prompt:INV_PROMPT,context:buildAIContext(),image:{mime:aiInvData.mime,data:aiInvData.b64}}).catch(function(err){
-    if(state.token)return callDirectInvoiceAI();
-    throw err;
-   });
-  }
-  if(state.token)return callDirectInvoiceAI();
-  throw aiHubNoTokenError();
+  if(!state.hubAvailable)throw aiHubNotConnectedError();
+  return callSharedHub({prompt:INV_PROMPT,context:buildAIContext(),image:{mime:aiInvData.mime,data:aiInvData.b64}});
  });
-}
-// Đường dự phòng cho hóa đơn: gọi thẳng nhà cung cấp bằng token phiên.
-function callDirectInvoiceAI(){
- var model=(document.getElementById("api-model").value||"").trim();
- var p=state.provider,tok=state.token,d=aiInvData;
- if(p==="anthropic"){
-  var blocks=[d.mime==="application/pdf"?{type:"document",source:{type:"base64",media_type:"application/pdf",data:d.b64}}:{type:"image",source:{type:"base64",media_type:d.mime,data:d.b64}},{type:"text",text:INV_PROMPT}];
-  return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":tok,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-4-5",max_tokens:1024,system:AI_SYSTEM_PROMPT,messages:[{role:"user",content:blocks}]})})
-   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Claude",r.status));return (j.content||[]).map(function(c){return c.text||""}).join("")},{})});
- }
- if(p==="google"){
-  var gm=model||"gemini-2.0-flash";
-  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+gm+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":tok},body:JSON.stringify({systemInstruction:{parts:[{text:AI_SYSTEM_PROMPT}]},contents:[{parts:[{inlineData:{mimeType:d.mime,data:d.b64}},{text:INV_PROMPT}]}],generationConfig:{responseMimeType:"application/json"}})})
-   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Gemini",r.status));var parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];return parts.map(function(x){return x.text||""}).join("")},{})});
- }
- // openai + custom: endpoint tương thích OpenAI, chỉ nhận ảnh
- if(d.mime==="application/pdf")return Promise.reject(new Error("Nhà cung cấp OpenAI / tùy chỉnh không nhận PDF qua đường gọi này — hãy chụp hoặc xuất trang hóa đơn thành ảnh JPG / PNG rồi tải lên, hoặc dùng Claude / Gemini cho file PDF."));
- var base=(document.getElementById("api-endpoint").value||"").trim().replace(/\/+$/,"");
- var url=p==="custom"?(base?base+"/chat/completions":""):"https://api.openai.com/v1/chat/completions";
- if(!url)return Promise.reject(new Error("Chưa nhập Endpoint cho nhà cung cấp tùy chỉnh — điền ở mục Đầu mối AI rồi thử lại."));
- return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({model:model||"gpt-4o",max_tokens:1024,response_format:{type:"json_object"},messages:[{role:"system",content:AI_SYSTEM_PROMPT},{role:"user",content:[{type:"image_url",image_url:{url:"data:"+d.mime+";base64,"+d.b64}},{type:"text",text:INV_PROMPT}]}]})})
-  .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("OpenAI",r.status));return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||""},{})});
 }
 function parseInvJSON(txt){
  if(!txt)throw new Error("AI không trả về nội dung — thử ảnh rõ nét hơn.");
@@ -1298,7 +1176,7 @@ function clearPart(kind,btn){
  renderAll();
 }
 function restoreClearBtns(){document.querySelectorAll(".btn-clear-all").forEach(function(b){if(b.dataset.label)b.textContent=b.dataset.label})}
-function importJSON(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);state.entries=d.entries||[];state.invoices=d.invoices||[];state.ars=d.ars||[];state.salaries=d.salaries||[];state.fas=d.fas||[];state.cfIn=d.cfIn||Array(13).fill(0);state.cfOut=d.cfOut||Array(13).fill(0);if(Array.isArray(d.customLaws))state.customLaws=d.customLaws;if(typeof d.lawUpdated==="boolean")state.lawUpdated=d.lawUpdated;if(typeof d.lawReviewed==="boolean")state.lawReviewed=d.lawReviewed;var cfo=document.getElementById("cf-open");if(cfo)cfo.value=Number(d.cfOpen)||0;state._cfOpen=Number(d.cfOpen)||0;renderAll();window.scrollTo({top:0,behavior:"smooth"})}catch(e){var m=document.getElementById("apiMsg");if(m)m.textContent="File không đúng định dạng JSON của KetoanAI."}};r.readAsText(f)}
+function importJSON(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);state.entries=d.entries||[];state.invoices=d.invoices||[];state.ars=d.ars||[];state.salaries=d.salaries||[];state.fas=d.fas||[];state.cfIn=d.cfIn||Array(13).fill(0);state.cfOut=d.cfOut||Array(13).fill(0);if(Array.isArray(d.customLaws))state.customLaws=d.customLaws;if(typeof d.lawUpdated==="boolean")state.lawUpdated=d.lawUpdated;if(typeof d.lawReviewed==="boolean")state.lawReviewed=d.lawReviewed;var cfo=document.getElementById("cf-open");if(cfo)cfo.value=Number(d.cfOpen)||0;state._cfOpen=Number(d.cfOpen)||0;renderAll();window.scrollTo({top:0,behavior:"smooth"})}catch(e){var m=document.getElementById("clearMsg");if(m)m.textContent="⚠️ File không đúng định dạng JSON của KetoanAI."}};r.readAsText(f)}
 function clearAll(btn){
  var msg=document.getElementById("clearMsg");
  if(!clearArmed){
@@ -1318,8 +1196,6 @@ function clearAll(btn){
  restoreClearBtns();renderAll();
  if(msg)msg.textContent="✅ Đã xóa toàn bộ dữ liệu, kể cả bản đã lưu trong trình duyệt. Trang đã trở về trạng thái trống — nhập mới hoặc nạp file JSON sao lưu để tiếp tục.";
 }
-function downloadHTML(){dl("index.html","<!doctype html>\n"+document.documentElement.outerHTML,"text/html")}
-function copyVercel(){var t=document.getElementById("vercelJson").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t)}
 function loadDemo(){
  var y=today().slice(0,4),m=today().slice(5,7);
  state.entries.push(
