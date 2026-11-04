@@ -17,7 +17,7 @@ const SYSTEM_PROMPT = `Bạn là trợ lý kế toán — thuế Việt Nam củ
 function pickProvider() {
   if (process.env.ANTHROPIC_API_KEY) return { name: "anthropic", key: process.env.ANTHROPIC_API_KEY, model: process.env.AI_MODEL || "claude-sonnet-4-5" };
   if (process.env.OPENAI_API_KEY) return { name: "openai", key: process.env.OPENAI_API_KEY, model: process.env.AI_MODEL || "gpt-4o" };
-  if (process.env.GEMINI_API_KEY) return { name: "google", key: process.env.GEMINI_API_KEY, model: process.env.AI_MODEL || "gemini-2.0-flash" };
+  if (process.env.GEMINI_API_KEY || process.env.AI_KEY) return { name: "google", key: process.env.GEMINI_API_KEY || process.env.AI_KEY, model: process.env.AI_MODEL || "gemini-2.0-flash" };
   return null;
 }
 
