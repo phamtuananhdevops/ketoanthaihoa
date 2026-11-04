@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>KetoanAI — Kế toán PRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f2f5f3; --surface:#ffffff; --surface2:#e9efeb; --ink:#12211a; --muted:#5b6f65; --line:#d6e0d9;
+  --brand:#0b6b4f; --brand2:#084c38; --accent:#c98a12; --danger:#b42318; --ok:#067647; --warn:#b54708;
+  --chip:#e6f2ec; --shadow:0 10px 30px rgba(10,40,28,.08); --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0d1512; --surface:#15201b; --surface2:#1b2a23; --ink:#e8f0eb; --muted:#9db3a7; --line:#2a3d33; --brand:#2fbf8f; --brand2:#7fe0bd; --accent:#e8b44a; --chip:#1d3329; --shadow:0 10px 30px rgba(0,0,0,.35)}
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:"Be Vietnam Pro",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+a{color:var(--brand)} button,input,select,textarea{font:inherit}
+.mono{font-family:"IBM Plex Mono",monospace}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 64px}
+header.hero{background:var(--brand2);color:#fff;padding:28px 0 22px}
+@media (prefers-color-scheme: dark){header.hero{background:#0a2e22}}
+.hero-in{max-width:1240px;margin:0 auto;padding:0 16px}
+.badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.hero h1{margin:12px 0 6px;font-size:clamp(30px,5vw,46px);line-height:1.05;letter-spacing:-.02em}
+.hero p{margin:0;max-width:760px;color:#d7ece2;font-size:16px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn:hover{filter:brightness(.98)} .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn.gold{background:var(--accent);border-color:var(--accent);color:#171106}
+.btn.ghostw{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+.btn.danger{color:var(--danger);border-color:#f0c7c2}
+.btn.small{padding:7px 10px;font-size:13px;border-radius:8px}
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 0 8px}
+.tabs-in{display:flex;gap:8px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface);padding:9px 13px;border-radius:999px;font-weight:700;cursor:pointer;font-size:14px}
+.tab.active{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.grid{display:grid;gap:14px} .grid4{grid-template-columns:repeat(4,1fr)} .grid3{grid-template-columns:repeat(3,1fr)} .grid2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.grid4,.grid3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid4,.grid3,.grid2{grid-template-columns:1fr} .tabs-in{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px} .tab{white-space:nowrap}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card h2{margin:0 0 6px;font-size:20px;letter-spacing:-.01em} .card h3{margin:0 0 8px;font-size:16px}
+.kpi .num{font-size:24px;font-weight:800;letter-spacing:-.02em} .kpi .lab{font-size:13px;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:13px} .note{font-size:13px;color:var(--muted);background:var(--surface2);border-radius:10px;padding:10px 12px}
+.warnbox{border:1px solid #f3d19a;background:#fff8e8;color:#6b4a00;border-radius:10px;padding:12px;font-size:14px}
+@media (prefers-color-scheme: dark){.warnbox{background:#2b2412;color:#f0d48a;border-color:#5a4a1c}}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px} @media(max-width:800px){.formgrid{grid-template-columns:1fr 1fr}} @media(max-width:520px){.formgrid{grid-template-columns:1fr}}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+th{text-align:left;background:var(--surface2);padding:10px;border-bottom:1px solid var(--line);font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top} tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-family:"IBM Plex Mono",monospace}
+.pill{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--chip);font-size:12px;font-weight:700}
+.pill.red{background:#fdecea;color:var(--danger)} .pill.amber{background:#fff3d6;color:var(--warn)} .pill.green{background:#e6f4ea;color:var(--ok)}
+section.panel{display:none} section.panel.active{display:block}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.result{white-space:pre-wrap;background:var(--surface2);border-radius:10px;padding:12px;font-size:14px}
+code,pre{font-family:"IBM Plex Mono",monospace} pre{background:#10231b;color:#d9f5e6;padding:14px;border-radius:10px;overflow-x:auto;font-size:13px}
+.checklist{list-style:none;padding:0;margin:0;display:grid;gap:8px} .checklist li{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.datarow{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+button[disabled]{opacity:.45;cursor:not-allowed}
+.statusdot{width:10px;height:10px;border-radius:50%;background:#98a2b3;display:inline-block} .statusdot.on{background:var(--ok)}
+.vb-chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.vb-chip{border:1px solid var(--line);background:var(--surface);padding:8px 12px;border-radius:999px;font-weight:700;cursor:pointer;font-size:13px}
+.vb-chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.vb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:800px){.vb-grid{grid-template-columns:1fr}}
+.vb-card{display:flex;flex-direction:column;gap:8px}
+.vb-card h3{font-size:17px;line-height:1.35;margin:2px 0 0}
+.vb-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 14px}
+.vb-when{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px}
+.vb-card ul{margin:4px 0 0;padding-left:18px;font-size:14px}
+.vb-card .spacer{flex:1}
+footer{margin-top:28px;color:var(--muted);font-size:13px}
+.printbar{display:flex;gap:8px;flex-wrap:wrap}
+@media print{nav.tabs,.hero-actions,.no-print{display:none!important} section.panel{display:block!important} body{background:#fff}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-in">
+    <h1>KetoanAI</h1>
+    <p>Phần mềm kế toán chạy ngay trên trình duyệt cho doanh nghiệp nhỏ, kế toán dịch vụ và hộ kinh doanh: ghi sổ Nợ / Có, quản lý hóa đơn &amp; tờ khai GTGT, công nợ, lương – BHXH – TNCN, TSCĐ &amp; khấu hao, dòng tiền 13 tuần. Mọi tính năng AI đi qua một đầu mối chung — trên bản publish dùng key phía server nên người dùng không cần token riêng.</p>
+    <div class="hero-actions">
+      <button class="btn gold" onclick="go('chungtu')">＋ Ghi chứng từ ngay</button>
+      <button class="btn ghostw" onclick="go('thue')">🧾 Thuế</button>
+      <button class="btn ghostw" onclick="go('vanban')">📚 Thư viện Luật</button>
+      <button class="btn ghostw" onclick="go('luat')">⚖️ Review Luật &amp; Update</button>
+      <button class="btn ghostw" onclick="go('api')">🧠 Đầu mối AI chung</button>
+      <button class="btn ghostw" onclick="go('publish')">▲ Publish lên Vercel</button>
+      <button class="btn ghostw" onclick="loadDemo()">Nạp dữ liệu mẫu để thử</button>
+      <button class="btn ghostw" onclick="go('dulieu')">🗑 Xóa dữ liệu</button>
+    </div>
+    <p class="small" style="margin-top:12px;color:#bfe0d0">✅ Dữ liệu tự động lưu trong trình duyệt này — <strong>đóng tab, tắt trình duyệt rồi mở lại vẫn còn nguyên</strong>. Dữ liệu chỉ nằm trên máy / trình duyệt này, không tự đồng bộ sang máy khác; hãy dùng <strong>Xuất dữ liệu (JSON)</strong> ở mục Dữ liệu &amp; Sao lưu để chuyển máy hoặc sao lưu thêm. Muốn làm sạch, vào mục đó để <strong>xóa từng phần hoặc xóa toàn bộ</strong>.</p>
+    <p class="small" id="saveStatus" style="margin-top:6px;color:#bfe0d0" role="status">💾 Tự động lưu trong trình duyệt đang bật — đóng tab mở lại vẫn còn dữ liệu.</p>
+    <p class="small" id="heroHubStatus" style="margin-top:2px;color:#bfe0d0" role="status">🧠 Đầu mối AI: đang kiểm tra kết nối chung (/api/ai)…</p>
+  </div>
+</header>
+
+<div class="wrap">
+<nav class="tabs no-print"><div class="tabs-in" id="tabs">
+  <button class="tab active" data-t="tongquan">Tổng quan</button>
+  <button class="tab" data-t="chungtu">Chứng từ &amp; Sổ sách</button>
+  <button class="tab" data-t="hoadon">Hóa đơn &amp; GTGT</button>
+  <button class="tab" data-t="thue">🧾 Thuế</button>
+  <button class="tab" data-t="congno">Công nợ</button>
+  <button class="tab" data-t="luong">Lương · BHXH · TNCN</button>
+  <button class="tab" data-t="tscd">TSCĐ &amp; Khấu hao</button>
+  <button class="tab" data-t="dongtien">Dòng tiền 13 tuần</button>
+  <button class="tab" data-t="dinhkhoan">Định khoản AI</button>
+  <button class="tab" data-t="vanban">📚 Văn bản &amp; Luật</button>
+  <button class="tab" data-t="luat">⚖️ Review Luật</button>
+  <button class="tab" data-t="pro">Tính năng PRO</button>
+  <button class="tab" data-t="api">🧠 Đầu mối AI</button>
+  <button class="tab" data-t="publish">Publish Vercel</button>
+  <button class="tab" data-t="dulieu">🗑 Dữ liệu &amp; Sao lưu</button>
+</div></nav>
+
+<!-- TỔNG QUAN -->
+<section class="panel active" id="p-tongquan">
+  <div class="grid grid4" id="kpis"></div>
+  <div class="grid grid2" style="margin-top:14px">
+    <div class="card"><h2>Việc cần làm kỳ này</h2><ul class="checklist" id="todoList"></ul></div>
+    <div class="card"><h2>Nguyên tắc KetoanAI</h2>
+      <p>Đối chiếu nhanh, số liệu có nguồn, <strong>không bịa một đồng</strong> — để kế toán ký với cái đầu nhẹ.</p>
+      <p class="muted">Mọi bút toán phải cân Nợ = Có mới được ghi. Hóa đơn được soát trùng, sai MST, lệch thuế. AI chỉ chuẩn bị và gợi ý — người có thẩm quyền mới ký và nộp. Quy định thuế thay đổi theo văn bản hiện hành, hãy đối chiếu trước khi nộp tờ khai.</p>
+      <div class="toolbar"><button class="btn primary" onclick="go('dinhkhoan')">Hỏi gợi ý định khoản</button><button class="btn" onclick="go('hoadon')">Soát hóa đơn đầu vào</button></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Lịch hạn nộp — nhắc việc</h2><p class="muted small">Mốc phổ biến cho doanh nghiệp kê khai tháng / quý. Kiểm tra lại theo kỳ kê khai thực tế của đơn vị và thông báo của cơ quan thuế.</p>
+    <div class="grid grid3">
+      <div><span class="pill amber">Hằng tháng</span><p><strong>Ngày 20</strong> — hạn nộp tờ khai GTGT, TNCN tháng trước.</p></div>
+      <div><span class="pill amber">Hằng quý</span><p><strong>Ngày cuối tháng đầu quý sau</strong> — tờ khai quý, tạm nộp TNDN quý.</p></div>
+      <div><span class="pill red">Quyết toán năm</span><p><strong>31/3</strong> — quyết toán TNDN, TNCN và nộp BCTC năm trước.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHỨNG TỪ -->
+<section class="panel" id="p-chungtu">
+  <div class="grid grid2">
+    <div class="card"><h2>Ghi chứng từ — bút toán Nợ / Có</h2>
+      <div class="formgrid">
+        <div><label>Ngày chứng từ</label><input type="date" id="ct-date"></div>
+        <div><label>Số chứng từ</label><input id="ct-no" placeholder="VD: PT001, PC001, NK01"></div>
+        <div><label>Đối tác / Đối tượng</label><input id="ct-party" placeholder="Khách hàng / NCC"></div>
+      </div>
+      <label>Diễn giải nghiệp vụ</label><input id="ct-desc" placeholder="VD: Thu tiền bán hàng của khách A">
+      <div class="formgrid">
+        <div><label>Tài khoản Nợ</label><select id="ct-debit"></select></div>
+        <div><label>Tài khoản Có</label><input id="ct-credit" list="tklist" placeholder="Chọn hoặc gõ số TK"><datalist id="tklist"></datalist></div>
+        <div><label>Số tiền (VNĐ)</label><input type="number" id="ct-amount" min="0" step="1000" placeholder="0"></div>
+      </div>
+      <p class="note">Bút toán đơn: 1 Nợ – 1 Có, số tiền hai bên bằng nhau nên luôn cân. Nghiệp vụ nhiều dòng: ghi thành nhiều bút toán cùng số chứng từ.</p>
+      <div class="toolbar"><button class="btn primary" onclick="addEntry()">Ghi vào sổ nhật ký</button><button class="btn" onclick="suggestFromDesc()">Gợi ý TK từ diễn giải</button></div>
+      <div id="ct-msg" class="small"></div>
+    </div>
+    <div class="card"><h2>Bảng cân đối số phát sinh</h2><p class="muted small">Tự tổng hợp từ nhật ký chung. Tổng Nợ phải bằng tổng Có.</p><div id="trialBalance"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Nhật ký chung</h2>
+    <div class="toolbar no-print"><input id="q-entry" placeholder="Tìm theo diễn giải, đối tác, số CT…" oninput="renderEntries()" style="max-width:360px"><button class="btn small" onclick="exportCSV('entries')">Xuất CSV nhật ký</button><button class="btn small" onclick="window.print()">In sổ</button></div>
+    <div class="tablewrap"><table><thead><tr><th>Ngày</th><th>Số CT</th><th>Diễn giải</th><th>Đối tác</th><th class="num">Nợ</th><th class="num">Có</th><th class="num">Số tiền</th><th></th></tr></thead><tbody id="entryBody"></tbody></table></div>
+    <p id="entryEmpty" class="muted">Chưa có chứng từ nào. Ghi bút toán đầu tiên ở form bên trên, hoặc bấm “Nạp dữ liệu mẫu để thử”.</p>
+  </div>
+</section>
+
+<!-- HÓA ĐƠN -->
+<section class="panel" id="p-hoadon">
+  <div class="card" style="margin-bottom:14px"><h2>📤 Upload hóa đơn — AI đọc &amp; tự điền form</h2>
+    <p class="muted small">Tải <strong>ảnh (JPG / PNG) hoặc PDF</strong> của một hóa đơn lên, AI sẽ trích xuất: số hóa đơn, ngày, bên bán, MST, tiền hàng, thuế suất, tiền thuế, tổng thanh toán — rồi <strong>điền sẵn vào form “Thêm hóa đơn” bên dưới</strong>. Lượt đọc này đi qua <strong>đầu mối AI chung</strong> của app: ưu tiên <span class="mono">POST /api/ai</span> bằng key phía server (người dùng không cần token), không có đầu mối server thì mới dùng token phiên cá nhân ở mục Đầu mối AI. Mỗi lần đọc 1 hóa đơn. <strong>Luôn kiểm tra lại từng trường trước khi bấm Lưu</strong>: AI đọc sai một con số mà ghi thẳng vào sổ là lệch cả kỳ.</p>
+    <p class="small">Trạng thái AI: <span class="statusdot" id="aiInvDot"></span> <span id="aiInvStatus">Đang kiểm tra đầu mối AI chung…</span></p>
+    <div class="toolbar">
+      <label class="btn" style="cursor:pointer">📎 Chọn ảnh / PDF hóa đơn<input type="file" id="aiInvFile" accept="image/*,.pdf" style="display:none" onchange="aiInvPicked(event)"></label>
+      <span class="small" id="aiInvFileName">Chưa chọn file nào</span>
+      <button class="btn primary" id="aiInvBtn" onclick="extractInvoiceAI()">🤖 Đọc bằng AI &amp; điền vào form</button>
+      <button class="btn" onclick="go('api')">🧠 Tới mục Đầu mối AI</button>
+    </div>
+    <div id="aiInvMsg" class="small" role="status"></div>
+    <div id="aiInvReview"></div>
+    <p class="note">Khi đi qua /api/ai, ảnh hóa đơn được gửi tới hàm serverless của chủ app rồi mới tới nhà cung cấp AI — key không lộ ở trình duyệt. Khi dùng token phiên dự phòng, ảnh được gửi thẳng từ trình duyệt này tới nhà cung cấp bằng token của bạn — hãy cân nhắc với hóa đơn chứa thông tin nhạy cảm. Riêng đường OpenAI trực tiếp không nhận PDF: hóa đơn PDF hãy dùng Claude hoặc Gemini, hoặc chụp / xuất trang hóa đơn thành ảnh rồi tải lên.</p>
+  </div>
+  <div class="grid grid2">
+    <div class="card"><h2>Thêm hóa đơn</h2>
+      <div class="formgrid">
+        <div><label>Loại</label><select id="inv-type"><option value="out">Đầu ra (bán)</option><option value="in">Đầu vào (mua)</option></select></div>
+        <div><label>Số hóa đơn</label><input id="inv-no" placeholder="VD: 00001234"></div>
+        <div><label>Ngày</label><input type="date" id="inv-date"></div>
+      </div>
+      <div class="formgrid">
+        <div><label>Tên đối tác</label><input id="inv-party" placeholder="Công ty / cá nhân"></div>
+        <div><label>MST (10 hoặc 13 số)</label><input id="inv-tax" placeholder="0123456789"></div>
+        <div><label>Thuế suất</label><select id="inv-rate"><option value="0">0%</option><option value="5">5%</option><option value="8">8%</option><option value="10" selected>10%</option><option value="-1">Không chịu thuế</option></select></div>
+      </div>
+      <div class="formgrid">
+        <div><label>Tiền hàng chưa thuế</label><input type="number" id="inv-base" min="0" oninput="previewVAT()"></div>
+        <div><label>Tiền thuế GTGT</label><input type="number" id="inv-vat" min="0"></div>
+        <div><label>Đã thanh toán không tiền mặt?</label><select id="inv-pay"><option value="ck">Chuyển khoản</option><option value="tm">Tiền mặt</option></select></div>
+      </div>
+      <p class="small muted" id="vatHint"></p>
+      <div class="toolbar"><button class="btn primary" onclick="addInvoice()">Lưu hóa đơn &amp; soát lỗi</button></div><div id="inv-msg" class="small"></div>
+    </div>
+    <div class="card"><h2>Tờ khai GTGT — số liệu chuẩn bị</h2><div id="vatSummary"></div>
+      <p class="note">Đây là số liệu chuẩn bị từ hóa đơn đã nhập để đối chiếu trước khi lập tờ khai chính thức trên HTKK / Thuế điện tử. KetoanAI không nộp thay cơ quan thuế.</p>
+      <div class="toolbar"><button class="btn" onclick="exportCSV('invoices')">Xuất CSV bảng kê hóa đơn</button></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Bảng kê hóa đơn &amp; kết quả soát</h2>
+    <div class="tablewrap"><table><thead><tr><th>Loại</th><th>Số HĐ</th><th>Ngày</th><th>Đối tác / MST</th><th class="num">Tiền hàng</th><th class="num">Thuế</th><th>Kiểm tra</th><th></th></tr></thead><tbody id="invBody"></tbody></table></div>
+    <p id="invEmpty" class="muted">Chưa có hóa đơn nào.</p>
+  </div>
+</section>
+
+<!-- THUẾ -->
+<section class="panel" id="p-thue">
+  <div class="card"><h2>🧾 Thuế — tổng hợp số liệu kê khai kỳ này</h2>
+    <p class="muted">Toàn bộ số thuế của đơn vị gom về một chỗ, tự tính từ dữ liệu bạn đã nhập: <strong>GTGT</strong> từ bảng kê hóa đơn, <strong>TNCN</strong> từ bảng lương (khấu trừ tại nguồn, TK 3335), <strong>TNDN tạm tính</strong> từ sổ nhật ký (doanh thu trừ chi phí) và <strong>số dư TK 333</strong> trên bảng cân đối. Đây là số liệu chuẩn bị để đối chiếu — tờ khai chính thức vẫn lập trên HTKK / Thuế điện tử, KetoanAI không nộp thay.</p>
+    <div class="grid grid4" id="taxKpis" style="margin-top:12px"></div>
+  </div>
+
+  <div class="grid grid2" style="margin-top:14px">
+    <div class="card"><h2>Thuế GTGT — tờ khai 01/GTGT</h2><div id="taxVat"></div>
+      <div class="toolbar"><button class="btn small" onclick="go('hoadon')">Mở Hóa đơn &amp; GTGT để soát chi tiết</button></div>
+    </div>
+    <div class="card"><h2>Thuế TNCN — khấu trừ từ lương (3335)</h2><div id="taxPit"></div>
+      <div class="toolbar"><button class="btn small" onclick="go('luong')">Mở Lương · BHXH · TNCN để tính chi tiết</button></div>
+    </div>
+  </div>
+
+  <div class="grid grid2" style="margin-top:14px">
+    <div class="card"><h2>Thuế TNDN — tạm tính quý</h2>
+      <label>Mức thuế suất áp dụng cho đơn vị</label>
+      <select id="cit-rate" onchange="renderTax()">
+        <option value="0.20" selected>20% — mức phổ thông</option>
+        <option value="0.17">17% — doanh thu năm trước trên 3 tỷ đến 50 tỷ</option>
+        <option value="0.15">15% — doanh thu năm trước không quá 3 tỷ</option>
+      </select>
+      <div id="taxCit" style="margin-top:10px"></div>
+      <p class="note">Mức 15% / 17% theo Luật Thuế TNDN 2025 (hiệu lực 01/10/2025), áp dụng theo tổng doanh thu năm trước liền kề và có điều kiện đi kèm — kiểm tra kỹ trước khi chọn. Tạm tính chỉ là ước lượng để dự phòng tiền nộp; số chính thức chốt ở quyết toán năm (tờ khai 03/TNDN).</p>
+    </div>
+    <div class="card"><h2>Số dư TK 333 — Thuế &amp; các khoản phải nộp NN</h2><div id="tax333"></div>
+      <p class="note">Lấy trực tiếp từ nhật ký chung: mọi bút toán ghi Nợ / Có TK 333 và các tài khoản con (3331 GTGT, 3334 TNDN, 3335 TNCN…). Số dư Có = còn phải nộp; số dư Nợ = đã nộp thừa / còn được khấu trừ.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Lịch hạn nộp thuế</h2><p class="muted small">Mốc phổ biến cho doanh nghiệp kê khai tháng / quý. Kiểm tra lại theo kỳ kê khai thực tế của đơn vị và thông báo của cơ quan thuế.</p>
+    <div class="grid grid3">
+      <div><span class="pill amber">Hằng tháng</span><p><strong>Ngày 20</strong> — hạn nộp tờ khai GTGT (01/GTGT), TNCN (05/KK-TNCN) tháng trước và tiền thuế.</p></div>
+      <div><span class="pill amber">Hằng quý</span><p><strong>Ngày cuối tháng đầu quý sau</strong> — tờ khai quý và tiền thuế TNDN tạm nộp quý (tổng tạm nộp 4 quý ≥ 80% số quyết toán năm).</p></div>
+      <div><span class="pill red">Quyết toán năm</span><p><strong>31/3</strong> — quyết toán TNDN (03/TNDN), quyết toán TNCN (05/QTT-TNCN) và nộp BCTC năm trước.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CÔNG NỢ -->
+<section class="panel" id="p-congno">
+  <div class="grid grid2">
+    <div class="card"><h2>Thêm khoản công nợ</h2>
+      <div class="formgrid">
+        <div><label>Loại</label><select id="ar-type"><option value="phai-thu">Phải thu khách hàng (131)</option><option value="phai-tra">Phải trả NCC (331)</option></select></div>
+        <div><label>Đối tác</label><input id="ar-party" placeholder="Tên khách / NCC"></div>
+        <div><label>Số tiền</label><input type="number" id="ar-amount" min="0"></div>
+      </div>
+      <div class="formgrid"><div><label>Ngày phát sinh</label><input type="date" id="ar-date"></div><div><label>Hạn thanh toán</label><input type="date" id="ar-due"></div><div><label>Đã thu / đã trả</label><input type="number" id="ar-paid" min="0" value="0"></div></div>
+      <div class="toolbar"><button class="btn primary" onclick="addAR()">Thêm công nợ</button></div>
+    </div>
+    <div class="card"><h2>Phân tích tuổi nợ</h2><div id="aging"></div><p class="note">Quá hạn trên 90 ngày cần có kế hoạch thu hồi / đối chiếu biên bản riêng và cân nhắc trích lập dự phòng theo quy định hiện hành.</p></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Sổ công nợ</h2><div class="tablewrap"><table><thead><tr><th>Loại</th><th>Đối tác</th><th>Phát sinh</th><th>Hạn</th><th class="num">Tổng</th><th class="num">Đã thu/trả</th><th class="num">Còn lại</th><th>Tuổi nợ</th><th></th></tr></thead><tbody id="arBody"></tbody></table></div><p id="arEmpty" class="muted">Chưa có khoản công nợ nào.</p></div>
+</section>
+
+<!-- LƯƠNG -->
+<section class="panel" id="p-luong">
+  <div class="grid grid2">
+    <div class="card"><h2>Tính lương 1 nhân viên / tháng</h2>
+      <div class="formgrid">
+        <div><label>Họ tên</label><input id="sal-name" placeholder="Nguyễn Văn A"></div>
+        <div><label>Lương gross (VNĐ)</label><input type="number" id="sal-gross" value="20000000"></div>
+        <div><label>Lương đóng BHXH</label><input type="number" id="sal-base" value="20000000"></div>
+      </div>
+      <div class="formgrid">
+        <div><label>Người phụ thuộc</label><input type="number" id="sal-dep" value="0" min="0"></div>
+        <div><label>Giảm trừ khác / bảo hiểm tự nguyện</label><input type="number" id="sal-other" value="0" min="0"></div>
+        <div><label>Phụ cấp không chịu thuế</label><input type="number" id="sal-allow" value="0" min="0"></div>
+      </div>
+      <div class="toolbar"><button class="btn primary" onclick="calcSalary()">Tính lương</button><button class="btn" onclick="addSalaryRow()">Thêm vào bảng lương</button></div>
+      <div id="salResult" class="result">Nhập số liệu rồi bấm Tính lương. Áp dụng: NLĐ đóng BHXH 8% + BHYT 1,5% + BHTN 1% = 10,5%; giảm trừ bản thân 11.000.000đ, mỗi người phụ thuộc 4.400.000đ; biểu lũy tiến 7 bậc. <span id="salLawTag">⚖️ Các mức này đang chờ Review Luật — sang mục ⚖️ Review Luật để đối chiếu và Update lên mức 2026.</span></div>
+    </div>
+    <div class="card"><h2>Bảng lương tháng</h2><div class="tablewrap"><table style="min-width:520px"><thead><tr><th>Nhân viên</th><th class="num">Gross</th><th class="num">BHXH NLĐ</th><th class="num">Thuế TNCN</th><th class="num">Thực lĩnh</th><th></th></tr></thead><tbody id="salBody"></tbody></table></div><p id="salEmpty" class="muted">Chưa có dòng lương nào.</p><div id="salTotal"></div>
+    <p class="note" id="salNote">Trần đóng BHXH/BHYT: 20 × lương cơ sở 2.340.000đ = 46.800.000đ. Trần BHTN: 20 × lương tối thiểu vùng I 4.960.000đ = 99.200.000đ. Công ty đóng thêm 21,5% (BHXH 17,5% + BHYT 3% + BHTN 1%) trên quỹ lương đóng bảo hiểm — kiểm tra lại mức hiện hành khi áp dụng.</p></div>
+  </div>
+</section>
+
+<!-- TSCĐ -->
+<section class="panel" id="p-tscd">
+  <div class="grid grid2">
+    <div class="card"><h2>Thêm tài sản cố định</h2>
+      <div class="formgrid"><div><label>Tên TSCĐ</label><input id="fa-name" placeholder="VD: Xe tải, máy in, laptop"></div><div><label>Nguyên giá</label><input type="number" id="fa-cost" min="0"></div><div><label>Số năm khấu hao</label><input type="number" id="fa-years" min="1" value="5"></div></div>
+      <div class="formgrid"><div><label>Ngày đưa vào sử dụng</label><input type="date" id="fa-date"></div><div><label>Bộ phận sử dụng</label><input id="fa-dept" placeholder="VD: Kinh doanh, Văn phòng"></div><div><label>&nbsp;</label><button class="btn primary" onclick="addFA()">Thêm TSCĐ</button></div></div>
+      <p class="note">Khấu hao đường thẳng: mỗi tháng = Nguyên giá ÷ (Số năm × 12). Theo dõi tăng / giảm và phân bổ theo bộ phận ở bảng bên dưới.</p>
+    </div>
+    <div class="card"><h2>Tổng hợp khấu hao</h2><div id="faSummary"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Sổ TSCĐ</h2><div class="tablewrap"><table><thead><tr><th>Tài sản</th><th>Bộ phận</th><th>Ngày SD</th><th class="num">Nguyên giá</th><th class="num">KH / tháng</th><th class="num">KH / năm</th><th>Số năm</th><th></th></tr></thead><tbody id="faBody"></tbody></table></div><p id="faEmpty" class="muted">Chưa có TSCĐ nào.</p></div>
+</section>
+
+<!-- DÒNG TIỀN -->
+<section class="panel" id="p-dongtien">
+  <div class="card"><h2>Dự báo dòng tiền 13 tuần</h2><p class="muted">Nhập tiền thu dự kiến và tiền chi dự kiến cho từng tuần (VNĐ). Tuần nào số dư cuối âm sẽ được cảnh báo đỏ — đó là tuần cần thu nợ sớm hoặc giãn chi.</p>
+    <div class="formgrid" style="max-width:520px"><div><label>Số dư tiền đầu kỳ (111 + 112)</label><input type="number" id="cf-open" value="0" onchange="renderCF()"></div><div><label>&nbsp;</label><button class="btn" onclick="exportCSV('cashflow')">Xuất CSV dòng tiền</button></div></div>
+    <div class="tablewrap" style="margin-top:12px"><table style="min-width:760px"><thead><tr><th>Tuần</th><th class="num">Thu dự kiến</th><th class="num">Chi dự kiến</th><th class="num">Dòng tiền thuần</th><th class="num">Số dư cuối tuần</th></tr></thead><tbody id="cfBody"></tbody></table></div>
+    <div id="cfWarn" style="margin-top:10px"></div>
+  </div>
+</section>
+
+<!-- ĐỊNH KHOẢN AI -->
+<section class="panel" id="p-dinhkhoan">
+  <div class="grid grid2">
+    <div class="card"><h2>Trợ lý gợi ý định khoản</h2>
+      <p class="muted small">Mô tả nghiệp vụ bằng tiếng Việt tự nhiên. Trợ lý tra trong bộ quy tắc hệ thống tài khoản (Thông tư 200 / 133) và gợi ý Nợ / Có kèm giải thích. Phân tích sâu đi qua <strong>đầu mối AI chung</strong> (mục Đầu mối AI): có /api/ai phía server hoặc token phiên thì có thêm phân tích của AI; chưa nối đầu mối, bộ quy tắc nội bộ vẫn chạy đầy đủ offline.</p>
+      <label>Mô tả nghiệp vụ</label><textarea id="ai-q" placeholder="VD: Mua hàng hóa nhập kho chưa trả tiền nhà cung cấp, thuế GTGT 10%&#10;Hoặc: Thu tiền khách hàng trả nợ bằng chuyển khoản"></textarea>
+      <div class="toolbar"><button class="btn primary" onclick="askAI()">Gợi ý định khoản</button><span class="small muted">Trạng thái AI: <span class="statusdot" id="aiDot"></span> <span id="aiStatus">Đang kiểm tra đầu mối AI…</span></span></div>
+      <div id="aiResult" class="result">Ví dụ thử: “Chi tiền mặt tạm ứng cho nhân viên đi công tác”, “Trích khấu hao máy văn phòng”, “Bán hàng chưa thu tiền khách”.</div>
+    </div>
+    <div class="card"><h2>Hệ thống tài khoản thường dùng</h2><input id="q-tk" placeholder="Tìm TK: gõ 131, 511, tiền, công nợ…" oninput="renderTK()"><div id="tkList" style="margin-top:12px;display:grid;gap:6px;max-height:520px;overflow:auto"></div></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>💬 Hỏi AI tự do — qua đầu mối chung</h2>
+    <p class="muted small">Mọi câu hỏi ở đây đi qua <strong>cùng một đầu mối AI</strong> như đọc hóa đơn và gợi ý định khoản: kèm system prompt kế toán, ngữ cảnh luật đang áp dụng trong app và tóm tắt thư viện văn bản. Dùng để giải thích quy định, soạn nháp công văn giải trình, tóm tắt một văn bản bạn dán vào, hoặc soát một chứng từ bằng lời. <strong>AI chỉ chuẩn bị — người có thẩm quyền mới ký và nộp.</strong></p>
+    <div class="toolbar">
+      <button class="btn small" onclick="hubPreset('explain')">Giải thích quy định</button>
+      <button class="btn small" onclick="hubPreset('letter')">Soạn công văn giải trình</button>
+      <button class="btn small" onclick="hubPreset('summary')">Tóm tắt văn bản</button>
+      <button class="btn small" onclick="hubPreset('review')">Soát chứng từ</button>
+      <span class="small muted">Đầu mối: <span class="statusdot" id="hubDot2"></span> <span id="hubStatus2">Chưa nối</span></span>
+    </div>
+    <label>Nội dung cần AI xử lý</label><textarea id="hub-q" style="min-height:110px" placeholder="VD: Giải thích điều kiện khấu trừ thuế GTGT đầu vào cho hóa đơn 8 triệu thanh toán tiền mặt.&#10;Hoặc dán nội dung văn bản / chứng từ cần tóm tắt, soát ở đây…"></textarea>
+    <div class="toolbar"><button class="btn primary" id="hubBtn" onclick="hubAsk()">🤖 Gọi AI qua đầu mối chung</button><button class="btn" onclick="go('api')">🧠 Xem đầu mối &amp; cách nối serverless</button></div>
+    <div id="hubResult" class="result">Chưa có câu hỏi nào. Khi đầu mối đã nối — qua /api/ai phía server trên bản publish, hoặc bằng token phiên ở bản tĩnh này — bấm “Gọi AI” để nhận trả lời kèm căn cứ văn bản. Chưa nối, nút này sẽ cho biết đầu mối đang ở trạng thái nào và cách nối khi publish lên Vercel.</div>
+  </div>
+</section>
+
+<!-- THƯ VIỆN VĂN BẢN & LUẬT -->
+<section class="panel" id="p-vanban">
+  <div class="card"><h2>📚 Tổng hợp quy định &amp; luật kế toán — thuế</h2>
+    <p class="muted">Thư viện tra cứu nhanh cho kế toán thuế: văn bản nền tảng chọn lọc được gom theo chủ đề, mỗi văn bản có <strong>tóm tắt bằng lời dễ hiểu</strong>, mục <strong>“Khi nào dùng?”</strong>, số hiệu, ngày hiệu lực và trạng thái còn hiệu lực hay không. Gõ từ khóa (tên văn bản, số hiệu, hoặc việc đang làm — ví dụ “khấu trừ”, “giảm trừ”, “hóa đơn đầu vào”) hoặc bấm vào một chủ đề để lọc ngay.</p>
+    <div class="grid grid4" id="vbKpis" style="margin-top:12px"></div>
+    <p class="note" style="margin-top:12px">Dữ liệu đóng gói cùng bản này (snapshot 04/11/2026), không tự cập nhật trực tuyến. Trước khi ký và nộp, hãy đối chiếu bản gốc bằng cách tra đúng <strong>số hiệu</strong> trên Cổng văn bản Chính phủ (vanban.chinhphu.vn) hoặc cơ quan thuế quản lý. Các ngưỡng đang dùng để tính nằm ở mục ⚖️ Review Luật.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h3>Điều hướng nhanh theo chủ đề</h3>
+    <div class="vb-chips" id="vbChips">
+      <button class="vb-chip active" data-topic="all" onclick="vbSetTopic('all')">Tất cả</button>
+      <button class="vb-chip" data-topic="gtgt" onclick="vbSetTopic('gtgt')">Thuế GTGT</button>
+      <button class="vb-chip" data-topic="tndn" onclick="vbSetTopic('tndn')">Thuế TNDN</button>
+      <button class="vb-chip" data-topic="tncn" onclick="vbSetTopic('tncn')">Thuế TNCN</button>
+      <button class="vb-chip" data-topic="bhxh" onclick="vbSetTopic('bhxh')">BHXH · Lương</button>
+      <button class="vb-chip" data-topic="hoadon" onclick="vbSetTopic('hoadon')">Hóa đơn · Quản lý thuế</button>
+      <button class="vb-chip" data-topic="hokd" onclick="vbSetTopic('hokd')">Hộ kinh doanh · Thuế khoán</button>
+      <button class="vb-chip" data-topic="ketoan" onclick="vbSetTopic('ketoan')">Chế độ kế toán</button>
+    </div>
+    <div class="formgrid">
+      <div><label>Tìm kiếm theo từ khóa</label><input id="vb-q" placeholder="VD: 181/2025, khấu trừ, giảm trừ, khấu hao…" oninput="renderVB()"></div>
+      <div><label>Loại văn bản</label><select id="vb-type" onchange="renderVB()"><option value="all">Tất cả loại</option><option value="Luật">Luật</option><option value="Nghị quyết">Nghị quyết</option><option value="Nghị định">Nghị định</option><option value="Thông tư">Thông tư</option></select></div>
+      <div><label>Trạng thái hiệu lực</label><select id="vb-status" onchange="renderVB()"><option value="all">Tất cả trạng thái</option><option value="con">Còn hiệu lực</option><option value="moi">Áp dụng mới / từ 2026</option><option value="motphan">Còn một phần / đã sửa đổi</option><option value="het">Hết giai đoạn áp dụng</option></select></div>
+    </div>
+    <div class="formgrid" style="grid-template-columns:1fr">
+      <div><label>Chủ đề (đồng bộ với các nút ở trên)</label><select id="vb-topic" onchange="vbTopicChanged()"><option value="all">Tất cả chủ đề</option><option value="gtgt">Thuế GTGT</option><option value="tndn">Thuế TNDN</option><option value="tncn">Thuế TNCN</option><option value="bhxh">BHXH · Lương</option><option value="hoadon">Hóa đơn · Quản lý thuế</option><option value="hokd">Hộ kinh doanh · Thuế khoán</option><option value="ketoan">Chế độ kế toán</option></select></div>
+    </div>
+    <p class="small muted" id="vbCount" style="margin-top:10px"></p>
+  </div>
+
+  <div class="vb-grid" id="vbList"></div>
+  <p id="vbEmpty" class="muted" style="margin-top:14px;display:none">Không có văn bản nào khớp bộ lọc. Thử xóa bớt từ khóa hoặc chọn “Tất cả” ở chủ đề / loại / trạng thái.</p>
+
+  <div class="card" style="margin-top:14px"><h2>Cách tra cứu cho nhanh &amp; đúng</h2><ul class="checklist">
+    <li>🔎 <strong>Biết số hiệu thì gõ số hiệu</strong> — ví dụ “70/2025” ra ngay nghị định sửa đổi về hóa đơn điện tử kèm văn bản gốc nó sửa; “96/2015”, “174/2025” và “109/2025” nay cũng có thẻ riêng thay vì gộp chung với văn bản gốc.</li>
+    <li>🧭 <strong>Đang làm việc gì thì lọc theo chủ đề việc đó</strong> — soát hóa đơn xem nhóm Hóa đơn, tính lương xem nhóm BHXH · Lương và TNCN.</li>
+    <li>⚠️ <strong>Thấy trạng thái “Còn một phần / đã sửa đổi”</strong> thì đừng áp dụng máy móc: đọc thêm văn bản sửa đổi được nêu trong tóm tắt, hoặc đối chiếu ở mục ⚖️ Review Luật.</li>
+    <li>📅 <strong>Thấy trạng thái “Áp dụng mới / từ 2026”</strong> thì chú ý ngày hiệu lực: kỳ tính thuế trước ngày đó vẫn dùng quy định cũ.</li>
+  </ul></div>
+</section>
+
+<!-- REVIEW LUẬT -->
+<section class="panel" id="p-luat">
+  <div class="card"><h2>⚖️ Review luật — đối chiếu quy tắc trong app với luật hiện hành</h2>
+    <p class="muted">Mọi tỷ lệ, ngưỡng và biểu thuế KetoanAI đang dùng để tính đều được liệt kê ở đây, kèm căn cứ và ngày hiệu lực. Bấm <strong>Chạy review</strong> để đối chiếu với bộ dữ liệu luật đối chiếu mới nhất được đóng gói cùng bản này (<strong>snapshot ngày 04/11/2026</strong>). Chỗ nào lệch, bấm <strong>Update</strong> để áp dụng ngay giá trị mới vào công thức tính hóa đơn, lương và TNCN — giá trị mới được lưu luôn trong trình duyệt này.</p>
+    <div class="warnbox"><strong>Lưu ý quan trọng:</strong> Snapshot luật đóng gói tại thời điểm xây dựng trang, <strong>không tự cập nhật trực tuyến</strong>. Trước khi ký và nộp tờ khai, hãy kiểm tra lại văn bản gốc trên Cổng thông tin điện tử Chính phủ / cơ quan thuế. Sau khi bấm Update, giá trị mới được lưu trong trình duyệt này (đóng tab mở lại vẫn áp dụng) — nhưng lần publish tiếp theo vẫn cần deploy lại bản đã sửa để mọi kế toán trên các máy khác cùng dùng luật mới.</div>
+    <div class="toolbar" style="margin-top:12px"><button class="btn primary" onclick="runLawReview()">🔍 Chạy review luật ngay</button><button class="btn gold" id="btnLawUpdate" onclick="applyLawUpdate()" disabled>⬆ Update — Áp dụng luật mới vào app</button><span class="small muted" id="lawRunInfo">Chưa chạy review.</span></div>
+    <div class="grid grid4" id="lawKpis" style="margin-top:6px"></div>
+    <div id="lawVerdict" style="margin-top:12px"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Bảng đối chiếu chi tiết — từng quy tắc</h2>
+    <p class="muted small">Cột “Trong app” là giá trị công thức đang thực sự dùng để tính. Cột “Luật hiện hành” là giá trị theo snapshot đối chiếu. Trạng thái <span class="pill red">Cần update</span> nghĩa là giữ nguyên sẽ tính sai.</p>
+    <div class="tablewrap"><table><thead><tr><th>Quy tắc / thông số</th><th>Trong app hiện tại</th><th>Luật hiện hành (đối chiếu)</th><th>Căn cứ &amp; hiệu lực</th><th>Trạng thái</th><th>Tác động nếu không sửa</th></tr></thead><tbody id="lawBody"></tbody></table></div>
+  </div>
+
+  <div class="grid grid2" style="margin-top:14px">
+    <div class="card"><h2>Nhật ký Update luật</h2><div id="lawLog"><p class="muted">Chưa có lần update nào được ghi nhận. Sau khi bấm Update, trạng thái đã update được lưu trong trình duyệt; chi tiết thay đổi (giá trị cũ → mới) hiển thị ở đây trong lần làm việc đó để truy vết khi đối chiếu sổ sách.</p></div></div>
+    <div class="card"><h2>Thêm văn bản mới để review thủ công</h2>
+      <p class="muted small">Thấy thông tư / nghị định mới mà bảng trên chưa có? Ghi lại ở đây để đưa vào đợt review tiếp theo — mục này được lưu trong trình duyệt (đóng tab không mất), không tự thay đổi công thức tính.</p>
+      <label>Tên văn bản / quy định mới</label><input id="cl-name" placeholder="VD: Thông tư …/2026/TT-BTC về …">
+      <div class="formgrid" style="grid-template-columns:1fr 1fr"><div><label>Ngày hiệu lực (nếu biết)</label><input type="date" id="cl-date"></div><div><label>Ảnh hưởng tới mục nào?</label><select id="cl-area"><option>Hóa đơn &amp; GTGT</option><option>Lương · BHXH · TNCN</option><option>TSCĐ &amp; khấu hao</option><option>Công nợ / chi phí được trừ</option><option>Hạn nộp &amp; tờ khai</option><option>Khác</option></select></div></div>
+      <label>Nội dung thay đổi chính</label><textarea id="cl-note" placeholder="VD: Đổi ngưỡng…, đổi tỷ lệ…, bãi bỏ…"></textarea>
+      <div class="toolbar"><button class="btn primary" onclick="addCustomLaw()">Thêm vào danh sách chờ review</button></div>
+      <div id="customLawList"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Cách duy trì luật sau này</h2><ul class="checklist">
+    <li>📅 <strong>Mỗi đầu quý:</strong> chạy review ở mục này một lần, đối chiếu các mốc sắp hết hạn (chính sách giảm thuế GTGT, lương tối thiểu vùng, lương cơ sở).</li>
+    <li>🔍 <strong>Khi có văn bản mới:</strong> ghi vào danh sách chờ review ở trên, kiểm tra văn bản gốc, rồi mới nhờ cập nhật lại trang và deploy lại lên Vercel.</li>
+    <li>🧠 <strong>Có đầu mối AI:</strong> có thể dán nội dung văn bản mới vào mục Định khoản AI để nhờ AI tóm tắt điểm thay đổi — nhưng kết luận cuối cùng vẫn do kế toán kiểm chứng trên văn bản gốc.</li>
+  </ul></div>
+</section>
+
+<!-- PRO -->
+<section class="panel" id="p-pro">
+  <div class="card"><h2>Toàn bộ tính năng PRO — đã mở trong bản này</h2><p class="muted">KetoanAI chỉ phát hành bản PRO. 12 nghiệp vụ chuyên sâu dưới đây được đưa thẳng vào app dưới dạng công cụ tính, bảng kiểm và quy trình làm việc.</p>
+    <div class="grid grid3" id="proGrid" style="margin-top:12px"></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Bảng kiểm khóa sổ cuối tháng &amp; quyết toán năm</h2><ul class="checklist">
+    <li>☐ Gom đủ chứng từ, sao kê ngân hàng, bảng kê hóa đơn đầu vào / đầu ra của kỳ</li>
+    <li>☐ Đối chiếu công nợ 131 / 331 có biên bản với từng đối tác lớn</li>
+    <li>☐ Điều hòa số dư TK 112 với sổ phụ ngân hàng, xử lý khoản treo</li>
+    <li>☐ Trích khấu hao TSCĐ, phân bổ chi phí trả trước 242, kết chuyển lương &amp; BHXH</li>
+    <li>☐ Kiểm kê kho: thẻ kho – sổ 156 – thực tế, xử lý tồn âm và chênh lệch</li>
+    <li>☐ Đối chiếu tờ khai GTGT 12 kỳ với sổ 133 / 3331, kiểm tra số thuế còn khấu trừ chuyển kỳ</li>
+    <li>☐ Soát chi phí được trừ TNDN: hóa đơn, chứng từ thanh toán không tiền mặt cho hóa đơn từ ngưỡng quy định</li>
+    <li>☐ Lập hồ sơ quyết toán TNDN / TNCN, thuyết minh BCTC khớp bảng cân đối số phát sinh</li>
+    <li>☐ Gác cổng: soát lại toàn bộ số liệu, căn cứ pháp lý và người ký trước khi nộp</li>
+  </ul></div>
+</section>
+
+<!-- API -->
+<section class="panel" id="p-api">
+  <div class="card" style="margin-bottom:14px"><h2>🧠 Trạng thái đầu mối AI chung</h2>
+    <p class="small">Đầu mối: <span class="statusdot" id="hubDotTop"></span> <span id="hubStatusTop">Đang kiểm tra /api/ai…</span></p>
+    <p class="muted small" style="margin-top:8px">Thứ tự ưu tiên mỗi lượt gọi AI — dùng chung cho định khoản, đọc hóa đơn, hỏi tự do, soạn công văn, tóm tắt và soát chứng từ:</p>
+    <ol class="small" style="margin:6px 0 0;padding-left:20px">
+      <li><strong>Đầu mối server <span class="mono">POST /api/ai</span></strong> — key của chủ app nằm ở Environment Variables phía server. Có đầu mối này là mọi người dùng dùng chung, không ai phải nhập token và không ai thấy key. Đây là cách chạy chính trên bản publish.</li>
+      <li><strong>Token phiên cá nhân</strong> (form bên dưới) — chỉ dùng khi chưa có /api/ai, ví dụ đang xem bản tĩnh này. App tự chuyển xuống đường này nếu /api/ai chưa được triển khai hoặc chưa cấu hình key.</li>
+      <li><strong>Bộ quy tắc nội bộ offline</strong> — khi cả hai đường trên đều chưa nối: ghi sổ, tính thuế / lương / khấu hao và gợi ý định khoản cơ bản vẫn chạy, chỉ thiếu phân tích sâu của AI.</li>
+    </ol>
+    <div class="toolbar no-print"><button class="btn small" onclick="probeSharedHub(true)">↻ Kiểm tra lại /api/ai</button><span class="small muted" id="hubProbeMsg" role="status"></span></div>
+  </div>
+
+  <div class="grid grid2">
+    <div class="card"><h2>🔑 Token cá nhân — phương án dự phòng</h2>
+      <p class="muted small">Chỉ cần điền khi bản đang xem <strong>chưa có đầu mối server</strong>. Trên bản publish đã có /api/ai thì bỏ qua mục này — mọi tính năng AI đã chạy bằng key phía server.</p>
+      <label>Nhà cung cấp AI</label><select id="api-provider"><option value="anthropic">Anthropic — Claude</option><option value="openai">OpenAI — ChatGPT</option><option value="google">Google — Gemini</option><option value="custom">Tùy chỉnh (endpoint tương thích OpenAI)</option></select>
+      <label>API Token / API Key</label><input type="password" id="api-token" placeholder="Dán token vào đây — VD: sk-ant-…, sk-…" autocomplete="off">
+      <div class="formgrid"><div><label>Model</label><input id="api-model" placeholder="Để trống = model mặc định"></div><div><label>Endpoint (chỉ khi tùy chỉnh)</label><input id="api-endpoint" placeholder="https://…/v1"></div></div>
+      <div class="toolbar"><button class="btn primary" onclick="saveToken()">Kích hoạt token dự phòng</button><button class="btn danger" onclick="clearToken()">Xóa token</button></div>
+      <p id="apiMsg" class="small"></p>
+      <div class="warnbox"><strong>Bảo mật:</strong> Token dự phòng chỉ giữ trong bộ nhớ của phiên làm việc này, <strong>không lưu xuống máy, không gửi đi nơi khác</strong>. Đóng tab là token mất và phải dán lại. Tuyệt đối không dán token của chủ app vào bản HTML khi publish công khai — key dùng chung phải đặt ở biến môi trường phía server (xem phần serverless bên dưới).</div>
+    </div>
+    <div class="card"><h2>Đầu mối chung mở những gì?</h2><ul class="checklist">
+      <li>✅ <strong>Không cần AI:</strong> ghi sổ, hóa đơn &amp; GTGT, công nợ, lương, TSCĐ, dòng tiền, gợi ý định khoản bằng bộ quy tắc nội bộ — chạy ngay, offline.</li>
+      <li>🧠 <strong>Có đầu mối (server hoặc token phiên):</strong> trợ lý AI nâng cao dùng chung một đường gọi — <strong>đọc hóa đơn từ ảnh / PDF và tự điền form ở mục Hóa đơn</strong>, phân tích diễn giải tự do, soạn công văn giải trình thuế, nháp thuyết minh BCTC, tóm tắt văn bản thuế, soát chứng từ bằng ngôn ngữ tự nhiên.</li>
+      <li>📤 <strong>Đọc hóa đơn bằng AI:</strong> mở mục Hóa đơn &amp; GTGT, chọn file rồi bấm “Đọc bằng AI &amp; điền vào form”. Kết quả chỉ điền sẵn để bạn kiểm tra — bấm Lưu mới ghi vào bảng kê.</li>
+      <li>⚠️ Gọi AI trực tiếp từ trình duyệt bằng token cá nhân có thể bị nhà cung cấp chặn CORS — đó là lý do đường chính khi publish là hàm serverless /api/ai giữ key phía server.</li>
+    </ul></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>🧠 Đầu mối AI chung cho toàn app — một chỗ, mọi tính năng</h2>
+    <p>Thay vì mỗi tính năng tự gọi AI một kiểu, KetoanAI gom mọi lượt gọi AI về <strong>một đầu mối duy nhất</strong> trong mã của trang (<span class="mono">callAIHubText</span> cho văn bản, <span class="mono">callInvoiceAI</span> cho hóa đơn — cả hai cùng thử /api/ai trước, cùng fallback): gợi ý định khoản, đọc hóa đơn từ ảnh / PDF, hỏi đáp tự do, soạn công văn, tóm tắt văn bản và soát chứng từ đều đi qua cùng một <strong>system prompt kế toán</strong> và cùng một <strong>kho ngữ cảnh</strong> do <span class="mono">buildAIContext()</span> tổng hợp. Sửa prompt hoặc kho ở một chỗ là mọi tính năng cùng giỏi lên — và khi đầu mối chạy phía server, sửa ở server là mọi người dùng được hưởng ngay, không ai thấy prompt / kho đó.</p>
+    <p class="small">Trạng thái đầu mối: <span class="statusdot" id="hubDot"></span> <span id="hubStatus">Đang kiểm tra /api/ai…</span></p>
+    <div class="grid grid2" style="margin-top:10px">
+      <div><strong>1 · System prompt chung</strong><p class="muted small">Vai trò kế toán Việt Nam, chế độ TT 200 / 133, bắt trích dẫn số hiệu văn bản, không bịa số liệu, và nguyên tắc bất biến: <em>AI chỉ chuẩn bị — người có thẩm quyền mới ký và nộp</em>. Mọi điểm gọi AI trong trang này đều tự động kèm prompt này; bản serverless giữ một bản giống hệt ở phía server.</p></div>
+      <div><strong>2 · Kho kiến thức đi kèm (RAG gọn)</strong><p class="muted small">Mỗi lượt gọi tự động đính kèm ngữ cảnh do app tự tổng hợp: các ngưỡng luật đang thực sự dùng để tính (đã Update luật 2026 hay chưa), toàn bộ danh mục thư viện văn bản theo chủ đề kèm số hiệu, và số lượng chứng từ / hóa đơn / dòng lương hiện có — để AI trả lời dựa trên tài liệu của app thay vì nhớ mang máng. Luật mới thì chỉ cần cập nhật kho này, không phải train lại gì.</p></div>
+      <div><strong>3 · Ví dụ mẫu chuẩn</strong><p class="muted small">Ngữ cảnh luôn kèm vài cặp hỏi — đáp mẫu đã kiểm chứng (định khoản mua hàng, bán hàng, trích khấu hao) để AI bắt chước đúng cách lập luận và trình bày của app, thay vì trả lời tự do mỗi lần một kiểu.</p></div>
+      <div><strong>4 · Số liệu do app tính</strong><p class="muted small">Thuế, lương, khấu hao, dòng tiền luôn do công thức của app tính trước; AI chỉ diễn giải kết quả và chỉ ra căn cứ. Không để AI tự nhẩm số — đó là chỗ LLM hay sai nhất.</p></div>
+    </div>
+    <h3 style="margin-top:14px">Khi publish: bản serverless giữ key phía server (đường chính cho link công khai)</h3>
+    <p class="muted small">Key <strong>không nhúng vào HTML</strong> và <strong>không gửi qua chat</strong> — chủ app tự thêm trên Vercel: vào <em>Project → Settings → Environment Variables</em> thêm <span class="mono">ANTHROPIC_API_KEY</span> (hoặc <span class="mono">OPENAI_API_KEY</span> / <span class="mono">GEMINI_API_KEY</span> — hàm tự chọn nhà cung cấp theo key có mặt, <span class="mono">AI_MODEL</span> để đổi model nếu muốn), rồi tạo file <span class="mono">api/ai.js</span> trong cùng repo với <span class="mono">index.html</span> bằng nội dung mẫu dưới đây và deploy lại. App tự phát hiện đầu mối bằng một lượt <span class="mono">{ping:true}</span> không tốn token AI: thấy /api/ai trả lời và đã có key là chuyển hẳn sang đường server — hết lỗi CORS, người dùng không cần nhập token. Đánh đổi cần biết: mọi lượt dùng chung đều tính vào key của chủ app và link là công khai — mẫu dưới đã có giới hạn độ dài prompt / ngữ cảnh / file, giới hạn token trả lời và chỗ để thêm giới hạn lượt theo IP / ngày; muốn chặt theo từng người dùng thì cần thêm đăng nhập (app hiện chưa có).</p>
+    <div class="toolbar no-print"><button class="btn primary" onclick="copyAIHubCode()">📋 Copy mã api/ai.js mẫu</button><span class="small" id="hubCopyMsg" role="status"></span></div>
+    <pre id="aiHubCode">// api/ai.js — Đầu mối AI chung KetoanAI (Vercel Serverless Function)
+// Key đọc từ Environment Variables phía server — KHÔNG nhúng vào HTML, KHÔNG gửi qua chat.
+// Hợp đồng với app:
+//   POST { "ping": true }                                  -&gt; { ok, configured, provider }  (không gọi AI, không tốn token)
+//   POST { "prompt": "...", "context": "..." }             -&gt; { text }                      (hỏi đáp / định khoản / công văn)
+//   POST { "prompt": "...", "context": "...",
+//          "image": { "mime": "image/jpeg", "data": "..." } } -&gt; { text }                 (đọc hóa đơn, data là base64)
+// Nhà cung cấp tự chọn theo key có mặt: ANTHROPIC_API_KEY &gt; OPENAI_API_KEY &gt; GEMINI_API_KEY.
+// Đổi model bằng biến AI_MODEL nếu muốn.
+
+const SYSTEM_PROMPT = `Bạn là trợ lý kế toán — thuế Việt Nam của KetoanAI.
+- Trả lời theo chế độ kế toán TT 200/2014 và TT 133/2016, luật thuế hiện hành.
+- Luôn trích dẫn số hiệu văn bản khi nêu căn cứ; không chắc thì nói rõ là chưa chắc, không bịa số liệu, ngưỡng hay số hiệu.
+- Số tiền, thuế, lương, khấu hao: chỉ diễn giải số do app cung cấp trong ngữ cảnh, không tự nhẩm lại.
+- Nguyên tắc: AI chỉ chuẩn bị và gợi ý — người có thẩm quyền mới ký và nộp hồ sơ.`;
+
+function pickProvider() {
+  if (process.env.ANTHROPIC_API_KEY) return { name: "anthropic", key: process.env.ANTHROPIC_API_KEY, model: process.env.AI_MODEL || "claude-sonnet-4-5" };
+  if (process.env.OPENAI_API_KEY) return { name: "openai", key: process.env.OPENAI_API_KEY, model: process.env.AI_MODEL || "gpt-4o" };
+  if (process.env.GEMINI_API_KEY) return { name: "google", key: process.env.GEMINI_API_KEY, model: process.env.AI_MODEL || "gemini-2.0-flash" };
+  return null;
+}
+
+export default async function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+  const prov = pickProvider();
+  if (body.ping) return res.status(200).json({ ok: true, configured: !!prov, provider: prov ? prov.name : null });
+  if (!prov) return res.status(500).json({ error: "Server chưa cấu hình key AI (ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY)" });
+
+  const prompt = String(body.prompt || "").slice(0, 8000);       // giới hạn độ dài đầu vào
+  const context = String(body.context || "").slice(0, 12000);   // ngữ cảnh do app tổng hợp
+  if (!prompt) return res.status(400).json({ error: "Thiếu prompt" });
+  const image = body.image &amp;&amp; body.image.data ? body.image : null;
+  if (image &amp;&amp; String(image.data).length &gt; 14000000) return res.status(413).json({ error: "File quá lớn" });
+  // TODO khi mở công khai: thêm rate-limit theo IP / ngày ở đây, trước khi gọi nhà cung cấp.
+
+  const system = SYSTEM_PROMPT + "\n\nNGỮ CẢNH TỪ APP:\n" + context;
+  let r, j;
+  if (prov.name === "anthropic") {
+    const content = [];
+    if (image) content.push(image.mime === "application/pdf"
+      ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: image.data } }
+      : { type: "image", source: { type: "base64", media_type: image.mime, data: image.data } });
+    content.push({ type: "text", text: prompt });
+    r = await fetch("https://api.anthropic.com/v1/messages", { method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": prov.key, "anthropic-version": "2023-06-01" },
+      body: JSON.stringify({ model: prov.model, max_tokens: 1500, system, messages: [{ role: "user", content }] }) });
+    j = await r.json();
+    if (!r.ok) return res.status(r.status).json({ error: (j.error &amp;&amp; j.error.message) || "AI provider error" });
+    return res.status(200).json({ text: (j.content || []).map(c =&gt; c.text || "").join("") });
+  }
+  if (prov.name === "google") {
+    const parts = [];
+    if (image) parts.push({ inlineData: { mimeType: image.mime, data: image.data } });
+    parts.push({ text: prompt });
+    r = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + prov.model + ":generateContent", { method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": prov.key },
+      body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ parts }], generationConfig: { maxOutputTokens: 1500 } }) });
+    j = await r.json();
+    if (!r.ok) return res.status(r.status).json({ error: (j.error &amp;&amp; j.error.message) || "AI provider error" });
+    const p2 = (j.candidates &amp;&amp; j.candidates[0] &amp;&amp; j.candidates[0].content &amp;&amp; j.candidates[0].content.parts) || [];
+    return res.status(200).json({ text: p2.map(x =&gt; x.text || "").join("") });
+  }
+  // openai (tương thích OpenAI) — đường này chỉ nhận ảnh, không nhận PDF
+  if (image &amp;&amp; image.mime === "application/pdf") return res.status(400).json({ error: "OpenAI không nhận PDF qua đầu mối — dùng ảnh, hoặc cấu hình Claude / Gemini" });
+  const userContent = image
+    ? [{ type: "image_url", image_url: { url: "data:" + image.mime + ";base64," + image.data } }, { type: "text", text: prompt }]
+    : prompt;
+  r = await fetch("https://api.openai.com/v1/chat/completions", { method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + prov.key },
+    body: JSON.stringify({ model: prov.model, max_tokens: 1500, messages: [{ role: "system", content: system }, { role: "user", content: userContent }] }) });
+  j = await r.json();
+  if (!r.ok) return res.status(r.status).json({ error: (j.error &amp;&amp; j.error.message) || "AI provider error" });
+  return res.status(200).json({ text: (j.choices &amp;&amp; j.choices[0] &amp;&amp; j.choices[0].message &amp;&amp; j.choices[0].message.content) || "" });
+}</pre>
+    <p class="note">Trong bản tĩnh đang xem này chưa có file <span class="mono">api/ai.js</span> chạy kèm, nên app tự dò đầu mối lúc mở trang: không thấy /api/ai thì đầu mối chạy ở chế độ <strong>token phiên dự phòng</strong> (nếu đã gắn token ở phía trên) kèm đúng system prompt + ngữ cảnh như bản server; chưa gắn token thì các tính năng không cần AI vẫn chạy offline bằng bộ quy tắc nội bộ, và các nút gọi AI báo rõ “đầu mối chưa nối” kèm hướng dẫn này thay vì giả vờ đã trả lời. Khi file api/ai.js + key được thêm trên Vercel và deploy lại, cùng trang này tự chuyển sang đường server cho mọi người dùng — không phải sửa thêm gì trong HTML.</p>
+  </div>
+</section>
+
+<!-- PUBLISH -->
+<section class="panel" id="p-publish">
+  <div class="card"><h2>▲ Publish lên Vercel để kế toán dùng chung</h2>
+    <p>Trang này là <strong>1 file HTML duy nhất</strong> — đưa lên Vercel miễn phí trong khoảng 2 phút, có link công khai dạng <span class="mono">ketoanai.vercel.app</span> để gửi cho kế toán vào dùng.</p>
+    <h3>Cách 1 — Kéo thả (nhanh nhất, không cần code)</h3>
+    <ol><li>Bấm nút <strong>Tải file HTML của trang này</strong> bên dưới (hoặc lưu trang này thành file <span class="mono">index.html</span>).</li><li>Vào <a href="https://vercel.com/new" target="_blank" rel="noopener">vercel.com/new</a> → đăng nhập bằng GitHub / Google.</li><li>Kéo thả file <span class="mono">index.html</span> vào Vercel (hoặc dùng <a href="https://app.netlify.com/drop" target="_blank" rel="noopener">Netlify Drop</a> tương tự) → bấm Deploy.</li><li>Nhận link công khai và gửi cho kế toán. Mỗi lần sửa, deploy lại file mới là xong.</li></ol>
+    <h3>Cách 2 — Qua GitHub (tự cập nhật mỗi lần sửa) — cần cách này để có đầu mối AI</h3>
+    <ol><li>Tạo repo mới, đưa file <span class="mono">index.html</span> này lên.</li><li>Trong Vercel: <em>Add New → Project → Import repo</em> → Deploy (không cần cấu hình build).</li><li>Muốn bật đầu mối AI chung: thêm file <span class="mono">api/ai.js</span> vào cùng repo (mã mẫu ở bước dưới) rồi deploy lại — cách kéo thả file HTML đơn thuần không chạy được hàm serverless.</li></ol>
+    <h3>Bật đầu mối AI chung trên Vercel (key phía server)</h3>
+    <p class="muted small">Không nhúng key vào HTML và không gửi key qua chat — chủ app tự thêm trên Vercel. Vào Project → Settings → Environment Variables, thêm một trong các biến:</p>
+    <pre>ANTHROPIC_API_KEY = sk-ant-...   (hoặc OPENAI_API_KEY = sk-... / GEMINI_API_KEY = ...)</pre>
+    <p class="muted small">Rồi thêm hàm serverless <span class="mono">api/ai.js</span> (nút <strong>Copy mã api/ai.js mẫu</strong> ở mục Đầu mối AI, phần “Đầu mối AI chung cho toàn app”) vào repo và deploy lại. Từ đó app gọi <span class="mono">POST /api/ai</span> cho mọi tính năng AI — key không bao giờ lộ ra trình duyệt, người dùng không cần token riêng; nhớ rằng mọi lượt dùng chung tính vào key của chủ app nên hãy để ý hạn mức và giới hạn lượt trong hàm.</p>
+    <div class="toolbar no-print"><button class="btn primary" onclick="downloadHTML()">⬇ Tải file HTML để deploy</button><button class="btn" onclick="copyVercel()">Copy cấu hình vercel.json</button></div>
+    <pre id="vercelJson">{
+  "cleanUrls": true,
+  "headers": [{ "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }] }]
+}</pre>
+    <div class="warnbox">Lưu ý dữ liệu khi publish: bản tĩnh này tự động lưu sổ sách trong trình duyệt (localStorage) của từng người dùng — đóng tab mở lại vẫn còn trên đúng trình duyệt / máy đó, kèm file sao lưu JSON để chuyển máy. Nếu nhiều kế toán cần dùng chung một sổ và đồng bộ nhiều máy, cần thêm backend / cơ sở dữ liệu — hãy xuất JSON thường xuyên để sao lưu trong lúc chưa có backend.</div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Sao lưu &amp; chuyển dữ liệu</h2>
+    <div class="toolbar"><button class="btn primary" onclick="exportJSON()">⬇ Xuất toàn bộ dữ liệu (JSON)</button>
+    <label class="btn" style="cursor:pointer">⬆ Nhập dữ liệu từ file JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+    <button class="btn danger btn-clear-all" onclick="clearAll(this)">Xóa toàn bộ dữ liệu đã lưu</button></div>
+    <p class="muted small">File JSON chứa chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ và dòng tiền — không chứa token API. Dữ liệu thường ngày đã tự động lưu trong trình duyệt, file JSON chỉ cần khi chuyển máy hoặc sao lưu thêm.</p>
+  </div>
+</section>
+
+<!-- DỮ LIỆU & SAO LƯU -->
+<section class="panel" id="p-dulieu">
+  <div class="card"><h2>🗑 Dữ liệu &amp; sao lưu — xóa dữ liệu ở đây</h2>
+    <p class="muted">Toàn bộ sổ sách bạn nhập (chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ, dòng tiền) được <strong>tự động lưu trong trình duyệt này</strong> sau mỗi lần thêm / sửa / xóa — <strong>đóng tab hay tắt trình duyệt rồi mở lại vẫn còn nguyên</strong>, không cần bấm lưu. Mục này để <strong>sao lưu, chuyển máy và xóa dữ liệu</strong> khi muốn làm sạch để nhập lại từ đầu.</p>
+    <div id="storageInfo" class="note" style="margin-top:12px">💾 Tự động lưu trong trình duyệt đang bật — đóng tab mở lại vẫn còn dữ liệu. Dữ liệu chỉ ở trên trình duyệt / máy này; xóa dữ liệu duyệt web (site data) sẽ xóa sổ này, nên vẫn nên xuất JSON định kỳ để dự phòng.</div>
+    <div class="grid grid3" id="dataStats" style="margin-top:12px"></div>
+    <div class="toolbar" style="margin-top:14px"><button class="btn primary" onclick="exportJSON()">⬇ Xuất toàn bộ dữ liệu (JSON)</button>
+    <label class="btn" style="cursor:pointer">⬆ Nhập dữ liệu từ file JSON<input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label></div>
+    <p class="muted small">File JSON chứa chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ và dòng tiền — không chứa token API. Hãy xuất JSON trước khi xóa nếu còn cần giữ lại số liệu.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Xóa từng phần</h2>
+    <p class="muted small">Chỉ muốn dọn một loại dữ liệu (ví dụ xóa dữ liệu mẫu, nhập lại bảng lương) thì xóa riêng phần đó — các phần khác giữ nguyên. Bấm nút xóa một lần để hiện yêu cầu xác nhận, bấm lần nữa mới xóa thật.</p>
+    <div id="clearPartRows" style="display:grid;gap:8px;margin-top:10px"></div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><h2>Xóa toàn bộ dữ liệu</h2>
+    <div class="warnbox"><strong>Không hoàn tác được:</strong> xóa toàn bộ sẽ làm sạch chứng từ, hóa đơn, công nợ, bảng lương, TSCĐ, dòng tiền 13 tuần và danh sách văn bản chờ review — <strong>kể cả bản đã tự động lưu trong trình duyệt</strong>, mở lại trang cũng không còn. Token AI dự phòng không bị ảnh hưởng (token vốn không được lưu). Nếu chưa xuất JSON sao lưu, hãy xuất trước ở phía trên.</div>
+    <div class="toolbar" style="margin-top:12px"><button class="btn danger btn-clear-all" onclick="clearAll(this)">🗑 Xóa toàn bộ dữ liệu đã lưu</button><span class="small" id="clearMsg" role="status"></span></div>
+  </div>
+</section>
+
+<footer>KetoanAI · Bản PRO — Sản phẩm độc lập. Số liệu thuế / BHXH trong trang là mức phổ biến tại thời điểm xây dựng — luôn đối chiếu văn bản hiện hành trước khi ký và nộp, và dùng mục ⚖️ Review Luật để soát lại các ngưỡng, tỷ lệ đang áp dụng.</footer>
+</div>
+
+<script>
+var TK=[
+["111","Tiền mặt"],["112","Tiền gửi ngân hàng"],["131","Phải thu khách hàng"],["133","Thuế GTGT được khấu trừ"],["136","Phải thu nội bộ"],["138","Phải thu khác"],["141","Tạm ứng"],["152","Nguyên liệu, vật liệu"],["153","Công cụ, dụng cụ"],["155","Thành phẩm"],["156","Hàng hóa"],["157","Hàng gửi đi bán"],["211","TSCĐ hữu hình"],["214","Hao mòn TSCĐ"],["217","Bất động sản đầu tư"],["241","Xây dựng cơ bản dở dang"],["242","Chi phí trả trước"],["331","Phải trả người bán"],["333","Thuế và các khoản phải nộp NN"],["334","Phải trả người lao động"],["338","Phải trả, phải nộp khác"],["341","Vay và nợ thuê tài chính"],["411","Vốn đầu tư của chủ sở hữu"],["421","Lợi nhuận sau thuế chưa phân phối"],["511","Doanh thu bán hàng & CCDV"],["515","Doanh thu hoạt động tài chính"],["521","Các khoản giảm trừ doanh thu"],["632","Giá vốn hàng bán"],["635","Chi phí tài chính"],["641","Chi phí bán hàng"],["642","Chi phí quản lý doanh nghiệp"],["711","Thu nhập khác"],["811","Chi phí khác"],["911","Xác định kết quả kinh doanh"]
+];
+var PRO=[
+["Khóa sổ cuối năm & quyết toán","Checklist quyết toán theo từng tài khoản, bút toán cuối năm chờ duyệt.","pro"],
+["Đối chiếu tờ khai – sổ sách 12 kỳ","Đối chiếu hàng loạt 12 kỳ tờ khai GTGT với sổ, kiểm tra thuế còn khấu trừ liên tục.","hoadon"],
+["Hồ sơ đoàn kiểm tra thuế","Danh mục hồ sơ, rà rủi ro trước kiểm tra, sổ theo dõi yêu cầu của đoàn.","pro"],
+["TSCĐ & khấu hao","Sổ TSCĐ, bảng khấu hao tháng có công thức minh bạch, phân bổ theo bộ phận.","tscd"],
+["Kiểm kê tồn kho & giá vốn","Đối chiếu thẻ kho – sổ – thực tế, soát giá xuất kho và tồn âm.","pro"],
+["Báo cáo quản trị tháng","Kết quả theo kênh, so ngân sách, tiền và KPI cho chủ doanh nghiệp.","dongtien"],
+["Giá thành & biên lợi nhuận","Phân tích theo sản phẩm, khách, kênh với tiêu thức phân bổ rõ ràng.","pro"],
+["Ngân sách năm","Ngân sách từ giả định có tên, theo dõi thực hiện và giải thích chênh lệch.","dongtien"],
+["Kiểm soát nội bộ mua hàng","Rà chu trình mua – thanh toán, phân quyền, kiểm thử dữ liệu nghi vấn.","congno"],
+["Chuyển dữ liệu MISA / Fast / Bravo","Chuẩn hóa file xuất từ phần mềm kế toán thành bảng sạch có kiểm tổng.","chungtu"],
+["Dây chuyền quyết toán năm","Gom số liệu cả năm → hồ sơ TNDN/TNCN → gác cổng → bàn giao.","pro"],
+["Dây chuyền giải trình thuế","Đọc thông báo thuế → soạn công văn & hồ sơ đính kèm → gác cổng căn cứ.","dinhkhoan"]
+];
+var state={entries:[],invoices:[],ars:[],salaries:[],fas:[],cfIn:Array(13).fill(0),cfOut:Array(13).fill(0),token:null,provider:"",customLaws:[],lawUpdated:false,lawReviewed:false,hubProbed:false,hubAvailable:false,hubProvider:""};
+// ===== REVIEW LUẬT: cấu hình luật app đang dùng + snapshot luật hiện hành (đóng gói 04/11/2026) =====
+var PIT_OLD=[[5000000,0.05],[10000000,0.10],[18000000,0.15],[32000000,0.20],[52000000,0.25],[80000000,0.30],[Infinity,0.35]];
+var PIT_NEW=[[10000000,0.05],[30000000,0.10],[60000000,0.20],[100000000,0.30],[Infinity,0.35]];
+var lawConfig={cashThreshold:20000000,personalDeduction:11000000,dependentDeduction:4400000,region1Min:4960000,baseSalary:2340000,pitBrackets:PIT_OLD,pitLabel:"7 bậc, 5–35%"};
+var LAW_CURRENT={cashThreshold:5000000,personalDeduction:15500000,dependentDeduction:6200000,region1Min:5310000,baseSalary:2340000,pitBrackets:PIT_NEW,pitLabel:"5 bậc, 5–35% (ngưỡng 10 / 30 / 60 / 100 triệu)"};
+var LAW_RULES=[
+ {key:"cashThreshold",name:"Ngưỡng thanh toán không dùng tiền mặt để khấu trừ GTGT & tính chi phí được trừ",app:function(){return fmt(lawConfig.cashThreshold)+" trở lên"},cur:function(){return fmt(LAW_CURRENT.cashThreshold)+" trở lên"},basis:"Luật Thuế GTGT 2024 (48/2024/QH15) + NĐ 181/2025/NĐ-CP — hiệu lực 01/07/2025. Ngưỡng cũ 20 triệu đã hết hiệu lực.",impact:"Giữ 20 triệu sẽ bỏ sót hóa đơn 5–20 triệu trả tiền mặt: vẫn cho khấu trừ / tính chi phí trong khi luật không cho — rủi ro bị loại khi quyết toán."},
+ {key:"personalDeduction",name:"Giảm trừ gia cảnh TNCN — bản thân người nộp thuế",app:function(){return fmt(lawConfig.personalDeduction)+" / tháng"},cur:function(){return fmt(LAW_CURRENT.personalDeduction)+" / tháng"},basis:"NQ 110/2025/UBTVQH15 — áp dụng từ kỳ tính thuế 01/01/2026.",impact:"Giữ 11 triệu sẽ tính thuế TNCN cao hơn luật cho phép, trừ thừa vào lương người lao động."},
+ {key:"dependentDeduction",name:"Giảm trừ gia cảnh TNCN — mỗi người phụ thuộc",app:function(){return fmt(lawConfig.dependentDeduction)+" / tháng"},cur:function(){return fmt(LAW_CURRENT.dependentDeduction)+" / tháng"},basis:"NQ 110/2025/UBTVQH15 — áp dụng từ kỳ tính thuế 01/01/2026.",impact:"Như trên: tính thừa thuế cho nhân viên có người phụ thuộc."},
+ {key:"pit",name:"Biểu thuế TNCN lũy tiến từng phần (tiền lương, tiền công)",app:function(){return lawConfig.pitLabel},cur:function(){return LAW_CURRENT.pitLabel},basis:"Luật Thuế TNCN sửa đổi 2025 — hiệu lực 01/01/2026: rút từ 7 bậc xuống 5 bậc, nới rộng các ngưỡng đầu.",impact:"Giữ biểu 7 bậc cũ sẽ tính sai thuế ở hầu hết khung thu nhập trên 10 triệu/tháng."},
+ {key:"region1Min",name:"Lương tối thiểu vùng I — làm căn cứ trần đóng BHTN (20 × LTT vùng)",app:function(){return fmt(lawConfig.region1Min)+" → trần BHTN "+fmt(lawConfig.region1Min*20)},cur:function(){return fmt(LAW_CURRENT.region1Min)+" → trần BHTN "+fmt(LAW_CURRENT.region1Min*20)},basis:"NĐ 293/2025/NĐ-CP về lương tối thiểu vùng — hiệu lực 01/01/2026.",impact:"Giữ mức cũ sẽ đóng BHTN thiếu phần lương nằm giữa hai mức trần cho nhân viên lương cao."},
+ {key:"baseSalary",name:"Lương cơ sở — căn cứ trần đóng BHXH / BHYT (20 × lương cơ sở)",app:function(){return fmt(lawConfig.baseSalary)+" → trần "+fmt(lawConfig.baseSalary*20)},cur:function(){return fmt(LAW_CURRENT.baseSalary)+" → trần "+fmt(LAW_CURRENT.baseSalary*20)+" (chưa có điều chỉnh mới trong snapshot)"},basis:"NĐ 73/2024/NĐ-CP (lương cơ sở 2.340.000đ từ 01/07/2024).",impact:"Hiện khớp snapshot — chỉ cần theo dõi khi Nhà nước điều chỉnh lương cơ sở."},
+ {key:"bhRate",name:"Tỷ lệ đóng BHXH / BHYT / BHTN",app:function(){return "NLĐ 10,5% · Doanh nghiệp 21,5%"},cur:function(){return "NLĐ 10,5% · Doanh nghiệp 21,5% (không đổi)"},basis:"Luật BHXH 2024 (41/2024/QH15) — hiệu lực 01/07/2025, giữ nguyên tỷ lệ đóng.",impact:"Không cần sửa — giữ nguyên công thức hiện tại."},
+ {key:"vat8",name:"Thuế suất GTGT 8% (giảm 2% cho nhiều nhóm hàng hóa, dịch vụ)",app:function(){return "Đã có lựa chọn 8% trong form hóa đơn"},cur:function(){return "Tiếp tục áp dụng đến 31/12/2026 cho nhóm đủ điều kiện"},basis:"NQ 204/2025/QH15 + NĐ 174/2025/NĐ-CP. Không áp dụng cho viễn thông, CNTT, tài chính, chứng khoán, bảo hiểm, bất động sản…",impact:"Không cần sửa công thức — nhưng phải kiểm tra mặt hàng có thuộc nhóm được giảm hay không trước khi chọn 8%."},
+ {key:"acct",name:"Chế độ kế toán & hệ thống tài khoản",app:function(){return "TT 200/2014 (DN) · TT 133/2016 (SME)"},cur:function(){return "TT 200 / TT 133 vẫn là căn cứ chính trong snapshot; DN siêu nhỏ dùng TT 132/2018"},basis:"Thông tư 200/2014/TT-BTC và 133/2016/TT-BTC của Bộ Tài chính.",impact:"Không cần sửa — chọn đúng chế độ theo quy mô doanh nghiệp khi ghi sổ."},
+ {key:"deadline",name:"Hạn nộp tờ khai & quyết toán",app:function(){return "Tháng: ngày 20 · Quý: cuối tháng đầu quý sau · Năm: 31/3"},cur:function(){return "Không đổi trong snapshot"},basis:"Luật Quản lý thuế 2019 + NĐ 126/2020/NĐ-CP.",impact:"Không cần sửa — vẫn phải đối chiếu thông báo riêng của cơ quan thuế quản lý."}
+];
+// ===== LƯU TRONG TRÌNH DUYỆT (localStorage) — đóng tab không mất dữ liệu =====
+// Token API cố ý KHÔNG lưu: vẫn chỉ ở bộ nhớ phiên như trước.
+var STORAGE_KEY="ketoanai_data_v1";
+function updateSaveStatus(iso,err){
+ var txt;
+ if(err){txt="⚠️ Không lưu được vào trình duyệt (có thể do chế độ riêng tư hoặc hết dung lượng). Hãy xuất JSON để sao lưu."}
+ else if(iso){txt="💾 Đã tự động lưu trong trình duyệt lúc "+new Date(iso).toLocaleString("vi-VN")+" — đóng tab mở lại vẫn còn."}
+ else{txt="💾 Tự động lưu trong trình duyệt đang bật — đóng tab mở lại vẫn còn dữ liệu."}
+ var h=document.getElementById("saveStatus");if(h)h.textContent=txt;
+ var s=document.getElementById("storageInfo");
+ if(s){var kb="0";try{var raw=localStorage.getItem(STORAGE_KEY);if(raw)kb=(Math.round(raw.length/102.4)/10).toString()}catch(e){}
+  s.innerHTML="<strong>Lưu trữ trong trình duyệt (localStorage):</strong> "+txt+"<br>Dung lượng dữ liệu đã lưu: khoảng "+kb+" KB · Chỉ trên trình duyệt / máy này · Xóa dữ liệu duyệt web / site data sẽ xóa sổ này — nên vẫn xuất JSON định kỳ để dự phòng và chuyển máy."}
+}
+function saveData(){
+ try{
+  var cfEl=document.getElementById("cf-open");
+  var payload={v:1,savedAt:new Date().toISOString(),entries:state.entries,invoices:state.invoices,ars:state.ars,salaries:state.salaries,fas:state.fas,cfIn:state.cfIn,cfOut:state.cfOut,cfOpen:cfEl?Number(cfEl.value)||0:(state._cfOpen||0),customLaws:state.customLaws,lawUpdated:state.lawUpdated,lawReviewed:state.lawReviewed,lawConfig:{cashThreshold:lawConfig.cashThreshold,personalDeduction:lawConfig.personalDeduction,dependentDeduction:lawConfig.dependentDeduction,region1Min:lawConfig.region1Min,baseSalary:lawConfig.baseSalary,pitLabel:lawConfig.pitLabel,pitIsNew:lawConfig.pitBrackets===LAW_CURRENT.pitBrackets}};
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(payload));
+  state._savedAt=payload.savedAt;state._cfOpen=payload.cfOpen;
+  updateSaveStatus(payload.savedAt);
+ }catch(e){updateSaveStatus(null,e)}
+}
+function loadData(){
+ try{
+  var raw=localStorage.getItem(STORAGE_KEY);if(!raw)return false;
+  var d=JSON.parse(raw);if(!d||typeof d!=="object")return false;
+  state.entries=Array.isArray(d.entries)?d.entries:[];
+  state.invoices=Array.isArray(d.invoices)?d.invoices:[];
+  state.ars=Array.isArray(d.ars)?d.ars:[];
+  state.salaries=Array.isArray(d.salaries)?d.salaries:[];
+  state.fas=Array.isArray(d.fas)?d.fas:[];
+  state.cfIn=Array.isArray(d.cfIn)&&d.cfIn.length===13?d.cfIn:Array(13).fill(0);
+  state.cfOut=Array.isArray(d.cfOut)&&d.cfOut.length===13?d.cfOut:Array(13).fill(0);
+  state.customLaws=Array.isArray(d.customLaws)?d.customLaws:[];
+  state.lawUpdated=!!d.lawUpdated;state.lawReviewed=!!d.lawReviewed;
+  state._cfOpen=Number(d.cfOpen)||0;state._savedAt=d.savedAt||null;
+  if(d.lawConfig){
+   if(typeof d.lawConfig.cashThreshold==="number")lawConfig.cashThreshold=d.lawConfig.cashThreshold;
+   if(typeof d.lawConfig.personalDeduction==="number")lawConfig.personalDeduction=d.lawConfig.personalDeduction;
+   if(typeof d.lawConfig.dependentDeduction==="number")lawConfig.dependentDeduction=d.lawConfig.dependentDeduction;
+   if(typeof d.lawConfig.region1Min==="number")lawConfig.region1Min=d.lawConfig.region1Min;
+   if(typeof d.lawConfig.baseSalary==="number")lawConfig.baseSalary=d.lawConfig.baseSalary;
+   if(d.lawConfig.pitLabel)lawConfig.pitLabel=d.lawConfig.pitLabel;
+   if(d.lawConfig.pitIsNew){lawConfig.pitBrackets=LAW_CURRENT.pitBrackets;lawConfig.pitLabel=LAW_CURRENT.pitLabel}
+  }
+  return true;
+ }catch(e){return false}
+}
+function lawRuleStatus(r){
+ if(state.lawUpdated){return (r.key==="bhRate"||r.key==="vat8"||r.key==="acct"||r.key==="deadline"||r.key==="baseSalary")?"ok":"updated"}
+ switch(r.key){
+  case "cashThreshold":return lawConfig.cashThreshold===LAW_CURRENT.cashThreshold?"ok":"outdated";
+  case "personalDeduction":return lawConfig.personalDeduction===LAW_CURRENT.personalDeduction?"ok":"outdated";
+  case "dependentDeduction":return lawConfig.dependentDeduction===LAW_CURRENT.dependentDeduction?"ok":"outdated";
+  case "region1Min":return lawConfig.region1Min===LAW_CURRENT.region1Min?"ok":"outdated";
+  case "pit":return lawConfig.pitBrackets===LAW_CURRENT.pitBrackets?"ok":"outdated";
+  default:return "ok";
+ }
+}
+function renderLaw(){
+ var counts={ok:0,outdated:0,updated:0};
+ LAW_RULES.forEach(function(r){counts[lawRuleStatus(r)]++});
+ document.getElementById("lawKpis").innerHTML=[["Tổng số quy tắc được soát",LAW_RULES.length],["Đang khớp luật hiện hành",counts.ok],["Đã update (đã lưu)",counts.updated],["Cần update ngay",counts.outdated]].map(function(x){return "<div class='card kpi' style='box-shadow:none'><div class='lab'>"+x[0]+"</div><div class='num'>"+x[1]+"</div></div>"}).join("");
+ document.getElementById("lawBody").innerHTML=LAW_RULES.map(function(r){var s=lawRuleStatus(r);var pill=s==="outdated"?"<span class='pill red'>Cần update</span>":(s==="updated"?"<span class='pill green'>Đã update ✓</span>":"<span class='pill green'>Khớp ✓</span>");return "<tr><td><strong>"+r.name+"</strong></td><td>"+r.app()+"</td><td><strong>"+r.cur()+"</strong></td><td class='small'>"+r.basis+"</td><td>"+pill+"</td><td class='small'>"+r.impact+"</td></tr>"}).join("");
+ var btn=document.getElementById("btnLawUpdate");if(btn)btn.disabled=!(state.lawReviewed&&counts.outdated>0);
+ var v=document.getElementById("lawVerdict");
+ if(state.lawUpdated)v.innerHTML="<div class='note' style='background:var(--chip)'><strong>✅ Đã áp dụng luật mới:</strong> ngưỡng thanh toán không tiền mặt 5 triệu, giảm trừ 15,5 triệu / 6,2 triệu, biểu thuế 5 bậc và trần BHTN theo lương tối thiểu vùng I 5.310.000đ đang được dùng trong các công thức tính và đã lưu trong trình duyệt. Hãy tính lại các bảng lương / hóa đơn đã nhập trước đó để thấy chênh lệch.</div>";
+ else if(state.lawReviewed&&counts.outdated>0)v.innerHTML="<div class='warnbox'><strong>⚠️ Review xong: còn "+counts.outdated+" quy tắc lệch luật hiện hành.</strong> Bấm nút <strong>Update — Áp dụng luật mới vào app</strong> ở trên để sửa công thức tính ngay, hoặc ghi nhận vào sổ tay nếu đơn vị của bạn thuộc kỳ tính thuế trước ngày hiệu lực.</div>";
+ else if(state.lawReviewed)v.innerHTML="<div class='note'><strong>✅ Review xong:</strong> toàn bộ quy tắc trong app đang khớp snapshot luật hiện hành.</div>";
+}
+function runLawReview(){state.lawReviewed=true;document.getElementById("lawRunInfo").textContent="Đã đối chiếu lúc "+new Date().toLocaleString("vi-VN")+" với snapshot luật ngày 04/11/2026.";renderLaw();renderTodos();saveData()}
+function applyLawUpdate(){
+ var changes=[];
+ if(lawConfig.cashThreshold!==LAW_CURRENT.cashThreshold)changes.push("Ngưỡng thanh toán không tiền mặt: "+fmt(lawConfig.cashThreshold)+" → "+fmt(LAW_CURRENT.cashThreshold)+" (Luật GTGT 2024, từ 01/07/2025)");
+ if(lawConfig.personalDeduction!==LAW_CURRENT.personalDeduction)changes.push("Giảm trừ bản thân TNCN: "+fmt(lawConfig.personalDeduction)+" → "+fmt(LAW_CURRENT.personalDeduction)+"/tháng (NQ 110/2025, từ 01/01/2026)");
+ if(lawConfig.dependentDeduction!==LAW_CURRENT.dependentDeduction)changes.push("Giảm trừ người phụ thuộc: "+fmt(lawConfig.dependentDeduction)+" → "+fmt(LAW_CURRENT.dependentDeduction)+"/tháng (NQ 110/2025, từ 01/01/2026)");
+ if(lawConfig.pitBrackets!==LAW_CURRENT.pitBrackets)changes.push("Biểu thuế TNCN: "+lawConfig.pitLabel+" → "+LAW_CURRENT.pitLabel+" (Luật TNCN sửa đổi 2025, từ 01/01/2026)");
+ if(lawConfig.region1Min!==LAW_CURRENT.region1Min)changes.push("Lương tối thiểu vùng I / trần BHTN: "+fmt(lawConfig.region1Min)+" → "+fmt(LAW_CURRENT.region1Min)+" (NĐ 293/2025, từ 01/01/2026)");
+ lawConfig.cashThreshold=LAW_CURRENT.cashThreshold;lawConfig.personalDeduction=LAW_CURRENT.personalDeduction;lawConfig.dependentDeduction=LAW_CURRENT.dependentDeduction;lawConfig.region1Min=LAW_CURRENT.region1Min;lawConfig.pitBrackets=LAW_CURRENT.pitBrackets;lawConfig.pitLabel=LAW_CURRENT.pitLabel;
+ state.lawUpdated=true;
+ var note=document.getElementById("salNote");if(note)note.textContent="Trần đóng BHXH/BHYT: 20 × lương cơ sở 2.340.000đ = 46.800.000đ. Trần BHTN: 20 × lương tối thiểu vùng I 5.310.000đ = 106.200.000đ (đã Update theo NĐ 293/2025). Công ty đóng thêm 21,5% (BHXH 17,5% + BHYT 3% + BHTN 1%) trên quỹ lương đóng bảo hiểm.";
+ var tag=document.getElementById("salLawTag");if(tag)tag.textContent="⚖️ Đã Update luật 2026: giảm trừ 15.500.000đ / 6.200.000đ, biểu thuế 5 bậc.";
+ document.getElementById("lawLog").innerHTML="<p><strong>"+new Date().toLocaleString("vi-VN")+" — Đã áp dụng Update luật:</strong></p><ul class='checklist'>"+changes.map(function(c){return "<li>⬆ "+c+"</li>"}).join("")+"</ul><p class='muted small'>Áp dụng cho hóa đơn và bảng lương tính từ thời điểm này, và đã được lưu trong trình duyệt. Dữ liệu đã lưu trước đó không tự tính lại — hãy soát lại các khoản liên quan.</p>";
+ renderLaw();renderAll();
+}
+function addCustomLaw(){
+ var n=document.getElementById("cl-name").value.trim();if(!n)return;
+ state.customLaws.push({name:n,date:document.getElementById("cl-date").value,area:document.getElementById("cl-area").value,note:document.getElementById("cl-note").value.trim()});
+ document.getElementById("cl-name").value="";document.getElementById("cl-note").value="";
+ document.getElementById("customLawList").innerHTML="<ul class='checklist' style='margin-top:10px'>"+state.customLaws.map(function(c){return "<li>🕐 <strong>"+esc(c.name)+"</strong> — "+esc(c.area)+(c.date?" · hiệu lực "+esc(c.date):"")+(c.note?"<br><span class='muted small'>"+esc(c.note)+"</span>":"")+"<br><span class='pill amber'>Chờ đối chiếu ở đợt review sau</span></li>"}).join("")+"</ul>";
+ saveData();if(document.getElementById("dataStats"))renderDataStats();
+}
+// ===== THƯ VIỆN VĂN BẢN: tổng hợp quy định & luật kế toán — thuế (snapshot đóng gói 04/11/2026) =====
+// t=chủ đề, tt: con=Còn hiệu lực, moi=Áp dụng mới/từ 2026, motphan=Còn một phần/đã sửa đổi, het=Hết giai đoạn áp dụng
+var VB=[
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Luật",so:"88/2015/QH13",ten:"Luật Kế toán",ban:"20/11/2015",hl:"01/01/2017",cq:"Quốc hội",tt:"con",tom:"Luật gốc của nghề kế toán: ai được làm kế toán, chứng từ phải có gì, sổ sách lưu bao lâu, báo cáo tài chính gồm những gì và ai chịu trách nhiệm với số liệu.",dung:"Khi cần biết một chứng từ / sổ sách có hợp lệ không, thời hạn lưu trữ chứng từ, hoặc trách nhiệm của kế toán trưởng và người đại diện pháp luật.",diem:["Chứng từ điện tử có giá trị như chứng từ giấy khi đủ điều kiện","Lưu trữ chứng từ kế toán tối thiểu 5–10 năm tùy loại, một số loại lưu vĩnh viễn","Đơn vị tiền tệ ghi sổ là đồng Việt Nam"],lk:"chungtu",lkLabel:"Mở Chứng từ & Sổ sách"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Nghị định",so:"174/2016/NĐ-CP",ten:"Nghị định hướng dẫn Luật Kế toán",ban:"30/12/2016",hl:"01/01/2017",cq:"Chính phủ",tt:"con",tom:"Hướng dẫn chi tiết Luật Kế toán: điều kiện hành nghề dịch vụ kế toán, tổ chức bộ máy kế toán, lưu trữ và tiêu hủy tài liệu kế toán.",dung:"Khi thuê kế toán dịch vụ, khi tổ chức lại phòng kế toán, hoặc khi cần hủy tài liệu hết thời hạn lưu trữ đúng thủ tục.",diem:["Quy định rõ điều kiện của kế toán trưởng","Có thủ tục riêng cho tiêu hủy tài liệu kế toán"],lk:"chungtu",lkLabel:"Mở Chứng từ & Sổ sách"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"200/2014/TT-BTC",ten:"Chế độ kế toán doanh nghiệp (TT 200)",ban:"22/12/2014",hl:"15/02/2015 (áp dụng cho năm tài chính từ 2015)",cq:"Bộ Tài chính",tt:"con",tom:"Bộ khung ghi sổ cho doanh nghiệp vừa và lớn: hệ thống tài khoản, cách hạch toán từng nghiệp vụ và mẫu báo cáo tài chính.",dung:"Khi doanh nghiệp không thuộc diện SME áp dụng TT 133 — tra tài khoản và cách định khoản cho mọi nghiệp vụ thường ngày ở đây.",diem:["Hệ thống TK đầy đủ: 111, 112, 131, 331, 511, 632, 642…","Cho phép doanh nghiệp mở thêm tài khoản chi tiết theo nhu cầu quản lý"],lk:"dinhkhoan",lkLabel:"Tra tài khoản & định khoản"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"133/2016/TT-BTC",ten:"Chế độ kế toán doanh nghiệp nhỏ và vừa (TT 133)",ban:"26/08/2016",hl:"01/01/2017",cq:"Bộ Tài chính",tt:"con",tom:"Phiên bản gọn của chế độ kế toán dành cho doanh nghiệp nhỏ và vừa: ít tài khoản hơn, không bắt buộc lập báo cáo lưu chuyển tiền tệ.",dung:"Khi đơn vị là doanh nghiệp nhỏ / vừa và chọn áp dụng TT 133 thay TT 200 — phải áp dụng nhất quán trong cả năm tài chính.",diem:["Một số tài khoản khác TT 200 (ví dụ không tách 641/642 như TT 200)","Vẫn phải lập bảng cân đối và báo cáo kết quả kinh doanh"],lk:"dinhkhoan",lkLabel:"Tra tài khoản & định khoản"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"132/2018/TT-BTC",ten:"Chế độ kế toán doanh nghiệp siêu nhỏ (TT 132)",ban:"28/12/2018",hl:"15/02/2019",cq:"Bộ Tài chính",tt:"con",tom:"Chế độ kế toán đơn giản nhất cho doanh nghiệp siêu nhỏ, gồm cả trường hợp nộp thuế TNDN theo tỷ lệ % trên doanh thu.",dung:"Khi đơn vị thuộc diện siêu nhỏ (lao động và doanh thu rất thấp) và muốn ghi sổ tối giản, hoặc nộp thuế theo tỷ lệ trên doanh thu.",diem:["Sổ sách rút gọn đáng kể so với TT 133 / TT 200","Có chế độ riêng cho đơn vị nộp thuế theo % doanh thu"],lk:"chungtu",lkLabel:"Mở Chứng từ & Sổ sách"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"45/2013/TT-BTC",ten:"Hướng dẫn trích khấu hao tài sản cố định",ban:"25/04/2013",hl:"10/06/2013",cq:"Bộ Tài chính",tt:"motphan",tom:"Quy định TSCĐ phải có nguyên giá từ 30 triệu đồng và dùng trên 1 năm; khung thời gian khấu hao cho từng loại tài sản. Đã được sửa đổi bởi TT 147/2016 và TT 28/2017.",dung:"Khi mua tài sản mới cần quyết định có phải TSCĐ không và trích khấu hao bao nhiêu năm thì được tính chi phí hợp lý.",diem:["Ngưỡng TSCĐ: nguyên giá từ 30.000.000đ","Khấu hao vượt khung thời gian quy định có thể bị loại khỏi chi phí được trừ TNDN"],lk:"tscd",lkLabel:"Mở TSCĐ & Khấu hao"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"147/2016/TT-BTC",ten:"Sửa đổi, bổ sung TT 45/2013 về trích khấu hao TSCĐ",ban:"2016",hl:"2016",cq:"Bộ Tài chính",tt:"motphan",tom:"Văn bản sửa đổi của TT 45/2013/TT-BTC về chế độ quản lý, sử dụng và trích khấu hao tài sản cố định — trước đây chỉ được nhắc gộp trong thẻ TT 45/2013, nay tách thành thẻ riêng để tìm đúng số hiệu. Khi áp dụng, đọc cùng thẻ gốc TT 45/2013 và thẻ sửa đổi tiếp theo TT 28/2017.",dung:"Khi tra cứu quy định khấu hao TSCĐ mà văn bản dẫn chiếu tới TT 147/2016, hoặc cần biết điểm nào của TT 45/2013 đã bị sửa đổi.",diem:["Là văn bản sửa đổi — không áp dụng độc lập, phải đọc cùng TT 45/2013","Xem thêm thẻ riêng TT 28/2017/TT-BTC (sửa đổi tiếp theo)"],lk:"tscd",lkLabel:"Mở TSCĐ & Khấu hao"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"28/2017/TT-BTC",ten:"Sửa đổi, bổ sung quy định trích khấu hao TSCĐ (sửa đổi TT 45/2013, TT 147/2016)",ban:"2017",hl:"2017",cq:"Bộ Tài chính",tt:"motphan",tom:"Văn bản sửa đổi tiếp theo trong chuỗi hướng dẫn khấu hao TSCĐ: sửa đổi, bổ sung một số điều của TT 45/2013/TT-BTC và TT 147/2016/TT-BTC. Trước đây chỉ được nhắc gộp trong thẻ TT 45/2013, nay tách thành thẻ riêng để tìm đúng số hiệu.",dung:"Khi văn bản hoặc hồ sơ TSCĐ dẫn chiếu tới TT 28/2017, hoặc khi cần đối chiếu quy định khấu hao hiện hành đã qua các lần sửa đổi.",diem:["Đọc theo chuỗi: TT 45/2013 (gốc) → TT 147/2016 → TT 28/2017","Khấu hao ngoài khung / ngoài quy định sửa đổi có thể bị loại khỏi chi phí được trừ TNDN"],lk:"tscd",lkLabel:"Mở TSCĐ & Khấu hao"},
+{t:"ketoan",tl:"Chế độ kế toán",loai:"Thông tư",so:"48/2019/TT-BTC",ten:"Trích lập dự phòng giảm giá hàng tồn kho, nợ phải thu khó đòi…",ban:"08/08/2019",hl:"10/10/2019",cq:"Bộ Tài chính",tt:"con",tom:"Cho phép trích lập dự phòng cho hàng tồn kho giảm giá, nợ quá hạn khó đòi, bảo hành… theo tỷ lệ và điều kiện cụ thể, khoản dự phòng đúng quy định được tính chi phí.",dung:"Cuối năm, khi có công nợ quá hạn lâu hoặc hàng tồn kho hư hỏng / lỗi thời cần trích lập dự phòng để phản ánh đúng giá trị.",diem:["Dự phòng nợ khó đòi theo tuổi nợ quá hạn","Phải có đủ hồ sơ chứng minh khoản nợ / hàng hóa thuộc diện được trích lập"],lk:"congno",lkLabel:"Mở Công nợ & tuổi nợ"},
+{t:"gtgt",tl:"Thuế GTGT",loai:"Luật",so:"48/2024/QH15",ten:"Luật Thuế giá trị gia tăng 2024",ban:"26/11/2024",hl:"01/07/2025",cq:"Quốc hội",tt:"moi",tom:"Luật GTGT mới thay thế luật cũ. Điểm kế toán phải nhớ nhất: hóa đơn từ 5 triệu đồng trở lên phải có chứng từ thanh toán không dùng tiền mặt mới được khấu trừ thuế đầu vào — không còn ngưỡng 20 triệu như trước.",dung:"Mỗi khi soát hóa đơn đầu vào để khấu trừ, và khi xác định hàng hóa / dịch vụ thuộc diện chịu thuế, không chịu thuế hay thuế suất 0%.",diem:["Ngưỡng thanh toán không tiền mặt: 5.000.000đ (từ 01/07/2025)","Bổ sung quy định hoàn thuế và đối tượng không chịu thuế"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"gtgt",tl:"Thuế GTGT",loai:"Nghị định",so:"181/2025/NĐ-CP",ten:"Nghị định hướng dẫn Luật Thuế GTGT 2024",ban:"01/07/2025",hl:"01/07/2025",cq:"Chính phủ",tt:"moi",tom:"Văn bản hướng dẫn thi hành Luật GTGT 2024: chi tiết về chứng từ thanh toán không dùng tiền mặt, khấu trừ, hoàn thuế và kê khai theo quy định mới.",dung:"Khi Luật GTGT 2024 chưa nói rõ một tình huống cụ thể — ví dụ thanh toán qua bên thứ ba, ủy quyền thanh toán — thì tra nghị định này.",diem:["Liệt kê các hình thức được coi là thanh toán không dùng tiền mặt","Là căn cứ app dùng để soát hóa đơn trong mục Review Luật"],lk:"luat",lkLabel:"Xem đối chiếu ở Review Luật"},
+{t:"gtgt",tl:"Thuế GTGT",loai:"Nghị quyết",so:"204/2025/QH15",ten:"Nghị quyết về giảm thuế giá trị gia tăng",ban:"17/06/2025",hl:"01/07/2025 đến 31/12/2026",cq:"Quốc hội",tt:"moi",tom:"Nghị quyết của Quốc hội quyết định chính sách giảm 2% thuế GTGT (10% xuống 8%) cho nhiều nhóm hàng hóa, dịch vụ từ 01/07/2025 đến hết 31/12/2026 — nhưng loại trừ viễn thông, CNTT, tài chính, ngân hàng, chứng khoán, bảo hiểm, bất động sản, kim loại, khai khoáng (trừ than) và hàng chịu thuế tiêu thụ đặc biệt (trừ xăng). Chi tiết danh mục và cách lập hóa đơn nằm ở văn bản hướng dẫn NĐ 174/2025/NĐ-CP (thẻ riêng ngay dưới).",dung:"Khi cần căn cứ gốc của chính sách giảm thuế 8%: xác nhận mặt hàng có thuộc diện được giảm theo nghị quyết này hay không, trước khi tra danh mục chi tiết ở NĐ 174/2025.",diem:["Hết hạn 31/12/2026 — từ 2027 quay lại thuế suất gốc nếu không có chính sách mới","Sai thuế suất do chọn nhầm 8% là lỗi soát hóa đơn rất hay gặp"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"gtgt",tl:"Thuế GTGT",loai:"Nghị định",so:"174/2025/NĐ-CP",ten:"Quy định chi tiết chính sách giảm thuế GTGT theo Nghị quyết 204/2025",ban:"30/06/2025",hl:"01/07/2025 đến hết 31/12/2026",cq:"Chính phủ",tt:"moi",tom:"Nghị định hướng dẫn thực hiện NQ 204/2025/QH15 về giảm thuế GTGT — trước đây chỉ được nhắc gộp trong thẻ NQ 204/2025, nay tách thành thẻ riêng để tìm đúng số hiệu 174/2025. Nghị định có Phụ lục I và II liệt kê các nhóm hàng hóa, dịch vụ KHÔNG được giảm, và Phụ lục III là mẫu kê khai cho cơ sở kinh doanh tính thuế theo tỷ lệ % trên doanh thu.",dung:"Khi xuất hóa đơn cần quyết định áp 8% hay 10%: đối chiếu mặt hàng với Phụ lục I, II của nghị định này; hộ / cá nhân kinh doanh theo tỷ lệ % thì giảm 20% mức tỷ lệ % đang áp dụng.",diem:["Đọc cùng thẻ gốc NQ 204/2025/QH15 — nghị quyết quyết chính sách, nghị định này cho danh mục chi tiết","Hàng đang chịu 5% hoặc không chịu thuế thì không được giảm xuống 8%","Trên hóa đơn ghi thuế suất 8% tại dòng thuế suất đối với hàng thuộc diện giảm"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"gtgt",tl:"Thuế GTGT",loai:"Thông tư",so:"219/2013/TT-BTC",ten:"Hướng dẫn thi hành Luật Thuế GTGT (theo luật cũ)",ban:"31/12/2013",hl:"15/02/2014",cq:"Bộ Tài chính",tt:"motphan",tom:"Thông tư hướng dẫn GTGT lâu năm theo Luật GTGT cũ. Từ 01/07/2025, các nội dung trái Luật GTGT 2024 và NĐ 181/2025 không còn áp dụng — chỉ còn giá trị tham chiếu cho kỳ tính thuế trước đó.",dung:"Khi soát lại kỳ thuế trước 01/07/2025 (quyết toán, thanh tra các năm cũ) hoặc cần hiểu nguồn gốc một quy tắc cũ như ngưỡng 20 triệu.",diem:["Ngưỡng 20 triệu trong văn bản này đã hết hiệu lực từ 01/07/2025","Không dùng cho hóa đơn phát sinh từ kỳ hiện tại"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"tndn",tl:"Thuế TNDN",loai:"Luật",so:"67/2025/QH15",ten:"Luật Thuế thu nhập doanh nghiệp 2025",ban:"14/06/2025",hl:"01/10/2025 (áp dụng từ kỳ tính thuế 2025)",cq:"Quốc hội",tt:"moi",tom:"Luật TNDN mới: thuế suất phổ thông vẫn 20%, thêm thuế suất ưu đãi theo quy mô doanh thu — 15% cho doanh nghiệp có doanh thu năm trước không quá 3 tỷ, 17% cho doanh thu trên 3 tỷ đến 50 tỷ, kèm điều kiện đi kèm.",dung:"Khi tạm tính thuế TNDN quý và quyết toán năm: xác định đúng thuế suất của đơn vị mình và rà soát chi phí được trừ.",diem:["15% / 17% / 20% theo tổng doanh thu năm trước liền kề","Không phải mọi doanh nghiệp nhỏ đều tự động được hưởng mức thấp — kiểm tra điều kiện"],lk:"thue",lkLabel:"Mở mục Thuế (TNDN tạm tính)"},
+{t:"tndn",tl:"Thuế TNDN",loai:"Thông tư",so:"78/2014/TT-BTC",ten:"Hướng dẫn thi hành thuế TNDN (theo luật cũ)",ban:"18/06/2014",hl:"02/08/2014",cq:"Bộ Tài chính",tt:"motphan",tom:"Thông tư hướng dẫn thi hành NĐ 218/2013/NĐ-CP về thuế TNDN theo luật cũ: chi tiết chi phí được trừ / không được trừ, thu nhập chịu thuế và ưu đãi TNDN. Đã được sửa đổi, bổ sung bởi TT 96/2015/TT-BTC (thẻ riêng ngay dưới) — khi áp dụng phải đọc bản đã sửa đổi. Vẫn là tài liệu tham chiếu chính về chi phí được trừ trong lúc chờ hướng dẫn đầy đủ cho Luật TNDN 2025.",dung:"Khi phân vân một khoản chi (tiếp khách, quảng cáo, phúc lợi, lãi vay…) có được tính chi phí được trừ khi quyết toán TNDN hay không.",diem:["Liệt kê chi tiết các khoản chi không được trừ","Chi không có chứng từ thanh toán không tiền mặt theo ngưỡng quy định sẽ bị loại"],lk:"thue",lkLabel:"Mở mục Thuế (TNDN tạm tính)"},
+{t:"tndn",tl:"Thuế TNDN",loai:"Thông tư",so:"96/2015/TT-BTC",ten:"Hướng dẫn thuế TNDN theo NĐ 12/2015 — sửa đổi TT 78/2014, TT 119/2014, TT 151/2014",ban:"22/06/2015",hl:"06/08/2015 (áp dụng từ kỳ tính thuế 2015)",cq:"Bộ Tài chính",tt:"motphan",tom:"Thông tư hướng dẫn thuế TNDN tại NĐ 12/2015/NĐ-CP và sửa đổi, bổ sung nhiều điều của TT 78/2014/TT-BTC, TT 119/2014/TT-BTC, TT 151/2014/TT-BTC — trước đây chỉ được nhắc gộp trong thẻ TT 78/2014, nay tách thành thẻ riêng để tìm đúng số hiệu 96/2015. Điểm được nhắc nhiều nhất: sửa đổi Điều 6 của TT 78/2014 về các khoản chi được trừ / không được trừ và bãi bỏ khống chế chi phí quảng cáo, tiếp thị.",dung:"Khi hồ sơ quyết toán TNDN dẫn chiếu tới TT 96/2015, hoặc khi cần biết quy định chi phí được trừ hiện hành khác gì bản gốc TT 78/2014.",diem:["Đọc theo chuỗi: TT 78/2014 (gốc) → TT 96/2015 (sửa đổi) — không áp dụng riêng bản gốc chưa sửa đổi","Áp dụng cho kỳ tính thuế TNDN từ năm 2015 trở đi"],lk:"thue",lkLabel:"Mở mục Thuế (TNDN tạm tính)"},
+{t:"tndn",tl:"Thuế TNDN",loai:"Nghị định",so:"333/2025/NĐ-CP",ten:"Nghị định 333/2025 — ngân sách nhà nước 2025–2027, quyết toán thuế TNDN 2025",ban:"2025",hl:"Giai đoạn 2025–2027 · quyết toán TNDN kỳ tính thuế 2025",cq:"Chính phủ",tt:"moi",tom:"Nghị định 333/2025/NĐ-CP liên quan kế hoạch ngân sách nhà nước giai đoạn 2025–2027 và việc quyết toán thuế TNDN cho kỳ tính thuế 2025. Kế toán cần đối chiếu các nội dung về quyết toán TNDN 2025 trong nghị định này cùng Luật TNDN 2025 khi lập hồ sơ quyết toán năm.",dung:"Khi chuẩn bị quyết toán thuế TNDN năm 2025 và rà soát các quy định ngân sách 2025–2027 có liên quan tới nghĩa vụ thuế của đơn vị.",diem:["Thuộc nhóm căn cứ cần tra khi quyết toán TNDN kỳ tính thuế 2025","Đối chiếu bản gốc theo đúng số hiệu 333/2025/NĐ-CP trước khi áp dụng"],lk:"thue",lkLabel:"Mở mục Thuế (TNDN tạm tính)"},
+{t:"tndn",tl:"Thuế TNDN",loai:"Nghị định",so:"132/2020/NĐ-CP",ten:"Quản lý thuế đối với doanh nghiệp có giao dịch liên kết",ban:"05/11/2020",hl:"20/12/2020",cq:"Chính phủ",tt:"con",tom:"Quy định về giao dịch với bên liên kết (công ty mẹ, công ty cùng tập đoàn, cổ đông lớn…): phải kê khai, lập hồ sơ xác định giá và bị khống chế một phần chi phí lãi vay.",dung:"Khi doanh nghiệp có giao dịch mua bán, vay mượn với bên liên kết — cần chuẩn bị hồ sơ giá chuyển nhượng trước khi quyết toán.",diem:["Chi phí lãi vay được trừ bị khống chế theo % EBITDA khi có giao dịch liên kết","Có mẫu phụ lục kê khai giao dịch liên kết kèm tờ khai quyết toán TNDN"],lk:"thue",lkLabel:"Mở mục Thuế"},
+{t:"tncn",tl:"Thuế TNCN",loai:"Luật",so:"109/2025/QH15",ten:"Luật Thuế thu nhập cá nhân 2025",ban:"10/12/2025",hl:"01/07/2026 · quy định về tiền lương, tiền công áp dụng từ kỳ tính thuế 2026",cq:"Quốc hội",tt:"moi",tom:"Luật TNCN mới thay thế Luật Thuế TNCN 04/2007/QH12. Điểm kế toán lương phải nhớ nhất: biểu thuế lũy tiến từng phần với thu nhập từ tiền lương, tiền công rút từ 7 bậc xuống 5 bậc và áp dụng từ kỳ tính thuế năm 2026, đồng thời mức giảm trừ gia cảnh 15,5 triệu / 6,2 triệu đồng được đưa vào luật. Đây chính là căn cứ mà mục Review Luật của app viện dẫn cho biểu thuế 5 bậc — trước đây thư viện chưa có thẻ riêng cho luật này.",dung:"Khi tính lương, khấu trừ và quyết toán TNCN từ kỳ tính thuế 2026: tra biểu thuế, thu nhập chịu thuế và giảm trừ theo luật này thay cho luật cũ.",diem:["Biểu 5 bậc theo thu nhập tính thuế/tháng: đến 10 triệu 5% · trên 10–30 triệu 10% · trên 30–60 triệu 20% · trên 60–100 triệu 30% · trên 100 triệu 35%","Giảm trừ gia cảnh: bản thân 15.500.000đ/tháng · mỗi người phụ thuộc 6.200.000đ/tháng","Quyết toán kỳ tính thuế 2025 vẫn dùng biểu 7 bậc và mức giảm trừ cũ 11 triệu / 4,4 triệu"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"tncn",tl:"Thuế TNCN",loai:"Nghị quyết",so:"110/2025/UBTVQH15",ten:"Điều chỉnh mức giảm trừ gia cảnh thuế TNCN",ban:"2025",hl:"01/01/2026",cq:"Ủy ban Thường vụ Quốc hội",tt:"moi",tom:"Nâng giảm trừ gia cảnh từ kỳ tính thuế 2026: bản thân người nộp thuế 15,5 triệu đồng/tháng (trước là 11 triệu), mỗi người phụ thuộc 6,2 triệu đồng/tháng (trước là 4,4 triệu).",dung:"Khi tính lương từ tháng 01/2026: dùng mức giảm trừ mới, nếu không sẽ khấu trừ thừa thuế của người lao động.",diem:["Bản thân: 15.500.000đ/tháng · Người phụ thuộc: 6.200.000đ/tháng","Kỳ lương năm 2025 vẫn dùng mức 11 triệu / 4,4 triệu"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"tncn",tl:"Thuế TNCN",loai:"Nghị quyết",so:"954/2020/UBTVQH14",ten:"Mức giảm trừ gia cảnh 11 triệu / 4,4 triệu",ban:"02/06/2020",hl:"01/07/2020 đến 31/12/2025",cq:"Ủy ban Thường vụ Quốc hội",tt:"het",tom:"Quy định mức giảm trừ gia cảnh quen thuộc nhiều năm: bản thân 11 triệu đồng/tháng, mỗi người phụ thuộc 4,4 triệu đồng/tháng. Mức này hết giai đoạn áp dụng khi NQ 110/2025 có hiệu lực từ 01/01/2026.",dung:"Khi tính lại lương, quyết toán TNCN cho các kỳ từ 2020 đến hết 2025 — đây là mức đúng cho giai đoạn đó.",diem:["Chỉ áp dụng cho kỳ tính thuế đến hết 31/12/2025","Đừng dùng mức này cho lương năm 2026"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"tncn",tl:"Thuế TNCN",loai:"Thông tư",so:"111/2013/TT-BTC",ten:"Hướng dẫn thực hiện Luật Thuế TNCN",ban:"15/08/2013",hl:"01/10/2013",cq:"Bộ Tài chính",tt:"motphan",tom:"Hướng dẫn chi tiết thuế TNCN: các khoản thu nhập chịu thuế, phụ cấp không tính thuế, đăng ký người phụ thuộc, khấu trừ 10% với lao động thời vụ và quyết toán thuế. Một số nội dung đã được sửa đổi, bổ sung qua các năm.",dung:"Khi cần biết một khoản phụ cấp / thưởng có chịu thuế không, hoặc thủ tục đăng ký giảm trừ cho người phụ thuộc làm thế nào.",diem:["Lao động không có hợp đồng hoặc hợp đồng dưới 3 tháng: khấu trừ 10% khi chi trả từ 2 triệu đồng/lần","Quyết toán ủy quyền chỉ áp dụng khi đủ điều kiện theo hướng dẫn"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Luật",so:"38/2019/QH14",ten:"Luật Quản lý thuế 2019",ban:"13/06/2019",hl:"01/07/2020",cq:"Quốc hội",tt:"con",tom:"Luật khung về quản lý thuế: đăng ký thuế, kê khai, hạn nộp, hoàn thuế, kiểm tra — thanh tra thuế và cưỡng chế. Mọi hạn nộp kế toán dùng hằng tháng đều bắt nguồn từ luật này.",dung:"Khi cần biết hạn nộp tờ khai / tiền thuế, thời hạn được hoàn thuế, hoặc quyền và nghĩa vụ khi đoàn kiểm tra thuế làm việc.",diem:["Hạn nộp hồ sơ khai tháng: ngày 20 tháng sau · khai quý: ngày cuối cùng của tháng đầu quý sau","Quyết toán năm: ngày cuối cùng của tháng thứ 3 sau khi kết thúc năm"],lk:"thue",lkLabel:"Mở mục Thuế (lịch hạn nộp)"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Nghị định",so:"126/2020/NĐ-CP",ten:"Nghị định hướng dẫn Luật Quản lý thuế",ban:"19/10/2020",hl:"05/12/2020",cq:"Chính phủ",tt:"con",tom:"Hướng dẫn chi tiết quản lý thuế: khai thuế từng sắc thuế, tạm nộp TNDN quý, địa điểm nộp hồ sơ và các trường hợp cơ quan thuế ấn định thuế.",dung:"Khi cần chi tiết thực thi — ví dụ tổng tạm nộp TNDN 4 quý phải đạt tối thiểu 80% số quyết toán năm, thiếu sẽ bị tính tiền chậm nộp.",diem:["Tạm nộp TNDN 4 quý ≥ 80% số phải nộp theo quyết toán năm","Quy định rõ khai thuế theo tháng / quý cho từng trường hợp"],lk:"thue",lkLabel:"Mở mục Thuế"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Thông tư",so:"80/2021/TT-BTC",ten:"Hướng dẫn thi hành Luật Quản lý thuế",ban:"29/09/2021",hl:"01/01/2022",cq:"Bộ Tài chính",tt:"con",tom:"Thông tư hướng dẫn thủ tục: mẫu tờ khai cho từng sắc thuế (01/GTGT, 05/KK-TNCN, 03/TNDN…), hồ sơ hoàn thuế, gia hạn nộp thuế và xử lý tiền nộp thừa.",dung:"Khi lập tờ khai thực tế trên HTKK / Thuế điện tử mà chưa rõ chỉ tiêu, phụ lục hay hồ sơ đính kèm — tra thông tư này.",diem:["Chứa toàn bộ mẫu biểu tờ khai đang dùng","Hướng dẫn quy trình hoàn thuế và bù trừ tiền nộp thừa"],lk:"thue",lkLabel:"Mở mục Thuế"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Nghị định",so:"123/2020/NĐ-CP, sửa đổi bởi 70/2025/NĐ-CP",ten:"Quy định về hóa đơn, chứng từ (gồm hóa đơn điện tử)",ban:"19/10/2020 · sửa đổi 2025",hl:"01/07/2022 · nội dung sửa đổi từ 01/06/2025",cq:"Chính phủ",tt:"moi",tom:"Bộ quy định nền tảng về hóa đơn: khi nào phải lập hóa đơn, nội dung bắt buộc, hóa đơn điện tử có mã / không mã của cơ quan thuế, hóa đơn khởi tạo từ máy tính tiền. NĐ 70/2025 sửa đổi, bổ sung nhiều điểm quan trọng từ 01/06/2025.",dung:"Mỗi khi xuất hóa đơn, xử lý hóa đơn sai sót (thay thế / điều chỉnh), hoặc khi hộ kinh doanh và đơn vị bán lẻ phải dùng hóa đơn từ máy tính tiền.",diem:["Hóa đơn điện tử là bắt buộc với hầu hết đơn vị bán hàng hóa, dịch vụ","Phân biệt rõ khi nào lập hóa đơn thay thế, khi nào lập hóa đơn điều chỉnh"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Nghị định",so:"70/2025/NĐ-CP",ten:"Sửa đổi, bổ sung Nghị định 123/2020 về hóa đơn, chứng từ",ban:"2025",hl:"01/06/2025",cq:"Chính phủ",tt:"moi",tom:"Nghị định sửa đổi, bổ sung nhiều điểm của NĐ 123/2020/NĐ-CP về hóa đơn, chứng từ — trước đây chỉ được nhắc gộp trong thẻ NĐ 123/2020, nay tách thành thẻ riêng để tìm đúng số hiệu 70/2025. Nội dung sửa đổi áp dụng từ 01/06/2025, gồm các điểm về hóa đơn điện tử và hóa đơn khởi tạo từ máy tính tiền.",dung:"Khi cần biết quy định hóa đơn hiện hành khác gì bản gốc NĐ 123/2020, đặc biệt với đơn vị bán lẻ và hộ kinh doanh phải dùng hóa đơn từ máy tính tiền.",diem:["Đọc cùng thẻ gốc NĐ 123/2020/NĐ-CP — hai văn bản áp dụng đồng thời","Nội dung sửa đổi có hiệu lực từ 01/06/2025"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Thông tư",so:"78/2021/TT-BTC",ten:"Hướng dẫn về hóa đơn điện tử",ban:"17/09/2021",hl:"01/07/2022",cq:"Bộ Tài chính",tt:"con",tom:"Hướng dẫn thi hành phần hóa đơn điện tử của NĐ 123/2020: đăng ký sử dụng, định dạng dữ liệu, truyền dữ liệu hóa đơn và xử lý hóa đơn có sai sót.",dung:"Khi đăng ký / thay đổi thông tin hóa đơn điện tử với cơ quan thuế hoặc khi cần quy trình xử lý một hóa đơn điện tử đã phát hành bị sai.",diem:["Có quy trình thông báo hóa đơn sai sót theo mẫu của cơ quan thuế","Quy định thời điểm truyền dữ liệu hóa đơn cho cơ quan thuế"],lk:"hoadon",lkLabel:"Mở Hóa đơn & GTGT"},
+{t:"hokd",tl:"Hộ kinh doanh · Thuế khoán",loai:"Thông tư",so:"40/2021/TT-BTC",ten:"Hướng dẫn thuế GTGT, TNCN và quản lý thuế đối với hộ kinh doanh, cá nhân kinh doanh",ban:"01/06/2021",hl:"01/08/2021",cq:"Bộ Tài chính",tt:"con",tom:"Thông tư nền tảng cho hộ kinh doanh và cá nhân kinh doanh: hai phương pháp tính thuế — phương pháp kê khai và phương pháp khoán — cùng cách xác định doanh thu tính thuế, tỷ lệ thuế trên doanh thu theo ngành nghề và thủ tục khai thuế.",dung:"Khi làm sổ sách / khai thuế cho hộ kinh doanh: xác định hộ thuộc diện kê khai hay khoán, doanh thu tính thuế và tỷ lệ thuế GTGT + TNCN theo ngành nghề.",diem:["Hộ kinh doanh chọn một trong hai phương pháp: kê khai hoặc khoán","Tỷ lệ thuế trên doanh thu khác nhau theo ngành nghề (phân phối, dịch vụ, sản xuất…)","Từ 2026 có thay đổi lớn về quản lý thuế hộ kinh doanh — kiểm tra thêm ở mục Review Luật trước khi áp dụng cho kỳ mới"],lk:"thue",lkLabel:"Mở mục Thuế"},
+{t:"hoadon",tl:"Hóa đơn · Quản lý thuế",loai:"Nghị định",so:"125/2020/NĐ-CP",ten:"Xử phạt vi phạm hành chính về thuế, hóa đơn",ban:"19/10/2020",hl:"05/12/2020",cq:"Chính phủ",tt:"con",tom:"Bảng mức phạt cho các lỗi kế toán thuế hay gặp: chậm nộp tờ khai, khai sai, chậm nộp tiền thuế (tiền chậm nộp 0,03%/ngày), lập hóa đơn sai thời điểm hoặc không lập hóa đơn.",dung:"Khi đơn vị lỡ chậm hạn hoặc sai sót: tra ở đây để biết mức phạt và tiền chậm nộp dự kiến, từ đó ưu tiên khắc phục việc nào trước.",diem:["Tiền chậm nộp tiền thuế: 0,03% / ngày trên số tiền chậm nộp","Mức phạt chậm nộp hồ sơ khai thuế tăng dần theo số ngày chậm"],lk:"thue",lkLabel:"Mở mục Thuế (lịch hạn nộp)"},
+{t:"bhxh",tl:"BHXH · Lương",loai:"Luật",so:"41/2024/QH15",ten:"Luật Bảo hiểm xã hội 2024",ban:"29/06/2024",hl:"01/07/2025",cq:"Quốc hội",tt:"moi",tom:"Luật BHXH mới: mở rộng đối tượng tham gia, thay khái niệm lương cơ sở bằng mức tham chiếu khi Nhà nước bãi bỏ lương cơ sở, bổ sung trợ cấp hưu trí xã hội. Tỷ lệ đóng quen thuộc được giữ nguyên: người lao động 10,5% (gồm BHYT, BHTN), doanh nghiệp 21,5%.",dung:"Khi xác định ai phải đóng BHXH bắt buộc, mức đóng và quyền lợi ốm đau / thai sản / hưu trí của người lao động.",diem:["NLĐ đóng BHXH 8% + BHYT 1,5% + BHTN 1% = 10,5%","Doanh nghiệp đóng 21,5% trên quỹ lương đóng bảo hiểm"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"bhxh",tl:"BHXH · Lương",loai:"Nghị định",so:"293/2025/NĐ-CP",ten:"Lương tối thiểu vùng áp dụng từ 2026",ban:"2025",hl:"01/01/2026",cq:"Chính phủ",tt:"moi",tom:"Quy định lương tối thiểu vùng mới từ 01/01/2026: vùng I 5.310.000 đồng/tháng (mức trước đó 4.960.000 đồng), vùng II 4.730.000 đồng, vùng III 4.140.000 đồng, vùng IV 3.700.000 đồng. Mức này vừa là sàn lương, vừa là căn cứ tính trần đóng BHTN (20 × lương tối thiểu vùng nơi làm việc).",dung:"Khi xây thang bảng lương năm 2026 và khi tính trần đóng BHTN cho nhân viên lương cao trong mục Lương của app — nhớ chọn đúng vùng nơi người lao động làm việc.",diem:["Vùng I: 5.310.000đ/tháng → trần đóng BHTN 106.200.000đ","Vùng II: 4.730.000đ/tháng · Vùng III: 4.140.000đ/tháng · Vùng IV: 3.700.000đ/tháng","Trả lương thấp hơn lương tối thiểu vùng cho công việc đã qua đào tạo là vi phạm"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"},
+{t:"bhxh",tl:"BHXH · Lương",loai:"Nghị định",so:"73/2024/NĐ-CP",ten:"Mức lương cơ sở 2.340.000 đồng",ban:"30/06/2024",hl:"01/07/2024",cq:"Chính phủ",tt:"con",tom:"Nâng lương cơ sở lên 2.340.000 đồng/tháng từ 01/07/2024. Với kế toán doanh nghiệp, con số quan trọng nhất là trần đóng BHXH / BHYT bằng 20 × lương cơ sở = 46.800.000 đồng.",dung:"Khi tính bảo hiểm cho nhân viên có lương đóng bảo hiểm cao: kiểm tra có vượt trần 46,8 triệu hay chưa.",diem:["Trần đóng BHXH / BHYT: 46.800.000đ","Snapshot hiện tại chưa có mức lương cơ sở mới thay thế"],lk:"luong",lkLabel:"Mở Lương · BHXH · TNCN"}
+];
+var VB_TT={"con":["Còn hiệu lực","green"],"moi":["Áp dụng mới / từ 2026","amber"],"motphan":["Còn một phần / đã sửa đổi","amber"],"het":["Hết giai đoạn áp dụng","red"]};
+function vbSetTopic(t){var s=document.getElementById("vb-topic");if(s)s.value=t;document.querySelectorAll("#vbChips .vb-chip").forEach(function(c){c.classList.toggle("active",c.dataset.topic===t)});renderVB()}
+function vbTopicChanged(){var t=document.getElementById("vb-topic").value;document.querySelectorAll("#vbChips .vb-chip").forEach(function(c){c.classList.toggle("active",c.dataset.topic===t)});renderVB()}
+function renderVB(){
+ var list=document.getElementById("vbList");if(!list)return;
+ var q=((document.getElementById("vb-q")||{}).value||"").toLowerCase().trim();
+ var topic=(document.getElementById("vb-topic")||{}).value||"all";
+ var type=(document.getElementById("vb-type")||{}).value||"all";
+ var st=(document.getElementById("vb-status")||{}).value||"all";
+ var counts={"con":0,"moi":0,"motphan":0,"het":0};VB.forEach(function(v){counts[v.tt]++});
+ var kp=document.getElementById("vbKpis");if(kp)kp.innerHTML=[["Tổng số văn bản",VB.length],["Còn hiệu lực",counts.con],["Áp dụng mới / từ 2026",counts.moi],["Chủ đề tra cứu",VB.reduce(function(a,v){if(a.indexOf(v.t)<0)a.push(v.t);return a},[]).length]].map(function(x){return "<div class='card kpi' style='box-shadow:none'><div class='lab'>"+x[0]+"</div><div class='num'>"+x[1]+"</div></div>"}).join("");
+ var rows=VB.filter(function(v){
+  if(topic!=="all"&&v.t!==topic)return false;
+  if(type!=="all"&&v.loai!==type)return false;
+  if(st!=="all"&&v.tt!==st)return false;
+  if(q){var hay=(v.ten+" "+v.so+" "+v.loai+" "+v.tl+" "+v.tom+" "+v.dung+" "+v.diem.join(" ")).toLowerCase();if(hay.indexOf(q)<0)return false}
+  return true;
+ });
+ var cnt=document.getElementById("vbCount");if(cnt)cnt.textContent="Đang hiển thị "+rows.length+" / "+VB.length+" văn bản.";
+ var emp=document.getElementById("vbEmpty");if(emp)emp.style.display=rows.length?"none":"block";
+ list.innerHTML=rows.map(function(v){var meta=VB_TT[v.tt]||VB_TT.con;return "<article class='card vb-card'><div><span class='pill'>"+v.tl+"</span> <span class='pill'>"+v.loai+"</span> <span class='pill "+meta[1]+"'>"+meta[0]+"</span></div><h3>"+v.ten+"</h3><div class='vb-meta'><span>Số hiệu: <strong class='mono'>"+v.so+"</strong></span><span>Ban hành: "+v.ban+"</span><span>Hiệu lực: <strong>"+v.hl+"</strong></span><span>Cơ quan: "+v.cq+"</span></div><p style='margin:0'>"+v.tom+"</p><div class='vb-when'><strong>Khi nào dùng?</strong> "+v.dung+"</div><div><strong class='small'>Điểm kế toán cần nhớ</strong><ul>"+v.diem.map(function(d){return "<li>"+d+"</li>"}).join("")+"</ul></div><div class='spacer'></div><div class='toolbar' style='margin:0'><button class='btn small primary' onclick=\"go('"+v.lk+"')\">"+v.lkLabel+"</button><button class='btn small' onclick=\"go('luat')\">Đối chiếu mức đang tính</button><a class='btn small' target='_blank' rel='noopener' href='https://www.google.com/search?q=\"+encodeURIComponent(v.so+\" \"+v.ten)+\"'>Tra bản gốc theo số hiệu ↗</a></div></article>"}).join("");
+}
+function fmt(n){return (Math.round(Number(n)||0)).toLocaleString("vi-VN")+" đ"}
+function esc(v){return String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;")}
+function num(id){return Number(document.getElementById(id).value)||0}
+function today(){return new Date().toISOString().slice(0,10)}
+function go(id){document.querySelectorAll(".tab").forEach(function(b){b.classList.toggle("active",b.dataset.t===id)});document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("active",p.id==="p-"+id)});window.scrollTo({top:120,behavior:"smooth"})}
+document.getElementById("tabs").addEventListener("click",function(e){if(e.target.dataset.t)go(e.target.dataset.t)});
+
+// init selects
+(function(){
+ var sel=document.getElementById("ct-debit"),dl=document.getElementById("tklist");
+ TK.forEach(function(t){var o=document.createElement("option");o.value=t[0];o.textContent=t[0]+" — "+t[1];sel.appendChild(o);var d=document.createElement("option");d.value=t[0];d.label=t[1];dl.appendChild(d)});
+ document.getElementById("ct-date").value=today();document.getElementById("inv-date").value=today();document.getElementById("ar-date").value=today();document.getElementById("fa-date").value=today();
+ var pg=document.getElementById("proGrid");PRO.forEach(function(p){var d=document.createElement("div");d.className="card";d.style.boxShadow="none";d.innerHTML="<h3>"+p[0]+"</h3><p class='muted small'>"+p[1]+"</p><button class='btn small primary'>Mở công cụ</button>";d.querySelector("button").onclick=function(){go(p[2])};pg.appendChild(d)});
+ var hadSaved=loadData();
+ var cfoEl=document.getElementById("cf-open");if(cfoEl)cfoEl.value=state._cfOpen||0;
+ if(state.customLaws&&state.customLaws.length){var clEl=document.getElementById("customLawList");if(clEl)clEl.innerHTML="<ul class='checklist' style='margin-top:10px'>"+state.customLaws.map(function(c){return "<li>🕐 <strong>"+esc(c.name)+"</strong> — "+esc(c.area)+(c.date?" · hiệu lực "+esc(c.date):"")+(c.note?"<br><span class='muted small'>"+esc(c.note)+"</span>":"")+"<br><span class='pill amber'>Chờ đối chiếu ở đợt review sau</span></li>"}).join("")+"</ul>"}
+ if(state.lawUpdated){var sn=document.getElementById("salNote");if(sn)sn.textContent="Trần đóng BHXH/BHYT: 20 × lương cơ sở 2.340.000đ = 46.800.000đ. Trần BHTN: 20 × lương tối thiểu vùng I 5.310.000đ = 106.200.000đ (đã Update theo NĐ 293/2025). Công ty đóng thêm 21,5% (BHXH 17,5% + BHYT 3% + BHTN 1%) trên quỹ lương đóng bảo hiểm.";var st=document.getElementById("salLawTag");if(st)st.textContent="⚖️ Đã Update luật 2026: giảm trừ 15.500.000đ / 6.200.000đ, biểu thuế 5 bậc."}
+ renderAll();syncHubStatus();probeSharedHub(false);
+ if(hadSaved)updateSaveStatus(state._savedAt);
+})();
+function tkName(no){for(var i=0;i<TK.length;i++)if(TK[i][0]===String(no))return TK[i][1];return ""}
+function renderAll(){renderKPIs();renderEntries();renderInvoices();renderTax();renderAR();renderSalaries();renderFA();renderCF();renderTK();renderTodos();if(document.getElementById("lawBody"))renderLaw();if(document.getElementById("vbList"))renderVB();if(document.getElementById("dataStats"))renderDataStats();saveData()}
+function renderTodos(){
+ var items=[];
+ var overdue=state.ars.filter(function(a){return a.amount-a.paid>0 && a.due && new Date(a.due)<new Date()});
+ if(overdue.length)items.push("🔴 Có "+overdue.length+" khoản công nợ đã quá hạn — vào mục Công nợ để xử lý.");
+ var bad=state.invoices.filter(function(v){return checkInvoice(v).length});
+ if(bad.length)items.push("🟠 Có "+bad.length+" hóa đơn có dấu hiệu lỗi (trùng / MST / lệch thuế) — vào mục Hóa đơn để soát.");
+ if(!state.lawUpdated)items.push("⚖️ Chưa Update luật 2026 — vào mục Review Luật để đối chiếu: ngưỡng thanh toán, giảm trừ TNCN và biểu thuế trong app đang là mức cũ.");
+ if(!state.entries.length)items.push("⚪ Chưa có chứng từ nào trong kỳ — ghi bút toán đầu tiên ở mục Chứng từ & Sổ sách.");
+ items.push("⚪ Đối chiếu số dư TK 112 với sổ phụ ngân hàng cuối tháng.");
+ items.push("⚪ Chuẩn bị số liệu tờ khai GTGT và đối chiếu TK 133 / 3331 trước hạn nộp.");
+ document.getElementById("todoList").innerHTML=items.map(function(x){return "<li>"+x+"</li>"}).join("");
+}
+function renderKPIs(){
+ var rev=0,cost=0;state.entries.forEach(function(e){if(e.credit==="511")rev+=e.amount;if(e.debit==="632"||e.debit==="641"||e.debit==="642")cost+=e.amount});
+ var vatOut=0,vatIn=0;state.invoices.forEach(function(v){if(v.type==="out")vatOut+=v.vat;else vatIn+=v.vat});
+ var arOpen=state.ars.reduce(function(s,a){return s+Math.max(0,a.amount-a.paid)},0);
+ var k=[["Doanh thu (Có 511)",fmt(rev)],["Chi phí & giá vốn",fmt(cost)],["GTGT phải nộp ước tính",fmt(Math.max(0,vatOut-vatIn))],["Công nợ còn mở",fmt(arOpen)]];
+ document.getElementById("kpis").innerHTML=k.map(function(x){return "<div class='card kpi'><div class='lab'>"+x[0]+"</div><div class='num'>"+x[1]+"</div></div>"}).join("");
+}
+// ENTRIES
+function addEntry(){
+ var d=document.getElementById("ct-date").value,no=document.getElementById("ct-no").value.trim(),party=document.getElementById("ct-party").value.trim(),desc=document.getElementById("ct-desc").value.trim(),debit=document.getElementById("ct-debit").value,credit=document.getElementById("ct-credit").value.trim(),amt=num("ct-amount");
+ var msg=document.getElementById("ct-msg");
+ if(!d||!desc||!credit||amt<=0){msg.textContent="⚠️ Cần có ngày, diễn giải, TK Có và số tiền lớn hơn 0.";return}
+ state.entries.push({date:d,no:no,party:party,desc:desc,debit:debit,credit:credit,amount:amt});msg.textContent="✅ Đã ghi bút toán Nợ "+debit+" / Có "+credit+" — "+fmt(amt);renderAll();
+}
+function renderEntries(){
+ var q=(document.getElementById("q-entry").value||"").toLowerCase();
+ var rows=state.entries.filter(function(e){return !q||(e.desc+e.party+e.no).toLowerCase().indexOf(q)>=0});
+ document.getElementById("entryBody").innerHTML=rows.map(function(e,i){return "<tr><td>"+esc(e.date)+"</td><td class='mono'>"+esc(e.no)+"</td><td>"+esc(e.desc)+"</td><td>"+esc(e.party)+"</td><td class='num'>"+esc(e.debit)+" "+tkName(e.debit)+"</td><td class='num'>"+esc(e.credit)+" "+tkName(e.credit)+"</td><td class='num'>"+fmt(e.amount)+"</td><td><button class='btn small danger' onclick='delItem(\"entries\","+state.entries.indexOf(e)+")'>Xóa</button></td></tr>"}).join("");
+ document.getElementById("entryEmpty").style.display=state.entries.length?"none":"block";
+ var bal={};state.entries.forEach(function(e){bal[e.debit]=bal[e.debit]||{d:0,c:0};bal[e.debit].d+=e.amount;bal[e.credit]=bal[e.credit]||{d:0,c:0};bal[e.credit].c+=e.amount});
+ var td=0,tc=0,html="<div class='tablewrap'><table style='min-width:420px'><thead><tr><th>TK</th><th class='num'>Phát sinh Nợ</th><th class='num'>Phát sinh Có</th></tr></thead><tbody>";
+ Object.keys(bal).sort().forEach(function(k){td+=bal[k].d;tc+=bal[k].c;html+="<tr><td><strong>"+k+"</strong> "+tkName(k)+"</td><td class='num'>"+fmt(bal[k].d)+"</td><td class='num'>"+fmt(bal[k].c)+"</td></tr>"});
+ html+="</tbody></table></div><p style='margin-top:8px'><strong>Tổng Nợ: "+fmt(td)+" · Tổng Có: "+fmt(tc)+"</strong> — "+(td===tc?"<span class='pill green'>CÂN ✓</span>":"<span class='pill red'>LỆCH</span>")+"</p>";
+ document.getElementById("trialBalance").innerHTML=state.entries.length?html:"<p class='muted'>Chưa có số liệu.</p>";
+}
+// INVOICES
+function previewVAT(){var b=num("inv-base"),r=Number(document.getElementById("inv-rate").value);document.getElementById("vatHint").textContent=r>=0?("Thuế dự kiến ở mức "+r+"%: "+fmt(b*r/100)+" — ô tiền thuế sẽ tự điền khi để trống."):"Hàng không chịu thuế GTGT.";if(r>=0&&!document.getElementById("inv-vat").value)document.getElementById("inv-vat").value=Math.round(b*r/100)}
+function checkInvoice(v){
+ var errs=[];if(state.invoices.filter(function(x){return x.no===v.no&&x.party===v.party&&x!==v}).length)errs.push("Trùng số HĐ + đối tác");
+ if(!/^\d{10}(-\d{3})?$/.test(String(v.tax||"").replace(/\s/g,"")))errs.push("MST không đúng định dạng");
+ var r=v.rate;if(r>=0&&Math.abs(v.vat-Math.round(v.base*r/100))>1000)errs.push("Thuế lệch so với thuế suất");
+ if(v.type==="in"&&v.base+v.vat>=lawConfig.cashThreshold&&v.pay==="tm")errs.push("Từ "+fmt(lawConfig.cashThreshold)+": cần chứng từ thanh toán không tiền mặt");
+ return errs;
+}
+function addInvoice(){
+ var v={type:document.getElementById("inv-type").value,no:document.getElementById("inv-no").value.trim(),date:document.getElementById("inv-date").value,party:document.getElementById("inv-party").value.trim(),tax:document.getElementById("inv-tax").value.trim(),rate:Number(document.getElementById("inv-rate").value),base:num("inv-base"),vat:num("inv-vat"),pay:document.getElementById("inv-pay").value};
+ var msg=document.getElementById("inv-msg");if(!v.no||!v.party||v.base<=0){msg.textContent="⚠️ Cần số hóa đơn, đối tác và tiền hàng.";return}
+ state.invoices.push(v);var e=checkInvoice(v);msg.textContent=e.length?("⚠️ Đã lưu nhưng cần soát: "+e.join("; ")):"✅ Đã lưu — hóa đơn không phát hiện lỗi cơ bản.";renderAll();
+}
+function renderInvoices(){
+ document.getElementById("invBody").innerHTML=state.invoices.map(function(v){var e=checkInvoice(v);return "<tr><td>"+(v.type==="out"?"<span class='pill green'>Đầu ra</span>":"<span class='pill'>Đầu vào</span>")+"</td><td class='mono'>"+esc(v.no)+"</td><td>"+esc(v.date)+"</td><td>"+esc(v.party)+"<br><span class='muted small'>MST: "+esc(v.tax)+"</span></td><td class='num'>"+fmt(v.base)+"</td><td class='num'>"+fmt(v.vat)+"</td><td>"+(e.length?"<span class='pill red'>"+e.join("; ")+"</span>":"<span class='pill green'>Đạt ✓</span>")+"</td><td><button class='btn small danger' onclick='delItem(\"invoices\","+state.invoices.indexOf(v)+")'>Xóa</button></td></tr>"}).join("");
+ document.getElementById("invEmpty").style.display=state.invoices.length?"none":"block";
+ var o={base:0,vat:0},i={base:0,vat:0};state.invoices.forEach(function(v){var t=v.type==="out"?o:i;t.base+=v.base;t.vat+=v.vat});
+ document.getElementById("vatSummary").innerHTML="<p>Đầu ra: tiền hàng <strong>"+fmt(o.base)+"</strong> · thuế <strong>"+fmt(o.vat)+"</strong></p><p>Đầu vào được khấu trừ: tiền hàng <strong>"+fmt(i.base)+"</strong> · thuế <strong>"+fmt(i.vat)+"</strong></p><p style='font-size:18px'><strong>GTGT phải nộp kỳ này: "+fmt(Math.max(0,o.vat-i.vat))+"</strong></p>"+(i.vat>o.vat?"<p class='muted'>Thuế đầu vào lớn hơn đầu ra: còn khấu trừ chuyển kỳ "+fmt(i.vat-o.vat)+".</p>":"");
+}
+// TAX — mục Thuế tổng hợp: GTGT + TNCN + TNDN tạm tính + số dư TK 333
+function renderTax(){
+ var kpi=document.getElementById("taxKpis");if(!kpi)return;
+ var o={base:0,vat:0},i={base:0,vat:0};state.invoices.forEach(function(v){var t=v.type==="out"?o:i;t.base+=v.base;t.vat+=v.vat});
+ var vatDue=Math.max(0,o.vat-i.vat),vatCarry=Math.max(0,i.vat-o.vat);
+ var pitTotal=state.salaries.reduce(function(s,x){return s+x.tax},0);
+ var sum=function(side,accs){var t=0;state.entries.forEach(function(e){if(accs.indexOf(e[side])>=0)t+=e.amount});return t};
+ var rev=sum("credit",["511","515","711"]),deduct=sum("debit",["521"]),cost=sum("debit",["632","635","641","642","811"]);
+ var profit=rev-deduct-cost;
+ var rate=Number((document.getElementById("cit-rate")||{}).value||0.20);
+ var citDue=profit>0?Math.round(profit*rate):0;
+ var totalDue=vatDue+pitTotal+citDue;
+ kpi.innerHTML=[["GTGT phải nộp kỳ này",fmt(vatDue)],["TNCN khấu trừ tại nguồn",fmt(pitTotal)],["TNDN tạm tính",fmt(citDue)],["Tổng thuế ước phải nộp",fmt(totalDue)]].map(function(x){return "<div class='card kpi' style='box-shadow:none'><div class='lab'>"+x[0]+"</div><div class='num'>"+x[1]+"</div></div>"}).join("");
+ document.getElementById("taxVat").innerHTML=state.invoices.length?("<p>Đầu ra: tiền hàng <strong>"+fmt(o.base)+"</strong> · thuế đầu ra <strong>"+fmt(o.vat)+"</strong></p><p>Đầu vào: tiền hàng <strong>"+fmt(i.base)+"</strong> · thuế được khấu trừ <strong>"+fmt(i.vat)+"</strong></p><p style='font-size:18px'><strong>GTGT phải nộp: "+fmt(vatDue)+"</strong></p>"+(vatCarry?"<p class='muted'>Thuế đầu vào lớn hơn đầu ra: còn khấu trừ chuyển kỳ "+fmt(vatCarry)+".</p>":"")):"<p class='muted'>Chưa có hóa đơn nào — thêm hóa đơn ở mục Hóa đơn &amp; GTGT để có số liệu tờ khai.</p>";
+ document.getElementById("taxPit").innerHTML=state.salaries.length?("<p>Số nhân viên trong bảng lương: <strong>"+state.salaries.length+"</strong></p><p>Tổng thuế TNCN đã khấu trừ (nộp thay người lao động, TK 3335):</p><p style='font-size:18px'><strong>"+fmt(pitTotal)+"</strong></p><p class='muted'>Khai theo tờ khai 05/KK-TNCN (tháng / quý) và quyết toán năm 05/QTT-TNCN. Giảm trừ và biểu thuế đang áp dụng: "+lawConfig.pitLabel+(state.lawUpdated?" — đã Update luật 2026.":" — chưa Update, xem mục ⚖️ Review Luật.")+"</p>"):"<p class='muted'>Chưa có bảng lương nào — tính lương ở mục Lương · BHXH · TNCN rồi bấm “Thêm vào bảng lương”, tổng khấu trừ TNCN sẽ hiện ở đây.</p>";
+ document.getElementById("taxCit").innerHTML=state.entries.length?("<p>Doanh thu &amp; thu nhập (Có 511 + 515 + 711): <strong>"+fmt(rev)+"</strong></p><p>Giảm trừ doanh thu (Nợ 521): <strong>"+fmt(deduct)+"</strong></p><p>Giá vốn &amp; chi phí (Nợ 632 + 635 + 641 + 642 + 811): <strong>"+fmt(cost)+"</strong></p><p>Lợi nhuận trước thuế ước tính: <strong>"+fmt(profit)+"</strong></p><p style='font-size:18px'><strong>TNDN tạm tính ("+Math.round(rate*100)+"%): "+fmt(citDue)+"</strong></p>"+(profit<=0?"<p class='muted'>Kỳ này đang lỗ theo sổ nên tạm tính bằng 0 — vẫn phải theo dõi lỗ chuyển các năm sau theo quy định.</p>":"")):"<p class='muted'>Chưa có chứng từ nào — ghi bút toán doanh thu / chi phí ở mục Chứng từ &amp; Sổ sách để ước tính TNDN tạm nộp quý.</p>";
+ var d333=0,c333=0;state.entries.forEach(function(e){if(String(e.debit).indexOf("333")===0)d333+=e.amount;if(String(e.credit).indexOf("333")===0)c333+=e.amount});
+ document.getElementById("tax333").innerHTML=state.entries.length?("<p>Tổng phát sinh Nợ 333*: <strong>"+fmt(d333)+"</strong> · Tổng phát sinh Có 333*: <strong>"+fmt(c333)+"</strong></p>"+(c333>d333?"<p style='font-size:18px'><strong>Số dư Có (còn phải nộp): "+fmt(c333-d333)+"</strong></p>":(d333>c333?"<p style='font-size:18px'><strong>Số dư Nợ (nộp thừa / còn khấu trừ): "+fmt(d333-c333)+"</strong></p>":"<p><strong>TK 333 đã cân — không còn số dư.</strong></p>"))):"<p class='muted'>Chưa có bút toán nào liên quan TK 333 trong nhật ký chung.</p>";
+}
+// AR
+function addAR(){var a={type:document.getElementById("ar-type").value,party:document.getElementById("ar-party").value.trim(),amount:num("ar-amount"),date:document.getElementById("ar-date").value,due:document.getElementById("ar-due").value,paid:num("ar-paid")};if(!a.party||a.amount<=0)return;state.ars.push(a);renderAll()}
+function ageLabel(a){var rest=a.amount-a.paid;if(rest<=0)return "<span class='pill green'>Đã tất toán</span>";if(!a.due)return "<span class='pill'>Chưa có hạn</span>";var days=Math.floor((new Date()-new Date(a.due))/86400000);if(days<0)return "<span class='pill green'>Còn "+Math.abs(days)+" ngày</span>";if(days<=30)return "<span class='pill amber'>Quá hạn "+days+" ngày</span>";if(days<=90)return "<span class='pill amber'>Quá hạn 31–90 ngày</span>";return "<span class='pill red'>Quá hạn &gt;90 ngày</span>"}
+function renderAR(){
+ document.getElementById("arBody").innerHTML=state.ars.map(function(a){return "<tr><td>"+(a.type==="phai-thu"?"Phải thu 131":"Phải trả 331")+"</td><td>"+esc(a.party)+"</td><td>"+esc(a.date)+"</td><td>"+(a.due?esc(a.due):"—")+"</td><td class='num'>"+fmt(a.amount)+"</td><td class='num'>"+fmt(a.paid)+"</td><td class='num'><strong>"+fmt(a.amount-a.paid)+"</strong></td><td>"+ageLabel(a)+"</td><td><button class='btn small danger' onclick='delItem(\"ars\","+state.ars.indexOf(a)+")'>Xóa</button></td></tr>"}).join("");
+ document.getElementById("arEmpty").style.display=state.ars.length?"none":"block";
+ var b={"Chưa đến hạn":0,"Quá hạn 1–30":0,"Quá hạn 31–90":0,"Quá hạn >90":0};state.ars.forEach(function(a){var r=a.amount-a.paid;if(r<=0||!a.due)return;var d=Math.floor((new Date()-new Date(a.due))/86400000);if(d<0)b["Chưa đến hạn"]+=r;else if(d<=30)b["Quá hạn 1–30"]+=r;else if(d<=90)b["Quá hạn 31–90"]+=r;else b["Quá hạn >90"]+=r});
+ document.getElementById("aging").innerHTML=Object.keys(b).map(function(k){return "<p>"+k+": <strong>"+fmt(b[k])+"</strong></p>"}).join("");
+}
+// SALARY
+var lastSal=null;
+function calcSalary(){
+ var gross=num("sal-gross"),base=num("sal-base")||gross,dep=num("sal-dep"),other=num("sal-other"),allow=num("sal-allow");
+ var capBH=lawConfig.baseSalary*20,capTN=lawConfig.region1Min*20;
+ var bhxh=Math.min(base,capBH)*0.08,bhyt=Math.min(base,capBH)*0.015,bhtn=Math.min(base,capTN)*0.01,ins=bhxh+bhyt+bhtn;
+ var taxable=gross-ins-lawConfig.personalDeduction-dep*lawConfig.dependentDeduction-other-allow;var tax=0;
+ if(taxable>0){var brackets=lawConfig.pitBrackets;var prev=0,rem=taxable;for(var j=0;j<brackets.length&&rem>0;j++){var span=Math.min(rem,brackets[j][0]-prev);tax+=span*brackets[j][1];rem-=span;prev=brackets[j][0]}}
+ var net=gross-ins-tax;var employer=base*0.215;
+ lastSal={name:document.getElementById("sal-name").value||"Nhân viên",gross:gross,ins:ins,tax:tax,net:net};
+ document.getElementById("salResult").textContent="Lương gross: "+fmt(gross)+"\nBảo hiểm NLĐ đóng (10,5% trên lương đóng BH "+fmt(base)+"): "+fmt(ins)+"  [BHXH "+fmt(bhxh)+" · BHYT "+fmt(bhyt)+" · BHTN "+fmt(bhtn)+"]\nGiảm trừ đang áp dụng: bản thân "+fmt(lawConfig.personalDeduction)+" + phụ thuộc "+fmt(dep*lawConfig.dependentDeduction)+" · Biểu thuế: "+lawConfig.pitLabel+(state.lawUpdated?" (đã Update luật 2026)":" (chưa Update — xem mục Review Luật)")+"\nThu nhập tính thuế: "+fmt(Math.max(0,taxable))+"\nThuế TNCN lũy tiến: "+fmt(tax)+"\nTHỰC LĨNH: "+fmt(net)+"\n---\nChi phí công ty thêm (21,5%): "+fmt(employer)+" · Tổng chi phí dùng người: "+fmt(gross+employer);
+ return lastSal;
+}
+function addSalaryRow(){var s=calcSalary();state.salaries.push(s);renderAll()}
+function renderSalaries(){
+ document.getElementById("salBody").innerHTML=state.salaries.map(function(s){return "<tr><td>"+esc(s.name)+"</td><td class='num'>"+fmt(s.gross)+"</td><td class='num'>"+fmt(s.ins)+"</td><td class='num'>"+fmt(s.tax)+"</td><td class='num'><strong>"+fmt(s.net)+"</strong></td><td><button class='btn small danger' onclick='delItem(\"salaries\","+state.salaries.indexOf(s)+")'>Xóa</button></td></tr>"}).join("");
+ document.getElementById("salEmpty").style.display=state.salaries.length?"none":"block";
+ if(state.salaries.length){var t=state.salaries.reduce(function(a,s){return a+s.net},0);document.getElementById("salTotal").innerHTML="<p><strong>Tổng thực lĩnh toàn bảng: "+fmt(t)+"</strong></p>"}else document.getElementById("salTotal").innerHTML="";
+}
+// FA
+function addFA(){var f={name:document.getElementById("fa-name").value.trim(),cost:num("fa-cost"),years:num("fa-years")||1,date:document.getElementById("fa-date").value,dept:document.getElementById("fa-dept").value.trim()};if(!f.name||f.cost<=0)return;state.fas.push(f);renderAll()}
+function renderFA(){
+ document.getElementById("faBody").innerHTML=state.fas.map(function(f){return "<tr><td>"+esc(f.name)+"</td><td>"+esc(f.dept)+"</td><td>"+esc(f.date)+"</td><td class='num'>"+fmt(f.cost)+"</td><td class='num'>"+fmt(f.cost/(f.years*12))+"</td><td class='num'>"+fmt(f.cost/f.years)+"</td><td>"+f.years+" năm</td><td><button class='btn small danger' onclick='delItem(\"fas\","+state.fas.indexOf(f)+")'>Xóa</button></td></tr>"}).join("");
+ document.getElementById("faEmpty").style.display=state.fas.length?"none":"block";
+ var m=state.fas.reduce(function(s,f){return s+f.cost/(f.years*12)},0);document.getElementById("faSummary").innerHTML=state.fas.length?("<p>Tổng nguyên giá: <strong>"+fmt(state.fas.reduce(function(s,f){return s+f.cost},0))+"</strong></p><p>Khấu hao mỗi tháng: <strong>"+fmt(m)+"</strong> · mỗi năm: <strong>"+fmt(m*12)+"</strong></p><p class='muted small'>Bút toán tháng: Nợ 642 / 641 / 154 — Có 214, theo bộ phận sử dụng.</p>"):"<p class='muted'>Chưa có TSCĐ nào.</p>";
+}
+// CASHFLOW
+function renderCF(){
+ var open=num("cf-open"),bal=open,rows="",warn=[];
+ for(var w=0;w<13;w++){rows+="<tr><td>Tuần "+(w+1)+"</td><td class='num'><input type='number' value='"+state.cfIn[w]+"' onchange='state.cfIn["+w+"]=Number(this.value)||0;renderCF();renderKPIs()' style='text-align:right'></td><td class='num'><input type='number' value='"+state.cfOut[w]+"' onchange='state.cfOut["+w+"]=Number(this.value)||0;renderCF()' style='text-align:right'></td><td class='num'>"+fmt(state.cfIn[w]-state.cfOut[w])+"</td>";bal+=state.cfIn[w]-state.cfOut[w];rows+="<td class='num'><strong"+(bal<0?" style='color:var(--danger)'":"")+">"+fmt(bal)+"</strong></td></tr>";if(bal<0)warn.push(w+1)}
+ document.getElementById("cfBody").innerHTML=rows;
+ document.getElementById("cfWarn").innerHTML=warn.length?("<div class='warnbox'>⚠️ Thiếu tiền ở tuần: "+warn.join(", ")+". Cần thu nợ sớm, giãn chi hoặc chuẩn bị hạn mức vay trước các tuần này.</div>"):"<p class='muted small'>Chưa có tuần nào âm tiền theo số liệu đã nhập.</p>";
+ saveData();
+}
+// TK + AI
+function renderTK(){
+ var q=(document.getElementById("q-tk").value||"").toLowerCase();
+ document.getElementById("tkList").innerHTML=TK.filter(function(t){return !q||(t[0]+t[1].toLowerCase()).indexOf(q)>=0}).map(function(t){return "<div style='padding:8px 10px;border:1px solid var(--line);border-radius:8px'><strong class='mono'>"+t[0]+"</strong> — "+t[1]+"</div>"}).join("")||"<p class='muted'>Không tìm thấy tài khoản.</p>";
+}
+var RULES=[
+[["mua hàng","nhập kho","mua hàng hóa"],"Nợ 156 Hàng hóa (+ Nợ 133 Thuế GTGT được khấu trừ nếu có hóa đơn) / Có 331 Phải trả người bán — nếu chưa trả tiền; Có 111/112 nếu trả ngay."],
+[["bán hàng","xuất hóa đơn bán","doanh thu"],"Hai bút toán: (1) Nợ 131/111/112 — Có 511 Doanh thu, Có 3331 Thuế GTGT phải nộp. (2) Giá vốn: Nợ 632 — Có 156."],
+[["thu tiền khách","khách trả nợ","thu nợ"],"Nợ 112 Tiền gửi ngân hàng (hoặc 111 nếu tiền mặt) / Có 131 Phải thu khách hàng."],
+[["trả tiền nhà cung cấp","thanh toán ncc","trả nợ người bán"],"Nợ 331 Phải trả người bán / Có 112 (hoặc 111). Hóa đơn từ ngưỡng quy định phải có chứng từ thanh toán không tiền mặt để được khấu trừ / tính chi phí."],
+[["tạm ứng","ứng tiền công tác"],"Nợ 141 Tạm ứng / Có 111 Tiền mặt (hoặc 112). Hoàn ứng: Nợ chi phí liên quan — Có 141."],
+[["khấu hao","trích khấu hao"],"Nợ 642 Chi phí QLDN (hoặc 641 bán hàng, 154 sản xuất) theo bộ phận sử dụng / Có 214 Hao mòn TSCĐ."],
+[["lương","trả lương","tính lương"],"Tính lương: Nợ 642/641/154 — Có 334. Khấu trừ BHXH, thuế TNCN của NLĐ: Nợ 334 — Có 338, 3335. Chi trả: Nợ 334 — Có 111/112."],
+[["vay","đi vay","nhận tiền vay"],"Nợ 112 / Có 341 Vay và nợ thuê tài chính. Lãi vay: Nợ 635 — Có 111/112 hoặc 335."],
+[["chi tiền mặt","phiếu chi","chi phí văn phòng"],"Nợ tài khoản chi phí tương ứng (642/641…) + Nợ 133 nếu có thuế đầu vào / Có 111 Tiền mặt."],
+[["thu tiền mặt","phiếu thu"],"Nợ 111 Tiền mặt / Có tài khoản nguồn thu tương ứng (131, 511, 711…)."]
+];
+function suggest(text){
+ var t=(text||"").toLowerCase();for(var i=0;i<RULES.length;i++){for(var j=0;j<RULES[i][0].length;j++)if(t.indexOf(RULES[i][0][j])>=0)return RULES[i][1]}
+ return "Chưa khớp quy tắc có sẵn. Hãy nêu rõ: ai trả / ai nhận, tiền mặt hay ngân hàng, đã thu tiền chưa, có hóa đơn thuế mấy %. Gợi ý chung: xác định tài sản tăng → ghi Nợ, nguồn vốn / doanh thu tăng → ghi Có, rồi đối chiếu hệ thống TK bên phải.";
+}
+function suggestFromDesc(){var d=document.getElementById("ct-desc").value;document.getElementById("ct-msg").textContent="💡 "+suggest(d);go2ai(d)}
+function go2ai(d){document.getElementById("ai-q").value=d||document.getElementById("ai-q").value}
+function askAI(){
+ var q=document.getElementById("ai-q").value.trim();if(!q)return;
+ var box=document.getElementById("aiResult");
+ var base="Nghiệp vụ: "+q+"\n\nGợi ý định khoản (bộ quy tắc nội bộ):\n"+suggest(q)+"\n\nLưu ý: kiểm tra chế độ kế toán đơn vị đang áp dụng (TT 200 hay TT 133) và chứng từ gốc trước khi ghi sổ.";
+ box.textContent=base+"\n\n— Đầu mối AI chung: đang kiểm tra kết nối và hỏi thêm AI kèm system prompt kế toán và ngữ cảnh app…";
+ callAIHubText("Hãy phân tích nghiệp vụ sau và gợi ý định khoản Nợ / Có chi tiết (gồm cả bút toán thuế GTGT nếu có), nêu căn cứ tài khoản theo TT 200 / TT 133 và chứng từ cần kèm theo. Gợi ý sơ bộ của bộ quy tắc nội bộ để tham chiếu: "+suggest(q)+"\n\nNghiệp vụ: "+q).then(function(txt){
+  box.textContent=base+"\n\n— Phân tích từ AI qua đầu mối chung ("+hubRouteLabel()+"):\n"+((txt&&txt.trim())?txt:"AI không trả về nội dung — phần gợi ý nội bộ ở trên vẫn dùng được.");
+ }).catch(function(err){box.textContent=base+"\n\n— Đầu mối AI chung: ⚠️ "+hubErrText(err)+" Phần gợi ý nội bộ ở trên vẫn dùng được."});
+}
+// ===== ĐẦU MỐI AI CHUNG — system prompt + kho ngữ cảnh dùng cho MỌI điểm gọi AI =====
+// Mọi tính năng AI (định khoản, đọc hóa đơn, hỏi tự do, công văn, tóm tắt, soát chứng từ) đều đi qua đầu mối này:
+// cùng system prompt, cùng ngữ cảnh do buildAIContext() tổng hợp, cùng thứ tự đường gọi:
+//   1) POST /api/ai — hàm serverless trên Vercel, key của chủ app ở Environment Variables (đường chính khi publish);
+//   2) gọi thẳng nhà cung cấp bằng token phiên cá nhân (dự phòng, chỉ khi chưa có /api/ai) — kèm đúng prompt + ngữ cảnh như đường 1;
+//   3) chưa nối cả hai: báo rõ chưa nối, tính năng offline vẫn chạy.
+// App tự dò đường 1 bằng {ping:true} lúc mở trang (probeSharedHub) — bản tĩnh không có /api/ai thì ping trả 404 và app
+// tự chuyển xuống đường 2/3, không lỗi. Mã mẫu api/ai.js đầy đủ nằm ở mục Đầu mối AI.
+var AI_SYSTEM_PROMPT="Bạn là trợ lý kế toán — thuế Việt Nam của KetoanAI, hỗ trợ doanh nghiệp nhỏ, kế toán dịch vụ và hộ kinh doanh.\n"
++"QUY TẮC BẮT BUỘC:\n"
++"1. Trả lời theo chế độ kế toán Thông tư 200/2014/TT-BTC (doanh nghiệp) và Thông tư 133/2016/TT-BTC (SME); nêu rõ khi hai chế độ khác nhau.\n"
++"2. Khi nêu căn cứ pháp lý, luôn trích dẫn số hiệu văn bản cụ thể (ví dụ: Luật Thuế GTGT 48/2024/QH15, NĐ 181/2025/NĐ-CP, NQ 110/2025/UBTVQH15). Không chắc về số hiệu hoặc nội dung thì nói rõ là chưa chắc và khuyên đối chiếu bản gốc — tuyệt đối không bịa số hiệu, ngưỡng tiền hay tỷ lệ.\n"
++"3. Không tự nhẩm số tiền, thuế, lương hay khấu hao: chỉ diễn giải các số liệu do app cung cấp trong phần NGỮ CẢNH; nếu thiếu số liệu để kết luận, hãy liệt kê đúng những gì còn thiếu.\n"
++"4. Dùng chính xác các ngưỡng luật nêu trong NGỮ CẢNH (mức app đang thực sự dùng để tính), và lưu ý khi app chưa Update luật mới.\n"
++"5. Trả lời bằng tiếng Việt, ngắn gọn, có cấu trúc: kết luận trước, căn cứ sau, bước làm tiếp theo cuối cùng.\n"
++"6. Nguyên tắc bất biến: AI chỉ chuẩn bị và gợi ý — người có thẩm quyền (kế toán trưởng / người đại diện pháp luật) mới ký và nộp hồ sơ. Nhắc nguyên tắc này khi soạn công văn, thuyết minh hoặc nội dung sắp nộp cơ quan thuế.";
+function buildAIContext(){
+ var lines=[];
+ lines.push("NGỮ CẢNH TỪ APP KETOANAI (số liệu và cấu hình tại thời điểm gọi):");
+ lines.push("- Ngưỡng thanh toán không dùng tiền mặt để khấu trừ GTGT / tính chi phí được trừ: "+fmt(lawConfig.cashThreshold)+" trở lên.");
+ lines.push("- Giảm trừ gia cảnh TNCN đang dùng: bản thân "+fmt(lawConfig.personalDeduction)+"/tháng, mỗi người phụ thuộc "+fmt(lawConfig.dependentDeduction)+"/tháng.");
+ lines.push("- Biểu thuế TNCN đang dùng: "+lawConfig.pitLabel+".");
+ lines.push("- Lương tối thiểu vùng I đang dùng: "+fmt(lawConfig.region1Min)+"/tháng (trần đóng BHTN = 20 lần mức này); lương cơ sở: "+fmt(lawConfig.baseSalary)+"/tháng (trần đóng BHXH/BHYT = 20 lần mức này).");
+ lines.push("- Trạng thái luật trong app: "+(state.lawUpdated?"ĐÃ Update theo snapshot luật 04/11/2026 (ngưỡng 5 triệu, giảm trừ 15,5/6,2 triệu, biểu thuế 5 bậc).":"CHƯA Update luật 2026 — các mức trên là mức cũ, cần lưu ý người dùng đối chiếu mục Review Luật."));
+ lines.push("- Dữ liệu hiện có trong app: "+state.entries.length+" bút toán chứng từ, "+state.invoices.length+" hóa đơn, "+state.ars.length+" khoản công nợ, "+state.salaries.length+" dòng lương, "+state.fas.length+" TSCĐ.");
+ var byTopic={};
+ VB.forEach(function(v){(byTopic[v.tl]=byTopic[v.tl]||[]).push(v.so+" — "+v.ten)});
+ lines.push("- Thư viện văn bản của app ("+VB.length+" văn bản, snapshot 04/11/2026) theo chủ đề:");
+ Object.keys(byTopic).forEach(function(k){lines.push("  + "+k+": "+byTopic[k].join("; "))});
+ lines.push("- Ví dụ mẫu (few-shot) về cách trả lời chuẩn của app — hãy bắt chước cấu trúc kết luận → định khoản → căn cứ này:");
+ lines.push("  + Hỏi: 'Mua hàng hóa nhập kho chưa trả tiền nhà cung cấp, thuế GTGT 10%.' Đáp chuẩn: 'Nợ 156 Hàng hóa + Nợ 133 Thuế GTGT được khấu trừ / Có 331 Phải trả người bán. Căn cứ hệ thống TK theo TT 200/2014/TT-BTC; hóa đơn từ ngưỡng thanh toán không tiền mặt nêu ở trên phải có chứng từ thanh toán không dùng tiền mặt mới được khấu trừ.'");
+ lines.push("  + Hỏi: 'Bán hàng chưa thu tiền khách.' Đáp chuẩn: 'Nợ 131 / Có 511, Có 3331 (thuế đầu ra); đồng thời Nợ 632 / Có 156 ghi giá vốn.'");
+ lines.push("  + Hỏi: 'Trích khấu hao máy văn phòng tháng này.' Đáp chuẩn: 'Nợ 642 theo bộ phận sử dụng / Có 214. Số tiền lấy từ bảng khấu hao do app tính — không tự ước lượng.'");
+ lines.push("- Lưu ý về số liệu: mọi con số thuế / lương / khấu hao / dòng tiền nhắc trong câu trả lời phải lấy từ ngữ cảnh này hoặc từ nội dung người dùng cung cấp; app đã tính sẵn bằng công thức — AI chỉ diễn giải, không nhẩm lại.");
+ return lines.join("\n");
+}
+function hubRouteLabel(){
+ if(state.hubAvailable)return "/api/ai phía server"+(state.hubProvider?" ("+state.hubProvider+")":"");
+ if(state.token)return "token phiên ("+state.provider+")";
+ return "chưa nối";
+}
+function syncHubStatus(){
+ var shared=!!state.hubAvailable, on=shared||!!state.token;
+ var txt;
+ if(shared)txt="Đã nối qua đầu mối server /api/ai"+(state.hubProvider?" — nhà cung cấp: "+state.hubProvider:"")+" — mọi tính năng AI dùng chung key phía server, người dùng không cần token. System prompt + ngữ cảnh app được tự động đính kèm mọi lượt gọi.";
+ else if(state.token)txt="Chưa có /api/ai — đang nối bằng token phiên dự phòng ("+state.provider+"). System prompt + ngữ cảnh app vẫn được đính kèm mọi lượt gọi; khi publish, thêm api/ai.js + key ở Environment Variables để mọi người dùng chung đầu mối server.";
+ else if(!state.hubProbed)txt="Đang kiểm tra đầu mối server /api/ai…";
+ else txt="Chưa nối — /api/ai chưa được triển khai trên bản này và chưa có token phiên. Đang chạy bộ quy tắc nội bộ offline. Để nối: triển khai api/ai.js + key phía server khi publish lên Vercel (đường chính), hoặc gắn token dự phòng ở mục Đầu mối AI để dùng trong phiên này.";
+ [["hubDot","hubStatus"],["hubDot2","hubStatus2"],["hubDotTop","hubStatusTop"]].forEach(function(pair){
+  var d=document.getElementById(pair[0]),s=document.getElementById(pair[1]);if(!d||!s)return;
+  d.classList.toggle("on",on);s.textContent=txt;
+ });
+ var hero=document.getElementById("heroHubStatus");
+ if(hero)hero.textContent=shared?("🧠 Đầu mối AI: đã nối qua /api/ai phía server — mọi tính năng AI dùng chung, không cần token riêng."):state.token?("🧠 Đầu mối AI: đang dùng token phiên dự phòng ("+state.provider+") — bản publish có /api/ai sẽ tự chuyển sang key phía server."):(!state.hubProbed?"🧠 Đầu mối AI: đang kiểm tra kết nối chung (/api/ai)…":"🧠 Đầu mối AI: chưa nối — tính năng offline vẫn chạy; xem mục Đầu mối AI để nối qua server hoặc token phiên.");
+ var ad=document.getElementById("aiDot"),as=document.getElementById("aiStatus");
+ if(ad&&as){ad.classList.toggle("on",on);as.textContent=shared?"Đã nối qua đầu mối chung /api/ai":state.token?("Đã nối qua đầu mối chung — token phiên ("+state.provider+")"):"Đang dùng bộ quy tắc nội bộ — đầu mối AI chưa nối"}
+ syncInvAIStatus();
+}
+// Dò đầu mối server: POST /api/ai {ping:true} — hàm mẫu trả lời mà không gọi AI nên không tốn token.
+// Bản tĩnh / bản chưa thêm api/ai.js sẽ nhận 404 (hoặc HTML) -> ghi nhận “chưa có” và dùng đường dự phòng.
+function probeSharedHub(manual){
+ var msg=document.getElementById("hubProbeMsg");
+ if(manual&&msg)msg.textContent="Đang kiểm tra /api/ai…";
+ var done=function(ok,provider){
+  state.hubProbed=true;state.hubAvailable=!!ok;if(provider)state.hubProvider=provider;
+  if(manual&&msg)msg.textContent=ok?("✅ Thấy /api/ai và server đã có key ("+(provider||"đã cấu hình")+") — đầu mối server đang là đường chính."):"ℹ️ Chưa thấy /api/ai khả dụng trên bản này (chưa thêm file api/ai.js hoặc server chưa cấu hình key) — app dùng token phiên / offline.";
+  syncHubStatus();
+ };
+ return fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ping:true})}).then(function(r){
+  if(!r.ok){done(false);return null}
+  return r.json().then(function(j){done(!!(j&&j.ok&&j.configured),j&&j.provider?String(j.provider):"")},function(){done(false)});
+ }).catch(function(){done(false)});
+}
+function copyAIHubCode(){
+ var t=document.getElementById("aiHubCode").textContent;var m=document.getElementById("hubCopyMsg");
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){if(m)m.textContent="✅ Đã copy — dán vào file api/ai.js trong repo rồi deploy lại trên Vercel."},function(){if(m)m.textContent="⚠️ Không copy tự động được — hãy bôi đen đoạn mã bên dưới và copy thủ công."})}
+ else if(m)m.textContent="⚠️ Trình duyệt không hỗ trợ copy tự động — hãy bôi đen đoạn mã bên dưới và copy thủ công.";
+}
+function aiHubNoTokenError(){
+ return new Error("Đầu mối AI chưa nối: bản này chưa có /api/ai đang chạy (hoặc server chưa cấu hình key) và cũng chưa có token phiên dự phòng. Cách nối: (1) đường chính khi publish — chủ app đặt key ở Vercel Environment Variables và thêm file api/ai.js theo mã mẫu ở mục Đầu mối AI, app tự gọi qua /api/ai mà không cần token của từng người dùng; hoặc (2) dùng ngay trong phiên — vào mục Đầu mối AI, dán token cá nhân rồi bấm “Kích hoạt token dự phòng”.");
+}
+// Đường 1 của đầu mối: gọi hàm serverless chung. payload có thể kèm image {mime, data} cho đọc hóa đơn.
+function callSharedHub(payload){
+ return fetch("/api/ai",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}).then(function(r){
+  return r.json().then(function(j){
+   if(!r.ok)throw new Error((j&&j.error)||("Đầu mối /api/ai trả lỗi HTTP "+r.status));
+   if(!j||typeof j.text!=="string")throw new Error("Đầu mối /api/ai trả về định dạng lạ — kiểm tra lại file api/ai.js.");
+   return j.text;
+  },function(){throw new Error("Đầu mối /api/ai không trả JSON (HTTP "+r.status+") — có thể file api/ai.js chưa được deploy.")});
+ });
+}
+// Đảm bảo đã dò /api/ai ít nhất một lần trước khi quyết định đi đường nào.
+function ensureHubProbed(){
+ if(state.hubProbed)return Promise.resolve();
+ return probeSharedHub(false);
+}
+// Hàm gọi AI văn bản DUY NHẤT của đầu mối: nhận prompt người dùng, tự đính kèm system prompt + ngữ cảnh app.
+// Thử /api/ai trước; đầu mối server lỗi / chưa có thì rơi xuống token phiên; không có cả hai thì báo chưa nối.
+function callAIHubText(userPrompt){
+ return ensureHubProbed().then(function(){
+  var ctx=buildAIContext();
+  if(state.hubAvailable){
+   return callSharedHub({prompt:userPrompt,context:ctx}).catch(function(err){
+    if(state.token)return callDirectAIText(userPrompt,ctx);
+    throw err;
+   });
+  }
+  if(state.token)return callDirectAIText(userPrompt,ctx);
+  throw aiHubNoTokenError();
+ });
+}
+// Đường 2 (dự phòng): gọi thẳng nhà cung cấp bằng token phiên — chỉ dùng khi /api/ai chưa khả dụng.
+function callDirectAIText(userPrompt,ctx){
+ var model=(document.getElementById("api-model").value||"").trim();
+ var p=state.provider,tok=state.token;
+ var fullPrompt="NGỮ CẢNH TỪ APP:\n"+ctx+"\n\nYÊU CẦU:\n"+userPrompt;
+ if(p==="anthropic"){
+  return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":tok,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-4-5",max_tokens:1500,system:AI_SYSTEM_PROMPT,messages:[{role:"user",content:fullPrompt}]})})
+   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Claude",r.status));return (j.content||[]).map(function(c){return c.text||""}).join("")},{})});
+ }
+ if(p==="google"){
+  var gm=model||"gemini-2.0-flash";
+  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+gm+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":tok},body:JSON.stringify({systemInstruction:{parts:[{text:AI_SYSTEM_PROMPT}]},contents:[{parts:[{text:fullPrompt}]}],generationConfig:{maxOutputTokens:1500}})})
+   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Gemini",r.status));var parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];return parts.map(function(x){return x.text||""}).join("")},{})});
+ }
+ var base=(document.getElementById("api-endpoint").value||"").trim().replace(/\/+$/,"");
+ var url=p==="custom"?(base?base+"/chat/completions":""):"https://api.openai.com/v1/chat/completions";
+ if(!url)return Promise.reject(new Error("Chưa nhập Endpoint cho nhà cung cấp tùy chỉnh — điền ở mục Đầu mối AI rồi thử lại."));
+ return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({model:model||"gpt-4o",max_tokens:1500,messages:[{role:"system",content:AI_SYSTEM_PROMPT},{role:"user",content:fullPrompt}]})})
+  .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("OpenAI",r.status));return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||""},{})});
+}
+function hubErrText(err){
+ var m=err&&err.message?err.message:String(err);
+ if(err instanceof TypeError)m="Không gọi được AI (mất mạng, hoặc đường gọi thẳng bằng token phiên bị nhà cung cấp chặn CORS). Đường ổn định là đầu mối serverless /api/ai khi publish lên Vercel — xem mã mẫu ở mục Đầu mối AI.";
+ return m;
+}
+var HUB_PRESETS={
+ explain:"Hãy giải thích quy định / tình huống sau cho kế toán, nêu rõ căn cứ (số hiệu văn bản) và bước áp dụng thực tế:\n",
+ letter:"Hãy soạn NHÁP công văn giải trình gửi cơ quan thuế cho tình huống sau. Chỉ là bản nháp để kế toán trưởng rà soát và ký — chừa chỗ trống [ ] cho thông tin đơn vị còn thiếu, không tự điền số liệu không có trong ngữ cảnh:\n",
+ summary:"Hãy tóm tắt văn bản / nội dung sau: điểm chính, ngày hiệu lực, đối tượng áp dụng và việc kế toán cần làm. Nếu nội dung không ghi số hiệu văn bản, nói rõ là chưa xác định được số hiệu:\n",
+ review:"Hãy soát chứng từ / nghiệp vụ sau như một kiểm tra nội bộ: chỉ ra rủi ro thuế — kế toán có thể có, chứng từ còn thiếu và cách khắc phục, kèm căn cứ văn bản:\n"
+};
+function hubPreset(kind){
+ var q=document.getElementById("hub-q");if(!q)return;
+ q.value=HUB_PRESETS[kind]||"";q.focus();
+}
+function hubAsk(){
+ var q=document.getElementById("hub-q").value.trim();var out=document.getElementById("hubResult"),btn=document.getElementById("hubBtn");
+ if(!q){out.textContent="⚠️ Hãy nhập nội dung cần hỏi trước — hoặc bấm một nút mẫu ở trên (Giải thích quy định / Soạn công văn / Tóm tắt văn bản / Soát chứng từ) rồi điền tình huống của bạn.";return}
+ btn.disabled=true;var old=btn.textContent;btn.textContent="⏳ Đang gọi AI qua đầu mối chung…";
+ out.textContent="Đang gửi yêu cầu qua đầu mối chung kèm system prompt kế toán và ngữ cảnh app…";
+ callAIHubText(q).then(function(txt){
+  out.textContent=((txt&&txt.trim())?txt:"AI không trả về nội dung — thử diễn đạt lại yêu cầu ngắn gọn hơn.")+"\n\n— Qua đầu mối: "+hubRouteLabel();
+ }).catch(function(err){
+  out.textContent="🧠 Đầu mối AI chung — chưa trả lời được.\n\n⚠️ "+hubErrText(err)+(state.hubAvailable||state.token?"":"\n\nNgữ cảnh mà đầu mối sẽ tự động đính kèm khi nối (xem trước):\n"+buildAIContext());
+ }).then(function(){btn.disabled=false;btn.textContent=old});
+}
+// TOKEN
+function saveToken(){
+ var tok=document.getElementById("api-token").value.trim();var msg=document.getElementById("apiMsg");
+ if(tok.length<12){msg.textContent="⚠️ Token quá ngắn — hãy dán đúng API key của nhà cung cấp.";return}
+ state.token=tok;state.provider=document.getElementById("api-provider").value;
+ syncHubStatus();
+ msg.textContent=state.hubAvailable?("✅ Đã kích hoạt token dự phòng trong phiên này — nhưng đầu mối server /api/ai đang khả dụng nên app vẫn ưu tiên đường server. Token không được lưu xuống máy và không xuất ra file sao lưu."):("✅ Đã kích hoạt token dự phòng trong phiên này — đầu mối chung sẽ dùng token này cho mọi tính năng AI. Token không được lưu xuống máy và không xuất ra file sao lưu.");
+}
+function clearToken(){state.token=null;state.provider="";document.getElementById("api-token").value="";document.getElementById("apiMsg").textContent="Đã xóa token dự phòng khỏi phiên làm việc.";syncHubStatus()}
+function syncInvAIStatus(){
+ var d=document.getElementById("aiInvDot"),s=document.getElementById("aiInvStatus");if(!d||!s)return;
+ if(state.hubAvailable){d.classList.add("on");s.textContent="Đã nối đầu mối server /api/ai — sẵn sàng đọc hóa đơn bằng AI, không cần token cá nhân."}
+ else if(state.token){d.classList.add("on");s.textContent="Đang dùng token phiên dự phòng ("+state.provider+") — sẵn sàng đọc hóa đơn bằng AI."}
+ else{d.classList.remove("on");s.textContent="Đầu mối AI chưa nối — bản publish có /api/ai sẽ tự đọc được; ở bản tĩnh này hãy gắn token dự phòng ở mục Đầu mối AI trước khi đọc hóa đơn."}
+}
+// ĐỌC HÓA ĐƠN BẰNG AI (qua đầu mối chung: /api/ai trước, token phiên dự phòng sau)
+var aiInvData=null; // {b64, mime, name}
+function aiInvPicked(ev){
+ var f=ev.target.files&&ev.target.files[0];var msg=document.getElementById("aiInvMsg");
+ document.getElementById("aiInvReview").innerHTML="";aiInvData=null;
+ if(!f){document.getElementById("aiInvFileName").textContent="Chưa chọn file nào";return}
+ if(f.size>10*1024*1024){msg.textContent="⚠️ File nặng hơn 10MB — hãy chụp / nén lại cho nhẹ rồi tải lên.";document.getElementById("aiInvFileName").textContent="Chưa chọn file nào";return}
+ var isPdf=(f.type==="application/pdf"||/\.pdf$/i.test(f.name));
+ if(!isPdf&&f.type.indexOf("image/")!==0){msg.textContent="⚠️ Chỉ nhận file ảnh (JPG / PNG) hoặc PDF hóa đơn.";return}
+ var rd=new FileReader();
+ rd.onload=function(){
+  var url=String(rd.result||"");var b64=url.indexOf(",")>=0?url.slice(url.indexOf(",")+1):url;
+  aiInvData={b64:b64,mime:isPdf?"application/pdf":(f.type||"image/jpeg"),name:f.name};
+  document.getElementById("aiInvFileName").textContent="Đã chọn: "+f.name+" ("+Math.max(1,Math.round(f.size/1024))+" KB)";
+  msg.textContent="";
+ };
+ rd.onerror=function(){msg.textContent="⚠️ Không đọc được file này trên trình duyệt — thử file khác."};
+ rd.readAsDataURL(f);
+}
+var INV_PROMPT="Bạn là trợ lý kế toán Việt Nam. Hãy đọc hóa đơn trong file đính kèm và trích xuất thông tin. Chỉ trả về DUY NHẤT một đối tượng JSON hợp lệ, không thêm giải thích, không bọc markdown. Các trường: soHoaDon (chuỗi, giữ nguyên số 0 ở đầu), ngay (chuỗi định dạng DD/MM/YYYY), benBan_ten, benBan_mst, benMua_ten, benMua_mst, tienHang (số nguyên VND, tiền hàng chưa thuế), thueSuat (số: 0, 5, 8, 10; hoặc -1 nếu hàng không chịu thuế), tienThue (số nguyên VND), tongTien (số nguyên VND, tổng tiền thanh toán). Số tiền chỉ gồm chữ số, không dấu chấm / phẩy phân cách. Trường nào không đọc được thì để null. Nếu hóa đơn có nhiều dòng hàng với nhiều thuế suất khác nhau, lấy thuế suất của dòng có tiền hàng lớn nhất và ghi tổng tiền hàng, tổng tiền thuế của toàn hóa đơn.";
+function aiHttpErr(provider,st){
+ if(st===401||st===403)return "Token bị từ chối (HTTP "+st+") — kiểm tra lại API key ở mục Đầu mối AI.";
+ if(st===429)return "Nhà cung cấp báo quá tải / hết hạn mức (HTTP 429) — thử lại sau.";
+ if(st===400)return "Nhà cung cấp không nhận file này (HTTP 400) — thử ảnh rõ nét hơn, hoặc PDF thay cho ảnh và ngược lại.";
+ return "Nhà cung cấp trả lỗi HTTP "+st+" ("+provider+").";
+}
+// Đọc hóa đơn qua ĐẦU MỐI CHUNG: thử /api/ai (kèm ảnh base64 + ngữ cảnh app) trước,
+// lỗi / chưa có thì rơi xuống đường gọi thẳng bằng token phiên như các tính năng khác.
+function callInvoiceAI(){
+ return ensureHubProbed().then(function(){
+  if(state.hubAvailable){
+   return callSharedHub({prompt:INV_PROMPT,context:buildAIContext(),image:{mime:aiInvData.mime,data:aiInvData.b64}}).catch(function(err){
+    if(state.token)return callDirectInvoiceAI();
+    throw err;
+   });
+  }
+  if(state.token)return callDirectInvoiceAI();
+  throw aiHubNoTokenError();
+ });
+}
+// Đường dự phòng cho hóa đơn: gọi thẳng nhà cung cấp bằng token phiên.
+function callDirectInvoiceAI(){
+ var model=(document.getElementById("api-model").value||"").trim();
+ var p=state.provider,tok=state.token,d=aiInvData;
+ if(p==="anthropic"){
+  var blocks=[d.mime==="application/pdf"?{type:"document",source:{type:"base64",media_type:"application/pdf",data:d.b64}}:{type:"image",source:{type:"base64",media_type:d.mime,data:d.b64}},{type:"text",text:INV_PROMPT}];
+  return fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":tok,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:model||"claude-sonnet-4-5",max_tokens:1024,system:AI_SYSTEM_PROMPT,messages:[{role:"user",content:blocks}]})})
+   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Claude",r.status));return (j.content||[]).map(function(c){return c.text||""}).join("")},{})});
+ }
+ if(p==="google"){
+  var gm=model||"gemini-2.0-flash";
+  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+gm+":generateContent",{method:"POST",headers:{"Content-Type":"application/json","x-goog-api-key":tok},body:JSON.stringify({systemInstruction:{parts:[{text:AI_SYSTEM_PROMPT}]},contents:[{parts:[{inlineData:{mimeType:d.mime,data:d.b64}},{text:INV_PROMPT}]}],generationConfig:{responseMimeType:"application/json"}})})
+   .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("Gemini",r.status));var parts=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];return parts.map(function(x){return x.text||""}).join("")},{})});
+ }
+ // openai + custom: endpoint tương thích OpenAI, chỉ nhận ảnh
+ if(d.mime==="application/pdf")return Promise.reject(new Error("Nhà cung cấp OpenAI / tùy chỉnh không nhận PDF qua đường gọi này — hãy chụp hoặc xuất trang hóa đơn thành ảnh JPG / PNG rồi tải lên, hoặc dùng Claude / Gemini cho file PDF."));
+ var base=(document.getElementById("api-endpoint").value||"").trim().replace(/\/+$/,"");
+ var url=p==="custom"?(base?base+"/chat/completions":""):"https://api.openai.com/v1/chat/completions";
+ if(!url)return Promise.reject(new Error("Chưa nhập Endpoint cho nhà cung cấp tùy chỉnh — điền ở mục Đầu mối AI rồi thử lại."));
+ return fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({model:model||"gpt-4o",max_tokens:1024,response_format:{type:"json_object"},messages:[{role:"system",content:AI_SYSTEM_PROMPT},{role:"user",content:[{type:"image_url",image_url:{url:"data:"+d.mime+";base64,"+d.b64}},{type:"text",text:INV_PROMPT}]}]})})
+  .then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(aiHttpErr("OpenAI",r.status));return (j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||""},{})});
+}
+function parseInvJSON(txt){
+ if(!txt)throw new Error("AI không trả về nội dung — thử ảnh rõ nét hơn.");
+ var t=String(txt).replace(/```json/gi,"").replace(/```/g,"").trim();
+ var a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>=0&&b>a)t=t.slice(a,b+1);
+ var o;try{o=JSON.parse(t)}catch(e){throw new Error("AI trả về dữ liệu không đọc được thành JSON — thử lại hoặc dùng ảnh rõ hơn.")}
+ return o;
+}
+function invDateToISO(s){
+ if(!s)return "";var m=String(s).trim().match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
+ if(m)return m[3]+"-"+("0"+m[2]).slice(-2)+"-"+("0"+m[1]).slice(-2);
+ if(/^\d{4}-\d{2}-\d{2}$/.test(String(s).trim()))return String(s).trim();
+ return "";
+}
+function extractInvoiceAI(){
+ var msg=document.getElementById("aiInvMsg"),rev=document.getElementById("aiInvReview"),btn=document.getElementById("aiInvBtn");
+ rev.innerHTML="";
+ if(!aiInvData){msg.textContent="⚠️ Chưa chọn file — bấm “Chọn ảnh / PDF hóa đơn” trước.";return}
+ btn.disabled=true;var oldLabel=btn.textContent;btn.textContent="⏳ Đang gửi cho AI đọc…";
+ msg.textContent="Đang trích xuất qua đầu mối AI chung — hóa đơn mờ hoặc nhiều trang có thể mất vài giây…";
+ callInvoiceAI().then(function(txt){
+  var o=parseInvJSON(txt);fillInvoiceFromAI(o);msg.textContent="✅ Đã đọc xong qua "+hubRouteLabel()+" — kiểm tra phần tóm tắt bên dưới rồi đối chiếu form trước khi Lưu.";
+ }).catch(function(err){
+  msg.textContent="⚠️ "+hubErrText(err);
+ }).then(function(){btn.disabled=false;btn.textContent=oldLabel});
+}
+function fillInvoiceFromAI(o){
+ var warn=[];
+ var set=function(id,val){if(val!==null&&val!==undefined&&String(val).trim()!=="")document.getElementById(id).value=val};
+ // Xóa sạch form trước khi điền: trường nào AI không đọc được phải để trống + cảnh báo, không để sót giá trị của hóa đơn / lần nhập trước.
+ ["inv-no","inv-date","inv-party","inv-tax","inv-base","inv-vat"].forEach(function(id){document.getElementById(id).value=""});
+ document.getElementById("inv-rate").value="10";document.getElementById("vatHint").textContent="";
+ document.getElementById("inv-type").value="in";
+ set("inv-no",o.soHoaDon);if(!o.soHoaDon)warn.push("không đọc được số hóa đơn");
+ var iso=invDateToISO(o.ngay);if(iso)set("inv-date",iso);else if(o.ngay)warn.push("ngày hóa đơn đọc được (“"+esc(o.ngay)+"”) không đúng định dạng — hãy tự chọn lại ngày");else warn.push("không đọc được ngày hóa đơn");
+ set("inv-party",o.benBan_ten);if(!o.benBan_ten)warn.push("không đọc được tên bên bán");
+ set("inv-tax",o.benBan_mst);if(!o.benBan_mst)warn.push("không đọc được MST bên bán");
+ var base=Number(o.tienHang)||0,vat=Number(o.tienThue)||0,total=Number(o.tongTien)||0;
+ var hasRate=o.thueSuat!==null&&o.thueSuat!==undefined&&String(o.thueSuat).trim()!=="",rate=hasRate?Number(o.thueSuat):NaN;
+ if(base>0)set("inv-base",base);else warn.push("không đọc được tiền hàng");
+ if(o.tienThue!==null&&o.tienThue!==undefined)set("inv-vat",vat);else warn.push("không đọc được tiền thuế");
+ var rateSel=document.getElementById("inv-rate");
+ if(hasRate&&[0,5,8,10,-1].indexOf(rate)>=0)rateSel.value=String(rate);
+ else if(hasRate)warn.push("thuế suất AI đọc là "+esc(o.thueSuat)+"% — ngoài các mức có sẵn trong form, hãy tự chọn lại");
+ else warn.push("không đọc được thuế suất — form đang để tạm 10%, hãy chọn đúng theo hóa đơn");
+ if(base>0&&total>0&&Math.abs(base+vat-total)>1000)warn.push("tiền hàng + thuế ("+fmt(base+vat)+") lệch với tổng thanh toán AI đọc ("+fmt(total)+") — đối chiếu kỹ trên hóa đơn gốc");
+ previewVAT();
+ var buyer=(o.benMua_ten||o.benMua_mst)?("<p class='small'>Bên mua trên hóa đơn: <strong>"+esc(o.benMua_ten||"—")+"</strong>"+(o.benMua_mst?" · MST: "+esc(o.benMua_mst):"")+" — Form đang để <strong>Đầu vào</strong> và lấy đối tác là bên bán. Nếu đơn vị của bạn là bên bán trên hóa đơn này, đổi Loại thành Đầu ra và sửa đối tác thành bên mua.</p>"):"";
+ document.getElementById("aiInvReview").innerHTML="<div class='note' style='margin-top:10px'><strong>🤖 AI đã điền form “Thêm hóa đơn” — hãy kiểm tra lại trước khi bấm Lưu:</strong>"
+  +"<p class='small' style='margin-top:6px'>Số HĐ: <strong>"+esc(o.soHoaDon||"—")+"</strong> · Ngày: <strong>"+esc(o.ngay||"—")+"</strong> · Bên bán: <strong>"+esc(o.benBan_ten||"—")+"</strong> · MST: <strong>"+esc(o.benBan_mst||"—")+"</strong> · Tiền hàng: <strong>"+(base?fmt(base):"—")+"</strong> · Thuế suất: <strong>"+(!hasRate?"—":(rate===-1?"Không chịu thuế":esc(o.thueSuat)+"%"))+"</strong> · Tiền thuế: <strong>"+(o.tienThue===null||o.tienThue===undefined?"—":fmt(vat))+"</strong> · Tổng thanh toán: <strong>"+(total?fmt(total):"—")+"</strong></p>"
+  +buyer
+  +(warn.length?"<p class='small' style='color:var(--danger)'><strong>Cần soát lại:</strong> "+warn.join("; ")+".</p>":"<p class='small'>Các trường chính đều đọc được — vẫn hãy liếc đối chiếu số tiền với hóa đơn gốc một lần nữa.</p>")
+  +"<p class='small muted'>Chưa có gì được lưu vào bảng kê. Sửa trực tiếp trên form nếu sai, rồi bấm “Lưu hóa đơn &amp; soát lỗi” — hệ thống soát trùng / MST / lệch thuế sẽ chạy như hóa đơn nhập tay.</p></div>";
+ document.getElementById("inv-no").scrollIntoView({behavior:"smooth",block:"center"});
+}
+// DATA IO
+function delItem(kind,idx){state[kind].splice(idx,1);renderAll()}
+function dl(name,content,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},2000)}
+function csvEsc(v){return '"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
+function exportCSV(kind){
+ if(kind==="entries")dl("nhat-ky-chung.csv","﻿Ngày,Số CT,Diễn giải,Đối tác,Nợ,Có,Số tiền\n"+state.entries.map(function(e){return [e.date,e.no,e.desc,e.party,e.debit,e.credit,e.amount].map(csvEsc).join(",")}).join("\n"),"text/csv");
+ if(kind==="invoices")dl("bang-ke-hoa-don.csv","﻿Loại,Số HĐ,Ngày,Đối tác,MST,Tiền hàng,Thuế\n"+state.invoices.map(function(v){return [v.type,v.no,v.date,v.party,v.tax,v.base,v.vat].map(csvEsc).join(",")}).join("\n"),"text/csv");
+ if(kind==="cashflow"){var b=num("cf-open");dl("dong-tien-13-tuan.csv","﻿Tuần,Thu,Chi,Thuần,Số dư\n"+state.cfIn.map(function(v,i){b+=v-state.cfOut[i];return [i+1,v,state.cfOut[i],v-state.cfOut[i],b].join(",")}).join("\n"),"text/csv")}
+}
+function exportJSON(){var cfEl=document.getElementById("cf-open");dl("ketoanai-sao-luu.json",JSON.stringify({entries:state.entries,invoices:state.invoices,ars:state.ars,salaries:state.salaries,fas:state.fas,cfIn:state.cfIn,cfOut:state.cfOut,cfOpen:cfEl?Number(cfEl.value)||0:0,customLaws:state.customLaws,lawUpdated:state.lawUpdated,lawReviewed:state.lawReviewed},null,2),"application/json")}
+var clearArmed=false,clearTimer=null,partArmed={},partTimer=null;
+// QUẢN LÝ & XÓA DỮ LIỆU
+function renderDataStats(){
+ var el=document.getElementById("dataStats");if(!el)return;
+ var cfUsed=state.cfIn.some(function(v){return v!==0})||state.cfOut.some(function(v){return v!==0});
+ var items=[["Chứng từ",state.entries.length+" bút toán"],["Hóa đơn",state.invoices.length+" hóa đơn"],["Công nợ",state.ars.length+" khoản"],["Bảng lương",state.salaries.length+" dòng"],["TSCĐ",state.fas.length+" tài sản"],["Dòng tiền 13 tuần",cfUsed?"Đã có số liệu":"Chưa nhập"],["Văn bản chờ review",state.customLaws.length+" văn bản"]];
+ el.innerHTML=items.map(function(it){return "<div class='kpi'><div class='num'>"+it[1]+"</div><div class='lab'>"+it[0]+"</div></div>"}).join("");
+ var rows=document.getElementById("clearPartRows");if(!rows)return;
+ var parts=[["entries","Chứng từ & nhật ký chung",state.entries.length+" bút toán"],["invoices","Hóa đơn & bảng kê GTGT",state.invoices.length+" hóa đơn"],["ars","Công nợ 131 / 331",state.ars.length+" khoản"],["salaries","Bảng lương",state.salaries.length+" dòng"],["fas","TSCĐ & khấu hao",state.fas.length+" tài sản"],["cashflow","Dòng tiền 13 tuần",cfUsed?"Đã có số liệu":"Chưa nhập"],["customLaws","Văn bản chờ review luật",state.customLaws.length+" văn bản"]];
+ rows.innerHTML=parts.map(function(p){var empty=(p[0]==="cashflow")?!cfUsed:(p[0]==="customLaws"?state.customLaws.length===0:state[p[0]].length===0);return "<div class='datarow'><div><strong>"+p[1]+"</strong><div class='small muted'>"+p[2]+"</div></div><button class='btn small danger' "+(empty?"disabled":"")+" onclick='clearPart(\""+p[0]+"\",this)'>Xóa phần này</button></div>"}).join("");
+}
+function clearPart(kind,btn){
+ if(partArmed[kind]!==btn){
+  Object.keys(partArmed).forEach(function(k){var b=partArmed[k];if(b&&b.dataset.label)b.textContent=b.dataset.label;delete partArmed[k]});
+  partArmed[kind]=btn;if(!btn.dataset.label)btn.dataset.label=btn.textContent;btn.textContent="⚠ Bấm lần nữa để xác nhận xóa";
+  clearTimeout(partTimer);partTimer=setTimeout(function(){if(btn.dataset.label)btn.textContent=btn.dataset.label;delete partArmed[kind]},5000);
+  return;
+ }
+ clearTimeout(partTimer);delete partArmed[kind];
+ if(kind==="cashflow"){state.cfIn=Array(13).fill(0);state.cfOut=Array(13).fill(0);var o=document.getElementById("cf-open");if(o)o.value=0}
+ else if(kind==="customLaws"){state.customLaws=[];var cl=document.getElementById("customLawList");if(cl)cl.innerHTML=""}
+ else state[kind]=[];
+ renderAll();
+}
+function restoreClearBtns(){document.querySelectorAll(".btn-clear-all").forEach(function(b){if(b.dataset.label)b.textContent=b.dataset.label})}
+function importJSON(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var d=JSON.parse(r.result);state.entries=d.entries||[];state.invoices=d.invoices||[];state.ars=d.ars||[];state.salaries=d.salaries||[];state.fas=d.fas||[];state.cfIn=d.cfIn||Array(13).fill(0);state.cfOut=d.cfOut||Array(13).fill(0);if(Array.isArray(d.customLaws))state.customLaws=d.customLaws;if(typeof d.lawUpdated==="boolean")state.lawUpdated=d.lawUpdated;if(typeof d.lawReviewed==="boolean")state.lawReviewed=d.lawReviewed;var cfo=document.getElementById("cf-open");if(cfo)cfo.value=Number(d.cfOpen)||0;state._cfOpen=Number(d.cfOpen)||0;renderAll();window.scrollTo({top:0,behavior:"smooth"})}catch(e){var m=document.getElementById("apiMsg");if(m)m.textContent="File không đúng định dạng JSON của KetoanAI."}};r.readAsText(f)}
+function clearAll(btn){
+ var msg=document.getElementById("clearMsg");
+ if(!clearArmed){
+  clearArmed=true;
+  document.querySelectorAll(".btn-clear-all").forEach(function(b){if(!b.dataset.label)b.dataset.label=b.textContent;b.textContent="⚠ Bấm lần nữa để XÁC NHẬN xóa hết"});
+  if(msg)msg.textContent="Chắc chắn xóa sạch toàn bộ dữ liệu đã lưu trong trình duyệt? Bấm nút xóa lần nữa trong 5 giây để xác nhận — thao tác này không hoàn tác được.";
+  clearTimeout(clearTimer);clearTimer=setTimeout(function(){clearArmed=false;restoreClearBtns();if(msg)msg.textContent=""},5000);
+  return;
+ }
+ clearTimeout(clearTimer);clearArmed=false;
+ state.entries=[];state.invoices=[];state.ars=[];state.salaries=[];state.fas=[];state.cfIn=Array(13).fill(0);state.cfOut=Array(13).fill(0);state.customLaws=[];
+ var cfo=document.getElementById("cf-open");if(cfo)cfo.value=0;
+ var cl=document.getElementById("customLawList");if(cl)cl.innerHTML="";
+ ["ct-no","ct-party","ct-desc","ct-amount","inv-no","inv-party","inv-tax","inv-base","inv-vat","ar-party","ar-amount","fa-name","fa-cost","fa-dept","q-entry"].forEach(function(id){var e=document.getElementById(id);if(e)e.value=""});
+ var arp=document.getElementById("ar-paid");if(arp)arp.value=0;
+ ["ct-msg","inv-msg","vatHint"].forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=""});
+ restoreClearBtns();renderAll();
+ if(msg)msg.textContent="✅ Đã xóa toàn bộ dữ liệu, kể cả bản đã lưu trong trình duyệt. Trang đã trở về trạng thái trống — nhập mới hoặc nạp file JSON sao lưu để tiếp tục.";
+}
+function downloadHTML(){dl("index.html","<!doctype html>\n"+document.documentElement.outerHTML,"text/html")}
+function copyVercel(){var t=document.getElementById("vercelJson").textContent;if(navigator.clipboard)navigator.clipboard.writeText(t)}
+function loadDemo(){
+ var y=today().slice(0,4),m=today().slice(5,7);
+ state.entries.push(
+  {date:y+"-"+m+"-02",no:"PT001",party:"Công ty Khách A (mẫu)",desc:"[MẪU] Thu tiền bán hàng qua ngân hàng",debit:"112",credit:"511",amount:55000000},
+  {date:y+"-"+m+"-03",no:"NK001",party:"NCC B (mẫu)",desc:"[MẪU] Mua hàng hóa nhập kho chưa trả tiền",debit:"156",credit:"331",amount:30000000},
+  {date:y+"-"+m+"-05",no:"PC001",party:"Văn phòng (mẫu)",desc:"[MẪU] Chi tiền mặt mua văn phòng phẩm",debit:"642",credit:"111",amount:2500000});
+ state.invoices.push(
+  {type:"out",no:"00000101",date:y+"-"+m+"-02",party:"Công ty Khách A (mẫu)",tax:"0101234567",rate:10,base:50000000,vat:5000000,pay:"ck"},
+  {type:"in",no:"00000202",date:y+"-"+m+"-03",party:"NCC B (mẫu)",tax:"0202345678",rate:10,base:30000000,vat:3000000,pay:"ck"});
+ state.ars.push({type:"phai-tra",party:"NCC B (mẫu)",amount:33000000,date:y+"-"+m+"-03",due:y+"-"+m+"-20",paid:0});
+ state.fas.push({name:"Laptop kế toán (mẫu)",cost:24000000,years:3,date:y+"-"+m+"-01",dept:"Văn phòng"});
+ renderAll();go("tongquan");
+}
+</script>
+</body>
+</html>
